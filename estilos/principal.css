@@ -8,6 +8,7 @@
 
 body {
     background-color: #2f2f2f; /* Gris ónix */
+    color: #ffffff; /* Texto blanco para contraste */
 }
 
 .container {
@@ -23,6 +24,9 @@ header {
 
 header h1 {
     font-size: 24px;
+    color: #ffffff; /* Blanco para contraste con fondo oscuro */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Sombra sutil para mejor legibilidad */
+    font-weight: 600;
 }
 
 /* Sección superior */

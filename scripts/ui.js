@@ -604,6 +604,12 @@ function aplicarFondoPorColorEquipo() {
     // Si es la primera vez, mantener gris ónix por 9 segundos
     if (!fondoInicialAplicado) {
         document.body.style.background = '#2F2F2F'; // Gris ónix
+        // Asegurar contraste del título con fondo oscuro
+        const titulo = document.querySelector('header h1');
+        if (titulo) {
+            titulo.style.color = '#ffffff';
+            titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+        }
         fondoInicialAplicado = true;
         
         // Después de 9 segundos, aplicar el color del selector
@@ -612,6 +618,9 @@ function aplicarFondoPorColorEquipo() {
             const colorBase = mapaColores[color] || '#FFFFFF';
             const pastel = pastelizarColor(colorBase, 0.7);
             document.body.style.background = pastel;
+            
+            // Ajustar contraste del título según el nuevo fondo
+            ajustarContrasteTitulo(pastel);
         }, 9000);
         return;
     }
@@ -621,12 +630,61 @@ function aplicarFondoPorColorEquipo() {
     const colorBase = mapaColores[color] || '#FFFFFF';
     const pastel = pastelizarColor(colorBase, 0.7);
     document.body.style.background = pastel;
+    
+    // Ajustar contraste del título según el nuevo fondo
+    ajustarContrasteTitulo(pastel);
+}
+
+// Función para ajustar el contraste del título según el color de fondo
+function ajustarContrasteTitulo(colorFondo) {
+    const titulo = document.querySelector('header h1');
+    if (!titulo) return;
+    
+    // Convertir color de fondo a RGB para calcular luminosidad
+    let r, g, b;
+    if (colorFondo.startsWith('rgb')) {
+        const match = colorFondo.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+            r = parseInt(match[1]);
+            g = parseInt(match[2]);
+            b = parseInt(match[3]);
+        }
+    } else if (colorFondo.startsWith('#')) {
+        r = parseInt(colorFondo.slice(1, 3), 16);
+        g = parseInt(colorFondo.slice(3, 5), 16);
+        b = parseInt(colorFondo.slice(5, 7), 16);
+    } else {
+        // Color por defecto si no se puede parsear
+        r = g = b = 128;
+    }
+    
+    // Calcular luminosidad relativa (fórmula WCAG)
+    const luminosidad = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Ajustar color del título según luminosidad del fondo
+    if (luminosidad > 0.5) {
+        // Fondo claro, usar texto oscuro
+        titulo.style.color = '#2f2f2f';
+        titulo.style.textShadow = '0 2px 4px rgba(255, 255, 255, 0.3)';
+    } else {
+        // Fondo oscuro, usar texto claro
+        titulo.style.color = '#ffffff';
+        titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const colorSelect = document.getElementById('color-select');
     if (colorSelect) {
         colorSelect.addEventListener('change', aplicarFondoPorColorEquipo);
+        
+        // Aplicar contraste inicial del título
+        const titulo = document.querySelector('header h1');
+        if (titulo) {
+            titulo.style.color = '#ffffff';
+            titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+        }
+        
         aplicarFondoPorColorEquipo(); // Inicial
     }
 });
