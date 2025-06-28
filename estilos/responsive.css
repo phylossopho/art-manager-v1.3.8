@@ -1,245 +1,460 @@
-/* Responsive Design para dispositivos móviles */
+/* === ESTILOS RESPONSIVE MODERNOS === */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .top-section {
+        flex-direction: column;
+        gap: 25px;
+        padding: 25px;
+    }
+    
+    .selectors-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .equipment-image img {
+        max-width: 100px;
+        max-height: 100px;
+    }
+    
+    .tab-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .bottom-buttons {
+        padding: 15px 25px;
+    }
+    
+    .social-icons {
+        gap: 12px;
+    }
+    
+    .social-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-icon img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Móviles grandes */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
     }
-
+    
+    header {
+        padding: 20px 0;
+        margin-bottom: 20px;
+    }
+    
     header h1 {
-        font-size: 20px;
+        font-size: 1.8rem;
+        padding: 0 10px;
     }
-
+    
     .top-section {
-        flex-direction: column;
-        align-items: center;
+        padding: 20px;
+        gap: 20px;
     }
-
-    .left-panel {
-        margin-bottom: 15px;
-        width: 100%;
-        justify-content: center;
-    }
-
+    
     .equipment-image {
-        width: 66px;
-        height: 66px;
-        margin-right: 15px;
+        padding: 15px;
     }
-
+    
+    .equipment-image img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+    
     .selectors-grid {
-        flex-direction: column;
-        gap: 5px;
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
-
-    .selector-column {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px;
-    }
-
-    .selector-column select {
-        width: 120px;
-        font-size: 14px;
-        margin-bottom: 0;
-    }
-
-    .right-panel {
-        width: 100%;
-        align-items: center;
-    }
-
-    .right-panel button {
-        width: 150px;
-        font-size: 14px;
-    }
-
-    /* Botón de galería en móvil */
-    .gallery-button {
-        width: 40px;
-        height: 40px;
-    }
-
-    .gallery-icon {
-        width: 20px;
-        height: 16px;
-    }
-
-    /* Cambiar visibilidad de botones en móvil */
-    .mobile-only {
-        display: flex;
-    }
-
-    .desktop-only {
-        display: none;
-    }
-
-    /* Pestañas en móvil */
-    .tab-buttons {
-        flex-wrap: wrap;
-    }
-
-    .tab-button {
-        padding: 8px 10px;
-        font-size: 12px;
-        flex-grow: 1;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    th, td {
-        padding: 3px;
-        font-size: 14px;
-    }
-
-    .material-cell img {
-        width: 20px;
-        height: 20px;
-    }
-
-    /* Ajuste para móvil: line-height y font-size del texto del material */
-    .material-cell span {
+    
+    select {
+        padding: 10px 14px;
         font-size: 13px;
-        line-height: 20px;
     }
-
+    
+    .tabs-container {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .tab-buttons {
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .tab-button {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: auto;
+    }
+    
+    .tab-content {
+        padding: 20px;
+        margin-top: 15px;
+    }
+    
+    .materials-table {
+        font-size: 12px;
+    }
+    
+    .materials-table th,
+    .materials-table td {
+        padding: 10px 8px;
+    }
+    
     .color-input {
-        padding: 3px 0;
-        font-size: 14px;
+        width: 60px;
+        padding: 8px;
+        font-size: 12px;
     }
-
+    
     .bottom-section {
-        gap: 5px;
-    }
-
-    .material-selector {
-        width: 66px;
-        padding: 3px;
-        text-align: center;
-    }
-
-    .material-selector img {
-        width: 66px;
-        height: 66px;
-    }
-
-    .material-selector select {
-        width: 66px;
-        font-size: 12px;
-        padding: 2px;
-        text-align: center;
-    }
-
-    /* Ajustes para selector base en móviles */
-    .base-selector {
-        width: 100px;
-        min-height: 140px;
-        padding: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
     }
     
-    .base-equipo-img {
-        max-width: 50px;
-        max-height: 50px;
+    .bottom-buttons {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
     }
     
-    .base-title {
-        font-size: 12px;
+    .gallery-button {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
     }
-
+    
+    .social-icons {
+        gap: 10px;
+    }
+    
+    .social-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .social-icon img {
+        width: 18px;
+        height: 18px;
+    }
+    
     .use-button {
-        padding: 8px 20px;
+        padding: 12px 25px;
         font-size: 14px;
     }
-
+    
+    /* Modales en móvil */
     .modal-content {
-        width: 90%;
+        width: 95%;
         margin: 5% auto;
     }
-
-    .modal-header h2, .modal-header h3 {
-        font-size: 16px;
+    
+    .modal-header {
+        padding: 15px 20px;
     }
-
+    
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-body {
+        padding: 15px 20px;
+    }
+    
     .close {
-        font-size: 22px;
+        width: 35px;
+        height: 35px;
+        font-size: 1.5rem;
+    }
+    
+    /* Galería en móvil */
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .gallery-item .delete-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        top: 6px;
+        right: 6px;
+    }
+    
+    .floating-add-button {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    /* FAB de backup en móvil */
+    #fab-save {
+        width: 55px !important;
+        height: 55px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+    
+    #fab-save svg {
+        width: 24px !important;
+        height: 24px !important;
     }
 }
 
-/* Para dispositivos muy pequeños */
+/* Móviles pequeños */
 @media (max-width: 480px) {
     .container {
-        padding: 5px;
+        padding: 8px;
     }
-
+    
+    header {
+        padding: 15px 0;
+    }
+    
     header h1 {
-        font-size: 18px;
-        margin-bottom: 10px;
+        font-size: 1.5rem;
     }
-
+    
+    .top-section {
+        padding: 15px;
+        gap: 15px;
+    }
+    
     .equipment-image {
-        width: 66px;
-        height: 66px;
-        margin-right: 15px;
+        padding: 12px;
     }
-
-    .selectors select {
-        width: 120px;
-        font-size: 12px;
+    
+    .equipment-image img {
+        max-width: 70px;
+        max-height: 70px;
     }
-
-    .right-panel button {
-        width: 120px;
-        font-size: 12px;
-        padding: 4px;
+    
+    .tabs-container {
+        padding: 12px;
     }
-
-    .materials-table {
-        padding: 5px;
+    
+    .tab-buttons {
+        gap: 6px;
     }
-
-    th, td {
-        padding: 2px;
-        font-size: 12px;
+    
+    .tab-button {
+        padding: 6px 10px;
+        font-size: 11px;
     }
-
-    .material-cell img {
+    
+    .tab-content {
+        padding: 15px;
+    }
+    
+    .materials-table th,
+    .materials-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    
+    .color-input {
+        width: 50px;
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .bottom-section {
+        padding: 15px;
+    }
+    
+    .bottom-buttons {
+        padding: 12px 15px;
+        gap: 12px;
+    }
+    
+    .gallery-button {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .social-icons {
+        gap: 8px;
+    }
+    
+    .social-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .social-icon img {
         width: 16px;
         height: 16px;
     }
-
-    .material-cell span {
-        font-size: 11px;
-        line-height: 16px;
-    }
-
-    .material-selector {
-        width: 66px;
-        text-align: center;
-    }
-
-    .material-selector img {
-        width: 66px;
-        height: 66px;
-        text-align: center;
-    }
-
-    /* Ajustes para selector base en móviles pequeños */
-    .base-selector {
-        width: 90px;
-        min-height: 130px;
-    }
     
-    .base-equipo-img {
-        max-width: 40px;
-        max-height: 40px;
-    }
-    
-    .base-selector select {
-        font-size: 11px;
-        padding: 3px;
-    }
-
     .use-button {
-        padding: 6px 15px;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    /* Modales en móvil pequeño */
+    .modal-content {
+        width: 98%;
+        margin: 2% auto;
+    }
+    
+    .modal-header {
+        padding: 12px 15px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-body {
+        padding: 12px 15px;
+    }
+    
+    .close {
+        width: 30px;
+        height: 30px;
+        font-size: 1.3rem;
+    }
+    
+    /* Galería en móvil pequeño */
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .gallery-item .delete-btn {
+        width: 25px;
+        height: 25px;
         font-size: 12px;
+        top: 5px;
+        right: 5px;
+    }
+    
+    .floating-add-button {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        bottom: 12px;
+        right: 12px;
+    }
+    
+    /* FAB de backup en móvil pequeño */
+    #fab-save {
+        width: 50px !important;
+        height: 50px !important;
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
+    #fab-save svg {
+        width: 22px !important;
+        height: 22px !important;
+    }
+    
+    /* Menú FAB en móvil pequeño */
+    #fab-menu {
+        min-width: 280px !important;
+        padding: 20px !important;
+    }
+    
+    #fab-menu button {
+        padding: 12px 15px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* Orientación landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    .top-section {
+        flex-direction: row;
+        gap: 20px;
+    }
+    
+    .selectors-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .equipment-image img {
+        max-width: 60px;
+        max-height: 60px;
+    }
+    
+    .tab-buttons {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+    
+    .tab-button {
+        flex-shrink: 0;
+    }
+    
+    .bottom-buttons {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .modal-content {
+        margin: 2% auto;
+        max-height: 90vh;
+    }
+    
+    .gallery-container {
+        max-height: 50vh;
+    }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 30px;
+    }
+    
+    .equipment-image img {
+        max-width: 140px;
+        max-height: 140px;
+    }
+    
+    header h1 {
+        font-size: 3rem;
+    }
+    
+    .tab-button {
+        padding: 15px 25px;
+        font-size: 16px;
+    }
+    
+    .use-button {
+        padding: 18px 35px;
+        font-size: 18px;
     }
 }

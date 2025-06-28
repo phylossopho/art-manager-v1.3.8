@@ -43,27 +43,27 @@ function crearFABBackup() {
     const container = document.getElementById('fab-save-menu-container');
     if (!container) return;
     container.innerHTML = `
-        <button id="fab-save" title="Opciones de datos" style="position: absolute; top: 60px; right: 0; z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: #2196F3; box-shadow: 0 4px 12px rgba(0,0,0,0.18); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        <button id="fab-save" title="Opciones de datos" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
             </svg>
         </button>
         
-        <div id="fab-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); padding: 20px; display: none; min-width: 300px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; color: #333;">Gestión de Datos</h3>
+        <div id="fab-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 30px; display: none; min-width: 350px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h3 style="margin: 0; color: #333; font-size: 1.5rem; font-weight: 600;">Gestión de Datos</h3>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="fab-download" style="padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button id="fab-download" style="padding: 15px 20px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);">
                     💾 Guardar Datos
                 </button>
-                <button id="fab-upload" style="padding: 12px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                <button id="fab-upload" style="padding: 15px 20px; background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);">
                     📂 Abrir Datos
                 </button>
-                <button id="fab-clear" style="padding: 12px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                <button id="fab-clear" style="padding: 15px 20px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);">
                     🗑️ Limpiar Datos
                 </button>
-                <button id="fab-close" style="padding: 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                <button id="fab-close" style="padding: 15px 20px; background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);">
                     ❌ Cerrar
                 </button>
             </div>
@@ -76,6 +76,30 @@ function crearFABBackup() {
     const fabUpload = document.getElementById('fab-upload');
     const fabClear = document.getElementById('fab-clear');
     const fabClose = document.getElementById('fab-close');
+
+    // Efectos hover para el FAB
+    fabButton.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px) scale(1.05)';
+        this.style.boxShadow = '0 12px 32px rgba(102, 126, 234, 0.5)';
+    });
+
+    fabButton.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+        this.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.4)';
+    });
+
+    // Efectos hover para los botones del menú
+    [fabDownload, fabUpload, fabClear, fabClose].forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.2)';
+        });
+
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+        });
+    });
 
     // Abrir/cerrar menú
     fabButton.addEventListener('click', function() {

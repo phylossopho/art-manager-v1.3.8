@@ -8,89 +8,258 @@
 
 .gallery-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    padding: 20px;
-    max-height: 500px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+    padding: 30px;
+    max-height: 70vh;
     overflow-y: auto;
-    background: #f9f9f9;
-    border-radius: 8px;
-    margin: 10px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+    border-radius: 20px;
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .gallery-item {
     position: relative;
     background: white;
-    border-radius: 8px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
+    aspect-ratio: 1;
 }
 
 .gallery-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.gallery-item:hover::before {
+    opacity: 1;
 }
 
 .gallery-item img {
     width: 100%;
-    height: 150px;
+    height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 2;
 }
 
-.delete-image {
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item .delete-btn {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(255, 0, 0, 0.8);
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 35px;
+    height: 35px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 6px 16px rgba(244, 67, 54, 0.3);
+    opacity: 0;
+    transform: scale(0.8) rotate(-90deg);
+    z-index: 3;
 }
 
-.delete-image:hover {
-    background: rgba(255, 0, 0, 1);
+.gallery-item:hover .delete-btn {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.gallery-item .delete-btn:hover {
+    transform: scale(1.1) rotate(0deg);
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
 }
 
 .floating-add-button {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
-    background: #2196F3;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     color: white;
     border: none;
-    font-size: 24px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.floating-add-button:hover {
-    background: #1976D2;
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
-}
-
-.plus-icon {
+    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+}
+
+.floating-add-button:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 15px 35px rgba(79, 172, 254, 0.5);
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+}
+
+.floating-add-button:active {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.floating-add-button .plus-icon {
+    font-weight: bold;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floating-add-button:hover .plus-icon {
+    transform: rotate(90deg) scale(1.1);
+}
+
+.gallery-item.loading {
+    position: relative;
+}
+
+.gallery-item.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 3;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.gallery-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    font-size: 18px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+    border-radius: 20px;
+    border: 2px dashed #667eea;
+    margin: 20px;
+}
+
+.gallery-empty::before {
+    content: '📷';
+    font-size: 48px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.gallery-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.gallery-container::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+}
+
+.gallery-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.gallery-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .gallery-item {
+        aspect-ratio: 1;
+    }
+    
+    .gallery-item .delete-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        top: 8px;
+        right: 8px;
+    }
+    
+    .floating-add-button {
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .gallery-empty {
+        padding: 40px 15px;
+        font-size: 16px;
+    }
+    
+    .gallery-empty::before {
+        font-size: 36px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .gallery-item .delete-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        top: 6px;
+        right: 6px;
+    }
+    
+    .floating-add-button {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        bottom: 15px;
+        right: 15px;
+    }
 }
 
 /* Estilos para el carrusel */
