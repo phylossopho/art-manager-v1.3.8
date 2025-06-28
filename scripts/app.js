@@ -157,6 +157,15 @@ function iniciarApp() {
         window.cargarDatosCompletos = cargarDatosCompletos;
         window.limpiarDatosCompletos = limpiarDatosCompletos;
         
+        // Exponer funciones de UI globalmente
+        window.actualizarUI = ui.actualizarUI;
+        window.actualizarImagenEquipo = ui.actualizarImagenEquipo;
+        window.actualizarTablaMateriales = ui.actualizarTablaMateriales;
+        window.actualizarSelectoresMaterialesInferiores = ui.actualizarSelectoresMaterialesInferiores;
+        window.cambiarPestana = ui.cambiarPestana;
+        window.construirMapaMaterialAEquipo = construirMapaMaterialAEquipo;
+        window.inicializarAlmacenamientoMateriales = inicializarAlmacenamientoMateriales;
+        
         console.log('✅ Aplicación iniciada (almacenamiento manual)');
         console.log('💡 Usa el botón flotante para guardar/cargar tus datos');
     } catch (error) {

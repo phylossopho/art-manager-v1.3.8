@@ -191,8 +191,10 @@ function crearFABBackup() {
                         const exito = window.cargarDatosCompletos(data);
                         
                         if (exito) {
-                            // Reconstruir estructuras internas
+                            // Obtener el estado actual
                             const estado = getEstadoApp();
+                            
+                            // Reconstruir estructuras internas
                             if (window.construirMapaMaterialAEquipo) {
                                 window.construirMapaMaterialAEquipo(estado);
                             }
@@ -200,7 +202,18 @@ function crearFABBackup() {
                                 window.inicializarAlmacenamientoMateriales(estado);
                             }
                             
-                            // Actualizar UI
+                            // Actualizar selectores principales
+                            const equipmentSelect = document.getElementById('equipment-select');
+                            const classSelect = document.getElementById('class-select');
+                            const levelSelect = document.getElementById('level-select');
+                            const colorSelect = document.getElementById('color-select');
+                            
+                            if (equipmentSelect) equipmentSelect.value = estado.equipoActual || 'Botas';
+                            if (classSelect) classSelect.value = estado.claseActual || 'Normal';
+                            if (levelSelect) levelSelect.value = estado.nivelActual || '1';
+                            if (colorSelect) colorSelect.value = estado.colorActual || 'blanco';
+                            
+                            // Forzar actualización completa de la UI
                             if (window.actualizarUI) {
                                 window.actualizarUI(estado);
                             }
