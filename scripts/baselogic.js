@@ -39,12 +39,6 @@ export function crearBaseSelector(estado, contenedor) {
         }
         // Para clase Normal, no se agrega imagen
 
-        // Agregar texto superpuesto para restricciones (vacío por defecto)
-        const baseText = document.createElement('div');
-        baseText.className = 'base-text';
-        baseText.textContent = ''; // Sin texto inicial
-        baseSelector.appendChild(baseText);
-
         // Selector de color
         const selector = document.createElement('select');
         selector.innerHTML = `
@@ -94,6 +88,12 @@ export function crearBaseSelector(estado, contenedor) {
         dynamicContainer.appendChild(selector);
         dynamicContainer.appendChild(deniedImage);
         baseSelector.appendChild(dynamicContainer);
+
+        // Agregar texto superpuesto para restricciones (al final para que aparezca encima)
+        const baseText = document.createElement('div');
+        baseText.className = 'base-text';
+        baseText.textContent = ''; // Sin texto inicial
+        baseSelector.appendChild(baseText);
 
         // Ocultar selector por defecto
         selector.style.display = 'none';

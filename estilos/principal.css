@@ -403,9 +403,9 @@ header h1 {
 
 .base-selector .base-text {
     position: absolute;
-    bottom: 10px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
@@ -414,7 +414,8 @@ header h1 {
     font-weight: bold;
     text-align: center;
     white-space: nowrap;
-    z-index: 2;
+    z-index: 10;
+    pointer-events: none;
 }
 
 .base-selector {
@@ -440,6 +441,7 @@ header h1 {
     max-width: 50px;
     max-height: 50px;
     object-fit: contain;
+    z-index: 1;
 }
 
 .base-selector select {
