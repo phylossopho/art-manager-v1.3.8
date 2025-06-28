@@ -133,24 +133,31 @@
     }
     
     .bottom-buttons {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px 20px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 10px;
+        padding: 10px;
     }
     
     .gallery-button {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
+        width: 35px;
+        height: 35px;
+        justify-self: start;
+    }
+    
+    .gallery-icon {
+        width: 14px;
+        height: 14px;
     }
     
     .social-icons {
-        gap: 10px;
+        gap: 8px;
+        justify-content: center;
     }
     
     .social-icon {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
     
     .social-icon img {
@@ -159,8 +166,9 @@
     }
     
     .use-button {
-        padding: 12px 25px;
-        font-size: 14px;
+        padding: 6px 15px;
+        font-size: 12px;
+        justify-self: end;
     }
     
     /* Modales en móvil */
