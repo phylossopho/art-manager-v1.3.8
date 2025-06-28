@@ -278,7 +278,7 @@ header h1 {
 }
 
 .use-button {
-    background-color: #2196F3;
+    background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -287,11 +287,11 @@ header h1 {
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    height: 40px; /* Misma altura que los otros elementos */
+    height: 40px;
 }
 
 .use-button:hover {
-    background-color: #1976D2;
+    background-color: #45a049;
 }
 
 .gallery-icon {
@@ -886,9 +886,9 @@ header h1 {
 #install-button {
     background-color: #4CAF50;
     color: white;
-    font-size: 16px;
+    font-size: 12px;
     border: none;
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -920,7 +920,8 @@ header h1 {
     justify-content: center;
     align-items: center;
     gap: 15px;
-    flex: 1; /* Ocupar el espacio disponible */
+    flex: 1; /* Ocupar el espacio disponible entre galería y USAR */
+    margin: 0 20px; /* Espacio desde los botones extremos */
     /* Sin fondo, sin padding, sin sombra */
     background: transparent;
     border-radius: 0;
@@ -1001,6 +1002,7 @@ header h1 {
 @media (max-width: 768px) {
     .social-icons {
         gap: 12px;
+        margin: 0 15px;
     }
     
     .social-icon {
@@ -1016,6 +1018,7 @@ header h1 {
 @media (max-width: 480px) {
     .social-icons {
         gap: 10px;
+        margin: 0 10px;
     }
     
     .social-icon {

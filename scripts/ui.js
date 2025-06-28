@@ -494,8 +494,12 @@ export function actualizarUI(estado) {
 
         const useButton = document.getElementById('use-materials');
         if (useButton) {
-            // CAMBIO: Ocultar en ARTE y en Leyenda de Conversión
-            useButton.style.display = (esArte || esLeyenda) ? 'none' : 'block';
+            // Ocultar en ARTE y en Leyenda de Conversión, mostrar en el resto
+            if (esArte || esLeyenda) {
+                useButton.style.display = 'none';
+            } else {
+                useButton.style.display = 'block';
+            }
         }
 
         const galleryButton = document.getElementById('gallery-button');
