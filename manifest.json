@@ -3,16 +3,41 @@
   "short_name": "Materiales DH",
   "description": "Gestor de materiales y creación de equipos para Deck Heroes",
   "start_url": "./index.html",
+  "scope": "./",
+  "id": "gestor-materiales-deck-heroes",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#4CAF50",
   "orientation": "any",
+  "categories": ["utilities", "games", "productivity"],
+  "lang": "es",
+  "dir": "ltr",
   "icons": [
     {
       "src": "images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Materiales",
+      "short_name": "Materiales",
+      "description": "Abrir gestor de materiales",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 } 

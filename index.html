@@ -151,7 +151,7 @@
     </div>
 
     <header>
-        <h1>hola, este es un título</h1>
+        <h1>Gestor de Materiales y Creación de Equipos</h1>
     </header>
 
     <div class="top-section">
@@ -479,11 +479,27 @@
         // Verificar si está en modo PWA (no en browser)
         const isPWA = isStandalone || isInApp || isFullscreen || isMinimalUI;
         
+        // Verificar en localStorage si se marcó como instalada
+        const wasInstalled = localStorage.getItem('pwa-installed') === 'true';
+        
+        // Verificar si la URL actual es diferente a la original (indicando instalación)
+        const isFromHomeScreen = window.location.search.includes('from=pwa') || 
+                                window.location.hash.includes('from=pwa') ||
+                                document.referrer.includes('chrome-extension://') ||
+                                document.referrer.includes('moz-extension://');
+        
         console.log('PWA: Verificación de instalación:', {
-            isStandalone, isInApp, isFullscreen, isMinimalUI, isBrowser, isPWA
+            isStandalone, isInApp, isFullscreen, isMinimalUI, isBrowser, isPWA,
+            wasInstalled, isFromHomeScreen
         });
         
-        return isPWA;
+        return isPWA || wasInstalled || isFromHomeScreen;
+    }
+
+    // Función para marcar como instalada
+    function markAsInstalled() {
+        localStorage.setItem('pwa-installed', 'true');
+        console.log('PWA: Marcada como instalada en localStorage');
     }
 
     // Función para ocultar el banner
@@ -516,6 +532,10 @@
         if (isAppInstalled()) {
             console.log('PWA: App ya instalada al cargar - ocultando banner');
             hideInstallBanner();
+            // Si está instalada pero no marcada en localStorage, marcarla
+            if (localStorage.getItem('pwa-installed') !== 'true') {
+                markAsInstalled();
+            }
         } else {
             console.log('PWA: App no instalada - configurando banner');
         }
@@ -567,6 +587,8 @@
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('PWA: Usuario instaló la app');
+                    // Marcar como instalada
+                    markAsInstalled();
                     // Ocultar el banner después de la instalación exitosa
                     setTimeout(() => {
                         hideInstallBanner();
