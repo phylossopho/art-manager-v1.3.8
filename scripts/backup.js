@@ -98,29 +98,22 @@ function crearFABBackup() {
         try {
             console.log('=== INICIANDO BACKUP ===');
             
-            // Usar el sistema robusto de guardado
-            if (window.guardarDatosCompletos) {
-                window.guardarDatosCompletos();
-            }
-            
-            // Obtener datos del localStorage (que ya fueron guardados)
-            const datosGuardados = localStorage.getItem('artManagerData');
-            if (!datosGuardados) {
-                alert('No hay datos para guardar. Primero agrega algunos materiales o simulaciones.');
+            // Obtener datos directamente de la memoria
+            const datosCompletos = window.guardarDatosCompletos();
+            if (!datosCompletos) {
+                alert('Error al preparar los datos para guardar.');
                 return;
             }
             
-            const datos = JSON.parse(datosGuardados);
-            
             console.log('Datos a guardar:');
-            console.log('- Materiales:', Object.keys(datos.materiales || {}).length);
-            console.log('- Galería:', (datos.galeria || []).length);
-            console.log('- Simulaciones:', (datos.simulaciones || []).length);
+            console.log('- Materiales:', Object.keys(datosCompletos.materiales || {}).length);
+            console.log('- Galería:', (datosCompletos.galeria || []).length);
+            console.log('- Simulaciones:', (datosCompletos.simulaciones || []).length);
 
             // Verificar que hay datos para guardar
-            if (Object.keys(datos.materiales || {}).length === 0 && 
-                (datos.galeria || []).length === 0 && 
-                (datos.simulaciones || []).length === 0) {
+            if (Object.keys(datosCompletos.materiales || {}).length === 0 && 
+                (datosCompletos.galeria || []).length === 0 && 
+                (datosCompletos.simulaciones || []).length === 0) {
                 alert('No hay datos para guardar. Primero agrega algunos materiales o simulaciones.');
                 return;
             }
@@ -135,7 +128,7 @@ function crearFABBackup() {
             }
 
             // Crear y descargar el archivo
-            const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(datosCompletos, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -146,7 +139,7 @@ function crearFABBackup() {
             URL.revokeObjectURL(url);
 
             console.log('Backup creado exitosamente:', a.download);
-            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datos.materiales || {}).length} materiales\n- ${(datos.galeria || []).length} imágenes en galería\n- ${(datos.simulaciones || []).length} simulaciones`);
+            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería\n- ${(datosCompletos.simulaciones || []).length} simulaciones`);
             
             fabMenu.style.display = 'none';
         } catch (error) {
@@ -168,66 +161,36 @@ function crearFABBackup() {
                     try {
                         const data = JSON.parse(e.target.result);
                         
-                        // Restaurar datos usando el sistema robusto
-                        const estado = getEstadoApp();
-                        if (estado) {
-                            // Restaurar materiales
-                            if (data.materiales && typeof data.materiales === 'object') {
-                                estado.almacenMateriales = data.materiales;
+                        // Cargar datos usando el sistema manual
+                        const exito = window.cargarDatosCompletos(data);
+                        
+                        if (exito) {
+                            // Reconstruir estructuras internas
+                            const estado = getEstadoApp();
+                            if (window.construirMapaMaterialAEquipo) {
+                                window.construirMapaMaterialAEquipo(estado);
+                            }
+                            if (window.inicializarAlmacenamientoMateriales) {
+                                window.inicializarAlmacenamientoMateriales(estado);
                             }
                             
-                            // Restaurar galería
-                            if (data.galeria && Array.isArray(data.galeria)) {
-                                estado.imagenesGaleria = data.galeria;
+                            // Actualizar UI
+                            if (window.actualizarUI) {
+                                window.actualizarUI(estado);
                             }
                             
-                            // Restaurar configuración
-                            if (data.configuracion) {
-                                estado.equipoActual = data.configuracion.equipoActual || 'Espada';
-                                estado.claseActual = data.configuracion.claseActual || 'Normal';
-                                estado.nivelActual = data.configuracion.nivelActual || '1';
-                                estado.colorActual = data.configuracion.colorActual || 'blanco';
-                            }
+                            console.log('✅ Datos importados exitosamente:', {
+                                materiales: Object.keys(data.materiales || {}).length,
+                                galeria: (data.galeria || []).length,
+                                simulaciones: (data.simulaciones || []).length
+                            });
                             
-                            // Marcar cambios como pendientes
-                            estado.cambiosPendientes = true;
+                            alert(`✅ Datos importados exitosamente!\n\nContenido restaurado:\n- ${Object.keys(data.materiales || {}).length} materiales\n- ${(data.galeria || []).length} imágenes en galería\n- ${(data.simulaciones || []).length} simulaciones\n\nRecuerda guardar manualmente cuando hagas cambios.`);
+                            
+                            fabMenu.style.display = 'none';
+                        } else {
+                            alert('❌ Error al cargar los datos. Verifica que el archivo sea válido.');
                         }
-                        
-                        // Restaurar simulaciones
-                        if (data.simulaciones && Array.isArray(data.simulaciones)) {
-                            if (window.equiposSimulados) {
-                                window.equiposSimulados.length = 0;
-                                window.equiposSimulados.push(...data.simulaciones);
-                            }
-                        }
-                        
-                        // Guardar en localStorage usando el sistema robusto
-                        if (window.guardarDatosCompletos) {
-                            window.guardarDatosCompletos();
-                        }
-                        
-                        // Reconstruir estructuras internas
-                        if (window.construirMapaMaterialAEquipo) {
-                            window.construirMapaMaterialAEquipo(estado);
-                        }
-                        if (window.inicializarAlmacenamientoMateriales) {
-                            window.inicializarAlmacenamientoMateriales(estado);
-                        }
-                        
-                        // Actualizar UI
-                        if (window.actualizarUI) {
-                            window.actualizarUI(estado);
-                        }
-                        
-                        console.log('✅ Datos importados exitosamente:', {
-                            materiales: Object.keys(data.materiales || {}).length,
-                            galeria: (data.galeria || []).length,
-                            simulaciones: (data.simulaciones || []).length
-                        });
-                        
-                        alert(`✅ Datos importados exitosamente!\n\nContenido restaurado:\n- ${Object.keys(data.materiales || {}).length} materiales\n- ${(data.galeria || []).length} imágenes en galería\n- ${(data.simulaciones || []).length} simulaciones\n\nLos datos se han guardado automáticamente y persistirán entre sesiones.`);
-                        
-                        fabMenu.style.display = 'none';
                     } catch (error) {
                         console.error('Error al importar datos:', error);
                         alert('❌ Error al importar datos: ' + error.message);
@@ -242,17 +205,8 @@ function crearFABBackup() {
     // Limpiar datos
     fabClear.addEventListener('click', function() {
         if (confirm('¿Estás seguro de que quieres limpiar todos los datos? Esta acción no se puede deshacer.')) {
-            localStorage.removeItem('artManagerData');
-            if (window.equiposSimulados) {
-                window.equiposSimulados.length = 0;
-            }
-            if (window.estadoApp) {
-                window.estadoApp.almacenMateriales = {};
-                window.estadoApp.imagenesGaleria = [];
-                window.estadoApp.cambiosPendientes = true;
-            }
-            if (window.guardarDatosCompletos) {
-                window.guardarDatosCompletos();
+            if (window.limpiarDatosCompletos) {
+                window.limpiarDatosCompletos();
             }
             if (window.actualizarUI) {
                 window.actualizarUI(window.estadoApp);

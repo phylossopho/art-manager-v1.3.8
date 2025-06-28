@@ -133,35 +133,54 @@ export function abrirGaleria(estado) {
         item.className = 'gallery-item';
 
         const img = document.createElement('img');
-        img.src = rutaImagen;
+        
+        // Manejar tanto rutas como datos base64
+        if (typeof rutaImagen === 'string') {
+            if (rutaImagen.startsWith('data:')) {
+                // Es una imagen base64 existente
+                img.src = rutaImagen;
+            } else {
+                // Es una ruta de archivo
+                img.src = rutaImagen;
+            }
+        } else if (rutaImagen && typeof rutaImagen === 'object') {
+            // Es un objeto con ruta o url
+            img.src = rutaImagen.ruta || rutaImagen.url || '';
+        } else {
+            img.src = '';
+        }
+        
         img.alt = `Guía visual ${index + 1}`;
         img.onerror = function() {
             // Si la imagen no se puede cargar, mostrar un placeholder
             this.style.display = 'none';
             const placeholder = document.createElement('div');
-            placeholder.style.cssText = 'width: 100%; height: 120px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #666; font-size: 12px;';
+            placeholder.style.cssText = 'width: 100%; height: 150px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #666; font-size: 12px; border-radius: 4px;';
             placeholder.textContent = 'Imagen no encontrada';
             item.appendChild(placeholder);
         };
+        
+        img.onload = function() {
+            // Imagen cargada correctamente
+            this.style.display = 'block';
+        };
+
+        // Hacer la imagen clickeable para abrir el carrusel
         img.addEventListener('click', () => {
             estado.indiceCarruselActual = index;
             mostrarImagenCarrusel(estado);
         });
 
-        const controles = document.createElement('div');
-        controles.className = 'gallery-item-controls';
-
-        const botonEliminar = document.createElement('button');
-        botonEliminar.className = 'delete-image-button';
-        botonEliminar.innerHTML = '×';
-        botonEliminar.addEventListener('click', (e) => {
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-image';
+        deleteButton.innerHTML = '×';
+        deleteButton.onclick = (e) => {
             e.stopPropagation();
             eliminarImagen(index, estado);
-        });
+        };
 
-        controles.appendChild(botonEliminar);
         item.appendChild(img);
-        item.appendChild(controles);
+        item.appendChild(deleteButton);
         contenedor.appendChild(item);
     });
 
@@ -169,18 +188,13 @@ export function abrirGaleria(estado) {
 }
 
 export function agregarImagenAGaleria(archivo, estado) {
-    // Solo guardar el nombre del archivo, no la imagen completa
+    // Para imágenes nuevas, solo guardar el nombre del archivo
     const nombreArchivo = archivo.name;
     const rutaImagen = `images/guia-${nombreArchivo}`;
     
     estado.imagenesGaleria.push(rutaImagen);
     estado.cambiosPendientes = true;
     guardarImagenesEnLocalStorage(estado);
-    
-    // Forzar guardado inmediato
-    if (window.guardarDatosCompletos) {
-        window.guardarDatosCompletos();
-    }
     
     abrirGaleria(estado);
     console.log('Imagen agregada a galería (solo ruta):', rutaImagen);
@@ -193,15 +207,40 @@ export function mostrarImagenCarrusel(estado) {
 
     if (estado.imagenesGaleria.length > 0) {
         const rutaImagen = estado.imagenesGaleria[estado.indiceCarruselActual];
-        imagen.src = rutaImagen;
+        
+        // Manejar tanto rutas como datos base64
+        if (typeof rutaImagen === 'string') {
+            if (rutaImagen.startsWith('data:')) {
+                // Es una imagen base64 existente
+                imagen.src = rutaImagen;
+            } else {
+                // Es una ruta de archivo
+                imagen.src = rutaImagen;
+            }
+        } else if (rutaImagen && typeof rutaImagen === 'object') {
+            // Es un objeto con ruta o url
+            imagen.src = rutaImagen.ruta || rutaImagen.url || '';
+        } else {
+            imagen.src = '';
+        }
+        
         imagen.onerror = function() {
             // Si la imagen no se puede cargar, mostrar un mensaje
             this.style.display = 'none';
             const mensaje = document.createElement('div');
-            mensaje.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 16px;';
+            mensaje.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 16px; background: #f5f5f5; border-radius: 8px;';
             mensaje.textContent = 'Imagen de guía no encontrada';
             this.parentNode.appendChild(mensaje);
         };
+        
+        imagen.onload = function() {
+            // Imagen cargada correctamente
+            this.style.display = 'block';
+            // Remover mensaje de error si existe
+            const mensaje = this.parentNode.querySelector('div');
+            if (mensaje) mensaje.remove();
+        };
+        
         contador.textContent = `${estado.indiceCarruselActual + 1} / ${estado.imagenesGaleria.length}`;
         modal.style.display = 'block';
     }

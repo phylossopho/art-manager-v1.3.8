@@ -28,14 +28,13 @@ const estadoApp = {
     indiceCarruselActual: 0,
     colorBaseSeleccionado: null,
     mapaColores: datos.mapaColores,
-    materialesData: datos.datosMateriales,
-    intervaloAutoguardado: null
+    materialesData: datos.datosMateriales
 };
 
 // Exponer globalmente para que backup.js pueda acceder
 window.estadoApp = estadoApp;
 
-// Sistema de almacenamiento robusto
+// Sistema de almacenamiento manual (sin localStorage automático)
 function guardarDatosCompletos() {
     try {
         const datosCompletos = {
@@ -51,103 +50,70 @@ function guardarDatosCompletos() {
             timestamp: new Date().toISOString()
         };
 
-        const datosJSON = JSON.stringify(datosCompletos);
-        
-        // Guardar en localStorage
-        localStorage.setItem('artManagerData', datosJSON);
-        
-        // Backup en sessionStorage
-        sessionStorage.setItem('artManagerData', datosJSON);
-        
-        console.log('💾 Datos guardados automáticamente:', {
+        console.log('💾 Datos preparados para guardado manual:', {
             materiales: Object.keys(estadoApp.almacenMateriales).length,
             galeria: estadoApp.imagenesGaleria.length,
             simulaciones: (window.equiposSimulados || []).length
         });
         
-        estadoApp.cambiosPendientes = false;
+        return datosCompletos;
     } catch (error) {
-        console.error('Error al guardar datos:', error);
+        console.error('Error al preparar datos:', error);
+        return null;
     }
 }
 
-function cargarDatosCompletos() {
+function cargarDatosCompletos(datosJSON) {
     try {
-        // Intentar cargar desde localStorage primero
-        let datosGuardados = localStorage.getItem('artManagerData');
+        if (!datosJSON) {
+            console.log('No se proporcionaron datos para cargar');
+            return false;
+        }
+
+        const datos = typeof datosJSON === 'string' ? JSON.parse(datosJSON) : datosJSON;
         
-        // Si no hay datos en localStorage, intentar sessionStorage
-        if (!datosGuardados) {
-            datosGuardados = sessionStorage.getItem('artManagerData');
+        // Restaurar materiales
+        if (datos.materiales && typeof datos.materiales === 'object') {
+            estadoApp.almacenMateriales = datos.materiales;
         }
         
-        if (datosGuardados) {
-            const datos = JSON.parse(datosGuardados);
-            
-            // Restaurar materiales
-            if (datos.materiales && typeof datos.materiales === 'object') {
-                estadoApp.almacenMateriales = datos.materiales;
-            }
-            
-            // Restaurar galería
-            if (datos.galeria && Array.isArray(datos.galeria)) {
-                estadoApp.imagenesGaleria = datos.galeria;
-            }
-            
-            // Restaurar simulaciones
-            if (datos.simulaciones && Array.isArray(datos.simulaciones)) {
-                if (window.equiposSimulados) {
-                    window.equiposSimulados.length = 0;
-                    window.equiposSimulados.push(...datos.simulaciones);
-                }
-            }
-            
-            // Restaurar configuración
-            if (datos.configuracion) {
-                estadoApp.equipoActual = datos.configuracion.equipoActual || 'Espada';
-                estadoApp.claseActual = datos.configuracion.claseActual || 'Normal';
-                estadoApp.nivelActual = datos.configuracion.nivelActual || '1';
-                estadoApp.colorActual = datos.configuracion.colorActual || 'blanco';
-            }
-            
-            console.log('📥 Datos cargados exitosamente:', {
-                materiales: Object.keys(estadoApp.almacenMateriales).length,
-                galeria: estadoApp.imagenesGaleria.length,
-                simulaciones: (window.equiposSimulados || []).length,
-                timestamp: datos.timestamp
-            });
-            
-            return true;
+        // Restaurar galería
+        if (datos.galeria && Array.isArray(datos.galeria)) {
+            estadoApp.imagenesGaleria = datos.galeria;
         }
         
-        console.log('No se encontraron datos guardados, usando valores por defecto');
-        return false;
+        // Restaurar simulaciones
+        if (datos.simulaciones && Array.isArray(datos.simulaciones)) {
+            if (window.equiposSimulados) {
+                window.equiposSimulados.length = 0;
+                window.equiposSimulados.push(...datos.simulaciones);
+            }
+        }
+        
+        // Restaurar configuración
+        if (datos.configuracion) {
+            estadoApp.equipoActual = datos.configuracion.equipoActual || 'Espada';
+            estadoApp.claseActual = datos.configuracion.claseActual || 'Normal';
+            estadoApp.nivelActual = datos.configuracion.nivelActual || '1';
+            estadoApp.colorActual = datos.configuracion.colorActual || 'blanco';
+        }
+        
+        console.log('📥 Datos cargados exitosamente:', {
+            materiales: Object.keys(estadoApp.almacenMateriales).length,
+            galeria: estadoApp.imagenesGaleria.length,
+            simulaciones: (window.equiposSimulados || []).length,
+            timestamp: datos.timestamp
+        });
+        
+        return true;
     } catch (error) {
         console.error('Error al cargar datos:', error);
         return false;
     }
 }
 
-function configurarAutoguardado() {
-    // Guardar automáticamente cada 30 segundos si hay cambios
-    estadoApp.intervaloAutoguardado = setInterval(() => {
-        if (estadoApp.cambiosPendientes) {
-            guardarDatosCompletos();
-        }
-    }, 30000);
-    
-    // Guardar antes de cerrar la página
-    window.addEventListener('beforeunload', () => {
-        guardarDatosCompletos();
-    });
-}
-
 function limpiarDatosCompletos() {
     try {
-        // Limpiar localStorage y sessionStorage
-        localStorage.removeItem('artManagerData');
-        sessionStorage.removeItem('artManagerData');
-        
         // Limpiar datos en memoria
         estadoApp.almacenMateriales = {};
         estadoApp.imagenesGaleria = [];
@@ -178,9 +144,6 @@ function iniciarApp() {
         // Construir estructuras de datos necesarias
         construirMapaMaterialAEquipo(estadoApp);
         inicializarAlmacenamientoMateriales(estadoApp);
-
-        // CARGAR DATOS GUARDADOS
-        const datosCargados = cargarDatosCompletos();
         
         // Configurar todos los event listeners
         configurarEventListeners(estadoApp);
@@ -191,19 +154,13 @@ function iniciarApp() {
         // Asignar la función de simulación al estado
         estadoApp.simularUso = simularUso;
         
-        // Configurar autoguardado
-        configurarAutoguardado();
-        
         // Exponer funciones de guardado globalmente
         window.guardarDatosCompletos = guardarDatosCompletos;
         window.cargarDatosCompletos = cargarDatosCompletos;
         window.limpiarDatosCompletos = limpiarDatosCompletos;
         
-        if (datosCargados) {
-            console.log('✅ Aplicación iniciada con datos restaurados');
-        } else {
-            console.log('✅ Aplicación iniciada con valores por defecto');
-        }
+        console.log('✅ Aplicación iniciada (almacenamiento manual)');
+        console.log('💡 Usa el botón flotante para guardar/cargar tus datos');
     } catch (error) {
         console.error('Error al iniciar la aplicación:', error);
         modales.mostrarMensaje('Error Crítico', 
