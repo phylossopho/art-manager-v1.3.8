@@ -591,22 +591,25 @@ function aplicarFondoPorColorEquipo() {
     const colorSelect = document.getElementById('color-select');
     if (!colorSelect) return;
     
-    // Si es la primera vez, mantener gris ónix por 2 segundos
+    // Agregar transición suave al body
+    document.body.style.transition = 'background 0.8s ease-in-out';
+    
+    // Si es la primera vez, mantener gris ónix por 9 segundos
     if (!fondoInicialAplicado) {
         document.body.style.background = '#2F2F2F'; // Gris ónix
         fondoInicialAplicado = true;
         
-        // Después de 2 segundos, aplicar el color del selector
+        // Después de 9 segundos, aplicar el color del selector
         setTimeout(() => {
             const color = colorSelect.value;
             const colorBase = mapaColores[color] || '#FFFFFF';
             const pastel = pastelizarColor(colorBase, 0.7);
             document.body.style.background = pastel;
-        }, 2000);
+        }, 9000);
         return;
     }
     
-    // Para cambios posteriores, aplicar inmediatamente
+    // Para cambios posteriores, aplicar inmediatamente con transición
     const color = colorSelect.value;
     const colorBase = mapaColores[color] || '#FFFFFF';
     const pastel = pastelizarColor(colorBase, 0.7);

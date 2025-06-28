@@ -8,6 +8,7 @@
     margin-bottom: 20px;
     background-color: white;
     overflow-x: auto;
+    max-width: 100%;
 }
 
 table img {
@@ -20,23 +21,32 @@ table img {
 table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
+    min-width: 600px; /* Ancho mínimo para evitar compresión excesiva */
 }
 
 th {
     text-align: center;
     font-weight: bold;
-    padding: 5px;
+    padding: 8px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 td {
-    padding: 5px;
+    padding: 8px 4px;
     vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .material-cell {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 0; /* Permite que el flex se comprima */
 }
 
 .material-cell img {
@@ -54,15 +64,16 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
+    min-width: 0; /* Permite que el texto se comprima */
 }
 
-/* Estilos para tablas */
+/* Estilos para tablas específicas */
 #materials-table table,
 .tab-content table,
 .conversion-legend-table {
-    table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
 }
 
 #materials-table th,
@@ -71,41 +82,58 @@ td {
 .tab-content td,
 .conversion-legend-table th,
 .conversion-legend-table td {
-    padding: 8px;
+    padding: 8px 6px;
     box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     border: 1px solid #ccc;
+    min-width: 60px; /* Ancho mínimo para cada celda */
 }
 
+/* Primera columna (imagen) - más estrecha */
 #materials-table th:nth-child(1),
 #materials-table td:nth-child(1),
 .tab-content th:nth-child(1),
-.tab-content td:nth-child(1),
-.conversion-legend-table th:nth-child(1),
-.conversion-legend-table td:nth-child(1) {
-    width: 8%;
+.tab-content td:nth-child(1) {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
     text-align: center;
 }
 
+/* Segunda columna (nombre del material) - más ancha */
+#materials-table th:nth-child(2),
+#materials-table td:nth-child(2),
+.tab-content th:nth-child(2),
+.tab-content td:nth-child(2) {
+    min-width: 120px;
+    text-align: left;
+}
+
+/* Columnas de colores - ancho fijo */
 #materials-table th:nth-child(n+3),
 #materials-table td:nth-child(n+3),
 .tab-content th:nth-child(n+3),
 .tab-content td:nth-child(n+3) {
-    width: 14.4%;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
     text-align: center;
 }
 
+/* Tabla de leyenda de conversión */
 .conversion-legend-table th:nth-child(1),
 .conversion-legend-table td:nth-child(1) {
-    width: 20%;
+    width: 120px;
+    min-width: 120px;
     text-align: left;
 }
 
 .conversion-legend-table th:nth-child(n+2),
 .conversion-legend-table td:nth-child(n+2) {
-    width: 16%;
+    width: 80px;
+    min-width: 80px;
     text-align: center;
 }
 
@@ -229,26 +257,143 @@ td {
 @media (max-width: 768px) {
     .materials-table {
         font-size: 12px;
+        padding: 5px;
+        overflow-x: auto;
+    }
+    
+    table {
+        min-width: 500px; /* Reducir el ancho mínimo en móviles */
     }
     
     .materials-table th,
     .materials-table td {
-        padding: 10px 8px;
+        padding: 6px 4px;
+        font-size: 11px;
+    }
+    
+    /* Reducir anchos en móviles */
+    #materials-table th:nth-child(1),
+    #materials-table td:nth-child(1),
+    .tab-content th:nth-child(1),
+    .tab-content td:nth-child(1) {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+    
+    #materials-table th:nth-child(2),
+    #materials-table td:nth-child(2),
+    .tab-content th:nth-child(2),
+    .tab-content td:nth-child(2) {
+        min-width: 80px;
+    }
+    
+    #materials-table th:nth-child(n+3),
+    #materials-table td:nth-child(n+3),
+    .tab-content th:nth-child(n+3),
+    .tab-content td:nth-child(n+3) {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+    
+    .material-cell img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .material-cell span {
+        font-size: 11px;
     }
     
     .color-input {
-        width: 60px;
-        padding: 8px;
-        font-size: 12px;
+        width: 50px;
+        padding: 4px;
+        font-size: 11px;
     }
     
     .conversion-legend-table th,
     .conversion-legend-table td {
-        padding: 10px 8px;
-        font-size: 12px;
+        padding: 6px 4px;
+        font-size: 11px;
+    }
+    
+    .conversion-legend-table th:nth-child(1),
+    .conversion-legend-table td:nth-child(1) {
+        width: 80px;
+        min-width: 80px;
+    }
+    
+    .conversion-legend-table th:nth-child(n+2),
+    .conversion-legend-table td:nth-child(n+2) {
+        width: 60px;
+        min-width: 60px;
     }
     
     #arte-table img {
-        width: 30px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .materials-table {
+        font-size: 10px;
+        padding: 3px;
+    }
+    
+    table {
+        min-width: 400px;
+    }
+    
+    .materials-table th,
+    .materials-table td {
+        padding: 4px 2px;
+        font-size: 10px;
+    }
+    
+    #materials-table th:nth-child(1),
+    #materials-table td:nth-child(1),
+    .tab-content th:nth-child(1),
+    .tab-content td:nth-child(1) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+    
+    #materials-table th:nth-child(2),
+    #materials-table td:nth-child(2),
+    .tab-content th:nth-child(2),
+    .tab-content td:nth-child(2) {
+        min-width: 60px;
+    }
+    
+    #materials-table th:nth-child(n+3),
+    #materials-table td:nth-child(n+3),
+    .tab-content th:nth-child(n+3),
+    .tab-content td:nth-child(n+3) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+    
+    .material-cell img {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .material-cell span {
+        font-size: 10px;
+    }
+    
+    .color-input {
+        width: 40px;
+        padding: 3px;
+        font-size: 10px;
+    }
+    
+    #arte-table img {
+        width: 18px;
+        height: 18px;
     }
 }
