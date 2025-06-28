@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Materiales</title>
+    <title>Gestor de Materiales - Deck Heroes</title>
+
+    <!-- PWA Essentials -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Materiales DH">
+
+    <!-- Iconos PWA -->
+    <link rel="icon" href="images/icon-192.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
 
     <!-- Hojas de estilo -->
     <link rel="stylesheet" href="estilos/principal.css">
@@ -31,8 +42,8 @@
         }
 
         #arte-table img {
-            max-width: 50px;
-            max-height: 50px;
+            width: 33px;
+            height: auto;
             display: block;
             margin: 0 auto;
         }
@@ -399,6 +410,21 @@
 
 <!-- === SCRIPTS === -->
 <script type="module" src="scripts/app.js"></script>
+
+<script>
+    // Registro del Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('Service Worker registrado con éxito:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Error al registrar ServiceWorker:', error);
+                });
+        });
+    }
+</script>
 
 </body>
 </html>

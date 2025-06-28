@@ -48,8 +48,8 @@ export function generarTablaArte() {
         const imgEquipo = document.createElement('img');
         imgEquipo.src = `images/${equipo.equipo.toLowerCase()}.png`;
         imgEquipo.alt = equipo.equipo;
-        imgEquipo.style.width = '24px';
-        imgEquipo.style.height = '24px';
+        imgEquipo.style.width = '33px';
+        imgEquipo.style.height = 'auto';
         imgEquipo.style.display = 'block';
         imgEquipo.style.margin = '0 auto';
         imgEquipo.onerror = function() {
@@ -87,8 +87,8 @@ export function generarTablaArte() {
                 const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 img.src = `images/${nombreImagen}.png`;
                 img.alt = material;
-                img.style.width = '24px';
-                img.style.height = '24px';
+                img.style.width = '33px';
+                img.style.height = 'auto';
                 img.style.display = 'block';
                 img.style.margin = '0 auto';
                 img.onerror = function() {
@@ -118,8 +118,8 @@ export function generarTablaArte() {
             const imgBase = document.createElement('img');
             imgBase.src = `images/${nombreBase}.png`;
             imgBase.alt = equipo.base;
-            imgBase.style.width = '24px';
-            imgBase.style.height = '24px';
+            imgBase.style.width = '33px';
+            imgBase.style.height = 'auto';
             imgBase.style.display = 'block';
             imgBase.style.margin = '0 auto';
             imgBase.onerror = function() {
@@ -142,8 +142,8 @@ export function generarTablaArte() {
         const btnEliminar = document.createElement('img');
         btnEliminar.src = 'images/borrarsim.png';
         btnEliminar.alt = 'Eliminar';
-        btnEliminar.style.width = '24px';
-        btnEliminar.style.height = '24px';
+        btnEliminar.style.width = '33px';
+        btnEliminar.style.height = 'auto';
         btnEliminar.style.cursor = 'pointer';
         btnEliminar.style.display = 'block';
         btnEliminar.style.margin = '0 auto';
