@@ -76,6 +76,9 @@ try {
     equiposSimulados = [];
 }
 
+// Exponer globalmente para que backup.js pueda acceder
+window.equiposSimulados = equiposSimulados;
+
 export function agregarEquipoSimulado(equipo) {
     equiposSimulados.unshift(equipo); // Agregar al inicio
 }
