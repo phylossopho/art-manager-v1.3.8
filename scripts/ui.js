@@ -270,29 +270,12 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
                 previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
             });
 
-            selector.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
             selectorMaterial.appendChild(selector);
 
-            // Ocultar selector por defecto
-            selector.style.display = 'none';
-
-            // Mostrar selector nativo al hacer clic en el material
+            // Abrir lista nativa directamente al hacer clic en el material
             selectorMaterial.addEventListener('click', (e) => {
-                e.stopPropagation(); // Evitar que el clic se propague
-                // Mostrar el selector nativo directamente
-                selector.style.display = 'block';
-                selector.focus();
-                selector.click(); // Abrir el dropdown nativo
-            });
-
-            // Cerrar selector al hacer clic fuera
-            document.addEventListener('click', (e) => {
-                if (!selectorMaterial.contains(e.target) && !selector.contains(e.target)) {
-                    selector.style.display = 'none';
-                }
+                e.stopPropagation();
+                selector.click(); // Abrir directamente la lista de colores nativa
             });
         }
 
