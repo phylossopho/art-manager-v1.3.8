@@ -81,6 +81,18 @@ window.equiposSimulados = equiposSimulados;
 
 export function agregarEquipoSimulado(equipo) {
     equiposSimulados.unshift(equipo); // Agregar al inicio
+    
+    // Marcar cambios como pendientes y forzar guardado
+    if (window.estadoApp) {
+        window.estadoApp.cambiosPendientes = true;
+    }
+    
+    // Forzar guardado inmediato
+    if (window.guardarDatosCompletos) {
+        window.guardarDatosCompletos();
+    }
+    
+    console.log('Equipo simulado agregado y guardado:', equipo);
 }
 
 export function generarTablaArte() {

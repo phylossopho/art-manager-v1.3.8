@@ -5,9 +5,6 @@ function getEstadoApp() {
     // Intentar obtener la referencia global
     let estado = window.estadoApp;
     if (!estado) {
-        // Buscar en módulos conocidos
-        if (window.app && window.app.estadoApp) return window.app.estadoApp;
-        // Fallback: crear objeto vacío
         console.warn('No se pudo encontrar estadoApp global');
         return {};
     }
@@ -17,19 +14,15 @@ function getEstadoApp() {
     return estado;
 }
 
-// Utilidad para obtener simulaciones (equiposSimulados)
+// Utilidad para obtener simulaciones
 function getSimulaciones() {
-    if (window.equiposSimulados && Array.isArray(window.equiposSimulados)) {
-        console.log('Simulaciones encontradas:', window.equiposSimulados.length);
-        return window.equiposSimulados;
+    let simulaciones = window.equiposSimulados;
+    if (!simulaciones) {
+        console.warn('No se encontraron simulaciones');
+        return [];
     }
-    // Buscar en arte.js si está como export
-    if (window.arte && Array.isArray(window.arte.equiposSimulados)) {
-        console.log('Simulaciones encontradas en arte:', window.arte.equiposSimulados.length);
-        return window.arte.equiposSimulados;
-    }
-    console.warn('No se encontraron simulaciones');
-    return [];
+    console.log('Simulaciones encontradas:', simulaciones.length);
+    return simulaciones;
 }
 
 // Utilidad para refrescar la UI
@@ -50,40 +43,54 @@ function crearFABBackup() {
     const container = document.getElementById('fab-save-menu-container');
     if (!container) return;
     container.innerHTML = `
-        <button id="fab-save" title="Opciones de datos" style="position: absolute; top: 60px; right: 0; z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: #2196F3; box-shadow: 0 4px 12px rgba(0,0,0,0.18); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="3" width="18" height="18" rx="2" fill="#fff" stroke="#1976d2" stroke-width="2"/>
-                <path d="M7 3V7H17V3" stroke="#1976d2" stroke-width="2"/>
-                <rect x="7" y="13" width="10" height="5" rx="1" fill="#1976d2"/>
-                <rect x="9" y="15" width="6" height="1.5" rx="0.75" fill="#fff"/>
+        <button id="fab-save" title="Opciones de datos" style="position: absolute; top: 60px; right: 0; z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: #2196F3; box-shadow: 0 4px 12px rgba(0,0,0,0.18); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
             </svg>
         </button>
-        <div id="fab-save-menu" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); min-width: 180px; overflow: hidden; border: 1px solid #e0e0e0; z-index: 99999;">
-            <button id="fab-save-download" style="width: 100%; padding: 16px 24px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 18px;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l-4-4m4 4l4-4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="2" rx="1" fill="#1976d2"/></svg> Guardar</button>
-                <button id="fab-save-upload" style="width: 100%; padding: 16px 24px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 18px;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 20V8m0 0l-4 4m4-4l4 4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="16" height="2" rx="1" fill="#1976d2"/></svg> Abrir</button>
+        
+        <div id="fab-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); padding: 20px; display: none; min-width: 300px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; color: #333;">Gestión de Datos</h3>
             </div>
-        `;
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="fab-download" style="padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                    💾 Guardar Datos
+                </button>
+                <button id="fab-upload" style="padding: 12px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                    📂 Abrir Datos
+                </button>
+                <button id="fab-clear" style="padding: 12px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                    🗑️ Limpiar Datos
+                </button>
+                <button id="fab-close" style="padding: 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                    ❌ Cerrar
+                </button>
+            </div>
+        </div>
+    `;
 
-    // Referencias
-    const fabSave = container.querySelector('#fab-save');
-    const fabMenu = container.querySelector('#fab-save-menu');
-    const fabDownload = container.querySelector('#fab-save-download');
-    const fabUpload = container.querySelector('#fab-save-upload');
+    const fabButton = document.getElementById('fab-save');
+    const fabMenu = document.getElementById('fab-menu');
+    const fabDownload = document.getElementById('fab-download');
+    const fabUpload = document.getElementById('fab-upload');
+    const fabClear = document.getElementById('fab-clear');
+    const fabClose = document.getElementById('fab-close');
 
-    // Mostrar/ocultar menú
-    fabSave.addEventListener('click', (e) => {
-        e.stopPropagation();
-        fabMenu.style.display = fabMenu.style.display === 'block' ? 'none' : 'block';
+    // Abrir/cerrar menú
+    fabButton.addEventListener('click', function() {
+        fabMenu.style.display = fabMenu.style.display === 'none' ? 'block' : 'none';
     });
-    document.addEventListener('click', (e) => {
-        if (fabMenu.style.display === 'block') {
+
+    fabClose.addEventListener('click', function() {
+        fabMenu.style.display = 'none';
+    });
+
+    // Cerrar al hacer clic fuera del menú
+    document.addEventListener('click', function(e) {
+        if (!fabButton.contains(e.target) && !fabMenu.contains(e.target)) {
             fabMenu.style.display = 'none';
         }
-    });
-    fabMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
     });
 
     // Guardar datos (descargar JSON)
@@ -91,54 +98,61 @@ function crearFABBackup() {
         try {
             console.log('=== INICIANDO BACKUP ===');
             
-            // Usar solo los datos en memoria
-            let materiales = getEstadoApp().almacenMateriales || {};
-            let galeria = getEstadoApp().imagenesGaleria || [];
-            let simulaciones = getSimulaciones() || [];
-
+            // Usar el sistema robusto de guardado
+            if (window.guardarDatosCompletos) {
+                window.guardarDatosCompletos();
+            }
+            
+            // Obtener datos del localStorage (que ya fueron guardados)
+            const datosGuardados = localStorage.getItem('artManagerData');
+            if (!datosGuardados) {
+                alert('No hay datos para guardar. Primero agrega algunos materiales o simulaciones.');
+                return;
+            }
+            
+            const datos = JSON.parse(datosGuardados);
+            
             console.log('Datos a guardar:');
-            console.log('- Materiales:', Object.keys(materiales).length);
-            console.log('- Galería:', galeria.length);
-            console.log('- Simulaciones:', simulaciones.length);
+            console.log('- Materiales:', Object.keys(datos.materiales || {}).length);
+            console.log('- Galería:', (datos.galeria || []).length);
+            console.log('- Simulaciones:', (datos.simulaciones || []).length);
 
             // Verificar que hay datos para guardar
-            if (Object.keys(materiales).length === 0 && galeria.length === 0 && simulaciones.length === 0) {
-                alert('No hay datos para guardar. Asegúrate de tener materiales, imágenes o simulaciones antes de hacer backup.');
+            if (Object.keys(datos.materiales || {}).length === 0 && 
+                (datos.galeria || []).length === 0 && 
+                (datos.simulaciones || []).length === 0) {
+                alert('No hay datos para guardar. Primero agrega algunos materiales o simulaciones.');
                 return;
             }
 
-            // Confirmar que las rutas de galería sean solo strings
-            galeria = galeria.map(img => (typeof img === 'string' ? img : (img.ruta || img.url || '')));
-            if (typeof materiales !== 'object' || Array.isArray(materiales)) materiales = {};
-            if (!Array.isArray(simulaciones)) simulaciones = [];
-
-            const data = {
-                materiales,
-                galeria,
-                simulaciones
-            };
-
-            let nombre = prompt('¿Nombre para el archivo de backup?', 'backup-art-manager');
-            if (!nombre || !nombre.trim()) {
-                nombre = 'backup-art-manager';
+            // Pedir nombre del archivo
+            const nombreArchivo = prompt('Nombre del archivo de backup:', 
+                `backup-art-manager-${new Date().toISOString().split('T')[0]}`);
+            
+            if (!nombreArchivo) {
+                console.log('Backup cancelado por el usuario');
+                return;
             }
-            nombre = nombre.replace(/[^a-zA-Z0-9-_]/g, '_');
-            const fecha = new Date().toISOString().split('T')[0];
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+            // Crear y descargar el archivo
+            const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = nombre + '-' + fecha + '.json';
+            a.download = nombreArchivo.endsWith('.json') ? nombreArchivo : nombreArchivo + '.json';
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
+
+            console.log('Backup creado exitosamente:', a.download);
+            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datos.materiales || {}).length} materiales\n- ${(datos.galeria || []).length} imágenes en galería\n- ${(datos.simulaciones || []).length} simulaciones`);
             
-            console.log('Backup creado exitosamente:', nombre + '-' + fecha + '.json');
-            alert('¡Datos guardados exitosamente!\n\nMateriales: ' + Object.keys(materiales).length + '\nGalería: ' + galeria.length + '\nSimulaciones: ' + simulaciones.length);
-        } catch (e) {
-            console.error('Error al guardar:', e);
-            alert('Error al guardar los datos: ' + e.message);
+            fabMenu.style.display = 'none';
+        } catch (error) {
+            console.error('Error al crear backup:', error);
+            alert('❌ Error al crear el backup: ' + error.message);
         }
-        fabMenu.style.display = 'none';
     });
 
     // Abrir datos (importar JSON)
@@ -153,43 +167,101 @@ function crearFABBackup() {
                 reader.onload = function(e) {
                     try {
                         const data = JSON.parse(e.target.result);
-                        // Restaurar cantidades de materiales y galería en memoria
+                        
+                        // Restaurar datos usando el sistema robusto
                         const estado = getEstadoApp();
                         if (estado) {
-                            estado.almacenMateriales = data.materiales || {};
-                            estado.imagenesGaleria = data.galeria || [];
-                            // Reconstruir mapas y estructuras
-                            if (window.datos && window.datos.datosMateriales) {
-                                estado.materialesData = window.datos.datosMateriales;
+                            // Restaurar materiales
+                            if (data.materiales && typeof data.materiales === 'object') {
+                                estado.almacenMateriales = data.materiales;
                             }
-                            if (window.datos && window.datos.mapaColores) {
-                                estado.mapaColores = window.datos.mapaColores;
+                            
+                            // Restaurar galería
+                            if (data.galeria && Array.isArray(data.galeria)) {
+                                estado.imagenesGaleria = data.galeria;
                             }
-                            if (window.construirMapaMaterialAEquipo) {
-                                window.construirMapaMaterialAEquipo(estado);
+                            
+                            // Restaurar configuración
+                            if (data.configuracion) {
+                                estado.equipoActual = data.configuracion.equipoActual || 'Espada';
+                                estado.claseActual = data.configuracion.claseActual || 'Normal';
+                                estado.nivelActual = data.configuracion.nivelActual || '1';
+                                estado.colorActual = data.configuracion.colorActual || 'blanco';
                             }
-                            if (window.inicializarAlmacenamientoMateriales) {
-                                window.inicializarAlmacenamientoMateriales(estado);
+                            
+                            // Marcar cambios como pendientes
+                            estado.cambiosPendientes = true;
+                        }
+                        
+                        // Restaurar simulaciones
+                        if (data.simulaciones && Array.isArray(data.simulaciones)) {
+                            if (window.equiposSimulados) {
+                                window.equiposSimulados.length = 0;
+                                window.equiposSimulados.push(...data.simulaciones);
                             }
                         }
-                        // Restaurar simulaciones en memoria
-                        if (window.equiposSimulados && Array.isArray(data.simulaciones)) {
-                            window.equiposSimulados.length = 0;
-                            window.equiposSimulados.push(...data.simulaciones);
+                        
+                        // Guardar en localStorage usando el sistema robusto
+                        if (window.guardarDatosCompletos) {
+                            window.guardarDatosCompletos();
                         }
-                        refrescarUI();
-                        alert('¡Datos cargados exitosamente!');
+                        
+                        // Reconstruir estructuras internas
+                        if (window.construirMapaMaterialAEquipo) {
+                            window.construirMapaMaterialAEquipo(estado);
+                        }
+                        if (window.inicializarAlmacenamientoMateriales) {
+                            window.inicializarAlmacenamientoMateriales(estado);
+                        }
+                        
+                        // Actualizar UI
+                        if (window.actualizarUI) {
+                            window.actualizarUI(estado);
+                        }
+                        
+                        console.log('✅ Datos importados exitosamente:', {
+                            materiales: Object.keys(data.materiales || {}).length,
+                            galeria: (data.galeria || []).length,
+                            simulaciones: (data.simulaciones || []).length
+                        });
+                        
+                        alert(`✅ Datos importados exitosamente!\n\nContenido restaurado:\n- ${Object.keys(data.materiales || {}).length} materiales\n- ${(data.galeria || []).length} imágenes en galería\n- ${(data.simulaciones || []).length} simulaciones\n\nLos datos se han guardado automáticamente y persistirán entre sesiones.`);
+                        
+                        fabMenu.style.display = 'none';
                     } catch (error) {
-                        alert('Error al cargar los datos: ' + error.message);
+                        console.error('Error al importar datos:', error);
+                        alert('❌ Error al importar datos: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
             }
         };
         input.click();
-        fabMenu.style.display = 'none';
+    });
+
+    // Limpiar datos
+    fabClear.addEventListener('click', function() {
+        if (confirm('¿Estás seguro de que quieres limpiar todos los datos? Esta acción no se puede deshacer.')) {
+            localStorage.removeItem('artManagerData');
+            if (window.equiposSimulados) {
+                window.equiposSimulados.length = 0;
+            }
+            if (window.estadoApp) {
+                window.estadoApp.almacenMateriales = {};
+                window.estadoApp.imagenesGaleria = [];
+                window.estadoApp.cambiosPendientes = true;
+            }
+            if (window.guardarDatosCompletos) {
+                window.guardarDatosCompletos();
+            }
+            if (window.actualizarUI) {
+                window.actualizarUI(window.estadoApp);
+            }
+            alert('✅ Datos limpios exitosamente.');
+            fabMenu.style.display = 'none';
+        }
     });
 }
 
-// Ejecutar al cargar el módulo
-crearFABBackup(); 
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', crearFABBackup); 

@@ -330,13 +330,18 @@ export function usarMateriales(estado) {
             // Reiniciar selector base
             reiniciarSelectorBase(estado);
 
+            // Forzar guardado inmediato
+            if (window.guardarDatosCompletos) {
+                window.guardarDatosCompletos();
+            }
+
             modales.mostrarMensaje("Éxito", "Materiales procesados y equipo guardado en ARTE", 'success');
         } else if (faltantes.length === 0) {
             modales.mostrarMensaje("Sin cambios", "No se realizaron cambios en los materiales", 'info');
         }
     } catch (error) {
         console.error('Error en usarMateriales:', error);
-        modales.mostrarMensaje('Error', 'Error inesperado al procesar materiales', 'error');
+        modales.mostrarMensaje('Error', 'Error al procesar materiales', 'error');
     }
 }
 
