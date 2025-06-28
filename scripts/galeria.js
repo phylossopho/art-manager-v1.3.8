@@ -188,16 +188,18 @@ export function abrirGaleria(estado) {
 }
 
 export function agregarImagenAGaleria(archivo, estado) {
-    // Para imágenes nuevas, solo guardar el nombre del archivo
-    const nombreArchivo = archivo.name;
-    const rutaImagen = `images/guia-${nombreArchivo}`;
-    
-    estado.imagenesGaleria.push(rutaImagen);
-    estado.cambiosPendientes = true;
-    guardarImagenesEnLocalStorage(estado);
-    
-    abrirGaleria(estado);
-    console.log('Imagen agregada a galería (solo ruta):', rutaImagen);
+    // Guardar la imagen completa en base64 para que funcione correctamente
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imagenBase64 = e.target.result;
+        estado.imagenesGaleria.push(imagenBase64);
+        estado.cambiosPendientes = true;
+        guardarImagenesEnLocalStorage(estado);
+        
+        abrirGaleria(estado);
+        console.log('Imagen agregada a galería (base64):', archivo.name);
+    };
+    reader.readAsDataURL(archivo);
 }
 
 export function mostrarImagenCarrusel(estado) {

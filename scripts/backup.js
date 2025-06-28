@@ -139,7 +139,7 @@ function crearFABBackup() {
             URL.revokeObjectURL(url);
 
             console.log('Backup creado exitosamente:', a.download);
-            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería\n- ${(datosCompletos.simulaciones || []).length} simulaciones`);
+            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería (base64)\n- ${(datosCompletos.simulaciones || []).length} simulaciones\n\n💡 Las imágenes se guardan en base64 para garantizar compatibilidad.`);
             
             fabMenu.style.display = 'none';
         } catch (error) {
