@@ -241,13 +241,16 @@ td {
 
 .material-selector {
     width: 120px;
+    height: 120px;
     border: 1px solid #808080;
-    border-radius: 5px;
+    border-radius: 15px;
     padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     transition: background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .material-selector img {
