@@ -78,36 +78,14 @@ function crearFABBackup() {
     // Guardar datos (descargar JSON)
     fabDownload.addEventListener('click', function() {
         try {
-            // Leer datos de localStorage si existen, si no, usar los de memoria
-            let materiales = {};
-            let galeria = [];
-            let simulaciones = [];
-            try {
-                const matLS = localStorage.getItem('almacenMateriales');
-                materiales = matLS ? JSON.parse(matLS) : getEstadoApp().almacenMateriales || {};
-            } catch (e) {
-                materiales = getEstadoApp().almacenMateriales || {};
-            }
-            try {
-                const galLS = localStorage.getItem('imagenesGaleria');
-                galeria = galLS ? JSON.parse(galLS) : getEstadoApp().imagenesGaleria || [];
-            } catch (e) {
-                galeria = getEstadoApp().imagenesGaleria || [];
-            }
-            try {
-                const simLS = localStorage.getItem('equiposSimulados');
-                simulaciones = simLS ? JSON.parse(simLS) : getSimulaciones() || [];
-            } catch (e) {
-                simulaciones = getSimulaciones() || [];
-            }
+            // Usar solo los datos en memoria
+            let materiales = getEstadoApp().almacenMateriales || {};
+            let galeria = getEstadoApp().imagenesGaleria || [];
+            let simulaciones = getSimulaciones() || [];
 
-            // Confirmar que las rutas de galería sean solo strings (no blobs ni imágenes)
+            // Confirmar que las rutas de galería sean solo strings
             galeria = galeria.map(img => (typeof img === 'string' ? img : (img.ruta || img.url || '')));
-
-            // Confirmar que materiales sea un objeto con cantidades
             if (typeof materiales !== 'object' || Array.isArray(materiales)) materiales = {};
-
-            // Confirmar que simulaciones sea un array
             if (!Array.isArray(simulaciones)) simulaciones = [];
 
             const data = {
@@ -116,7 +94,6 @@ function crearFABBackup() {
                 simulaciones
             };
 
-            // Pedir nombre de archivo
             let nombre = prompt('¿Nombre para el archivo de backup?', 'backup-art-manager');
             if (!nombre || !nombre.trim()) {
                 nombre = 'backup-art-manager';
@@ -149,13 +126,13 @@ function crearFABBackup() {
                 reader.onload = function(e) {
                     try {
                         const data = JSON.parse(e.target.result);
-                        // Restaurar cantidades de materiales
+                        // Restaurar cantidades de materiales y galería en memoria
                         const estado = getEstadoApp();
                         if (estado) {
                             estado.almacenMateriales = data.materiales || {};
                             estado.imagenesGaleria = data.galeria || [];
                         }
-                        // Restaurar simulaciones
+                        // Restaurar simulaciones en memoria
                         if (window.equiposSimulados && Array.isArray(data.simulaciones)) {
                             window.equiposSimulados.length = 0;
                             window.equiposSimulados.push(...data.simulaciones);

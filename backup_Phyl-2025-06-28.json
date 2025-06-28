@@ -1,0 +1,204 @@
+{
+  "materiales": {
+    "Normal:Maxilar": {
+      "dorado": "2",
+      "morado": "1",
+      "azul": "1",
+      "verde": "123",
+      "blanco": "49"
+    },
+    "Normal:Garra": {
+      "dorado": "0",
+      "morado": "0",
+      "azul": "1",
+      "verde": "118",
+      "blanco": "57"
+    },
+    "Normal:Hoja": {
+      "dorado": "1",
+      "morado": "1",
+      "azul": "6",
+      "verde": "15",
+      "blanco": "75"
+    },
+    "Normal:Césped": {
+      "dorado": "0",
+      "morado": "2",
+      "azul": "15",
+      "verde": "22",
+      "blanco": "59"
+    },
+    "Normal:Nudo": {
+      "dorado": "0",
+      "morado": "0",
+      "azul": "7",
+      "verde": "441",
+      "blanco": "57"
+    },
+    "Normal:Acero": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "1",
+      "verde": "508",
+      "blanco": "27"
+    },
+    "Normal:Pluma": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "1",
+      "verde": "26",
+      "blanco": "61"
+    },
+    "Normal:Extraer": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "1",
+      "verde": "22",
+      "blanco": "64"
+    },
+    "Normal:Diente de sierra": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "9",
+      "verde": "214",
+      "blanco": "32"
+    },
+    "Normal:Pelaje": {
+      "dorado": "0",
+      "morado": "3",
+      "azul": "3",
+      "verde": "138",
+      "blanco": "52"
+    },
+    "Normal:Cristal": {
+      "dorado": "0",
+      "morado": "0",
+      "azul": "2",
+      "verde": "20",
+      "blanco": "29"
+    },
+    "Normal:Stardust": {
+      "dorado": "0",
+      "morado": "4",
+      "azul": "7",
+      "verde": "70",
+      "blanco": "41"
+    },
+    "Campeón y Planewalker:Quijada ácida": {
+      "dorado": "4",
+      "morado": "4",
+      "azul": "13",
+      "verde": "757",
+      "blanco": "523"
+    },
+    "Campeón y Planewalker:Oro talon": {
+      "dorado": "3",
+      "morado": "10",
+      "azul": "14",
+      "verde": "811",
+      "blanco": "574"
+    },
+    "Campeón y Planewalker:Hoja de jade": {
+      "dorado": "5",
+      "morado": "8",
+      "azul": "24",
+      "verde": "667",
+      "blanco": "587"
+    },
+    "Campeón y Planewalker:Ámbar hierba": {
+      "dorado": "5",
+      "morado": "6",
+      "azul": "21",
+      "verde": "722",
+      "blanco": "515"
+    },
+    "Campeón y Planewalker:Carbonizado gnarl": {
+      "dorado": "0",
+      "morado": "2",
+      "azul": "2",
+      "verde": "111",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Acero reforzado": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "12",
+      "verde": "155",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Pluma Stick": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "3",
+      "verde": "122",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Extracto destilado": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "9",
+      "verde": "103",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Razor diente de sierra": {
+      "dorado": "0",
+      "morado": "3",
+      "azul": "5",
+      "verde": "87",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Piel de terciopelo": {
+      "dorado": "1",
+      "morado": "0",
+      "azul": "7",
+      "verde": "99",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Crystal mystic": {
+      "dorado": "0",
+      "morado": "0",
+      "azul": "7",
+      "verde": "96",
+      "blanco": "0"
+    },
+    "Campeón y Planewalker:Tempest Stardust": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "5",
+      "verde": "77",
+      "blanco": "0"
+    },
+    "Lord y Noble Lord:Voluntad del emperador": {
+      "dorado": "1",
+      "morado": "1",
+      "azul": "12",
+      "verde": "00",
+      "blanco": "0"
+    },
+    "Lord y Noble Lord:Guardia del emperador": {
+      "dorado": "0",
+      "morado": "3",
+      "azul": "49",
+      "verde": "0",
+      "blanco": "0"
+    },
+    "Lord y Noble Lord:Alma del emperador": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "12",
+      "verde": "0",
+      "blanco": "0"
+    },
+    "Lord y Noble Lord:Aliento del emperador": {
+      "dorado": "0",
+      "morado": "1",
+      "azul": "7",
+      "verde": "0",
+      "blanco": "0"
+    }
+  },
+  "galeria": [
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAADAFBMVEVHcEwAAAD4aQT4cQQAAAAAAAAAAAD+/v4AAAD4ZQT6RwP9zbH5XwP9dmb+j4X8XzkAAAAAAAD+rqsAAAAAAAAAAAAAAAAAAAAAAAD5WQMAAAAAAAAAAAAAAAAAAAAAAAAAAAD7Rhb6QwIfBAD9EgL5XAP7Rgv8TSv8VDn9XUn7PREAAAD8WTmWLAHvSwN8KAH4jzEfDwCUSQLtcQTpVAOXDgBTIAHoYgTzFQD9Uj/+mZH+ZGDsDwDsCQBVBAD4myZNEQB8GwC2JAFOBQCfGQG2HgG4AABMKwGybgX9DAH///8AAADru735bAT+h3v+Z0ntTCz5YwT/mZL5YQT/o57+bFL+clv6WAP6VgP8OQL+gG/9XDL4dQX+Ykn5ZgT+eWb6WwT9ybH+b1vtSCz9YUH9Y0H5aQb9XUH6UQP4eQf6TwP7SgP6UwP7QgP+aVL6XQT5bwb/kIcVAQD/AwD+e2//job8MgH4hhP5jhv5XwT8QxD7TAL5cA75hiT+a1v+hXv5o0AGAQD9WDL9XTn+fW/5cwn+ZVL5s0/8LQH9KAH9zLH7VBr9VDL4fRL4liX8SB/8SiX8Qxf9UDL5kCX4nzL5nD/5qED9GQD8Oxj6PQL/sKwWCQD8HwDMBwD9IwL5r1B+BABHAgD9Wjn9WjL9Xzr+d2b5hBr3jwr5fhr5Zwj/op7+c2b2lwb+CAD4gA34fQ37VRL4eg34ghP8RRD8VCL5iRv7Qwn7RwX4dQ74kyX4gAz5iyT5eBb9Uzn5bQj4nDL9WUH5lzL5kzH5cxQnDgD8OghFGgH+a2X+KhT1BQD3gwX+FAMoAQD+Qzf+YVedAQD2DQD/Cwa9IgH9zbH6VC78Vi37Tyv8VSjxRQL9Syv9Ri57OQLKRQNxHgH5fyHueQXJWQPyXAPzGQDxYQT+JBz9MBHFMwJzAQD5qk9vOwJyDAD/NzL+HRT/iYXHGADCaQT+WEz/tbL+BAD1iQX4pTefIQH5rUR8EgC/AAB5RwKbXgS5dQUA/zxHcEz4AAAAAABTos9MAAABAHRSTlMADP7/qxs2/v7+/v7+/v7+/SL+8m0C967O/nC+9GOEmZ/+/v7+/v7+/v7+1f7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8MAP+rLzwoLgAABRtJREFUSMedlndYU1cUwEMI4RKGKDPsFRD3HrjF/ZraGFtNi5iulBXBCLRRUqGUljAKQimEJZSWWcqQKRim7CV1770nbv2n5z7Cxtivv+/ke++de8475+bed86lUMagQje3sLSysrQwp6tQ3ouaiakZQoRCzExN1JSa02mGCImc07rXvXq1rjvNWUQgQxr9neYTabqE6FZK3549e44BcOlLuSUidGkTxzU30NdDtt2tfRvvLXmwNfHJk8StD5bcO9bX2m1L6OkbjDNVIxSU1pp/vTk3cdKkQcltvp7fmhaEjMZMX82Y6EjJv9+cu3UUuc3381M6CONRk1ebitKX5XfudtriNEq2OO3u3LgsHU0d4aFijJb32HXp6Oj46ejsHiZ+WOHXZdezHBkPy8rAiEjvae/a38+Hw1Coutp70gmjoZnro46ldo99fX8k+XQYpMLX1/ex3dIOpD/4/+sFpdh15uXlaWtr/4ll506FwD0o8rTz8jrtUoL0BtaDRqS1t3wPfIH5ZASkCo+1tKcRNMV+0LVdFL/4J2AX8PEosG4XjC2OX2SrS1cEmB/f4ui4A7N5LDs2g97R0bElfn5/CDVD0dX4s7W1td8AX2G+HgI/Yj0Mn42/KjLEi2GC7ianHpk8+ci036dNCw6eMOGPERIcjPV4PDX5LjIBB1PiYfKNmJiYiIiIH4CMjM+GkZGRAToYAoMbyQ8JU1hkM1FyasIZB4eTXwIfjQPWn3RwOJOQmiwyU6HQkXOqNCE6Ovr4B0o4DgYJ0lRnRKeYEy+l0oSoqKgTm5RwAgwSpNKXhDnFAq2Rhk45YG19Sn2Tujr+jZT+6ylr6wNTQqVrkAXFEq0NJR1KlDmUkA6ha5ElxYroDfU/unfvoRJlKZUcOrT3qH9oL2FFsUK9/uBgbx+uLEK4vT04+PciK0hptT+PV/Z+hzIez381pGRBPOfxZMKy8nBlKYWXlwllPN5zwoJijlbxZDIhg1GoLEIhgyGUyXirkDks3EqezEbI8Cz8HBMWphmmqfnPgISFhZHqQk+G0EYmWwkLB1tDJhSWe+7zcPPavo3P9xaLuVwOCZcrFnvz+du2e7l57PMsFwpleGtQTNFNG0a/PZPJEmtxORoargPC1RKzmAoPhs1NZEpu7wvgQL6fxdLiYjuqgEoKvudqsfhM7AEOF8jtrWaYdBoC4HwgG46rQMAeRCBw5XAhLYgBIU4nkR8QfKLTSXtIB15JpbJ9fFRJfHzYbCqZFwt7eExXVAEoAjPctjP5OB0qWw7WLgrAR86manC4WpCV24yBIkChoZleTKY3xzWHKvcJCXFxd3cvIsXdJSTERw5z4XgzmV4zEW2okJ2HCeQI5AEBFRVFRQUFf5MUFBQVVVQEBMgFOWL+tvNDhQxKZeM8FjcnoKGhOjIysrj4WwXFxfBY3dAQkMPVmtc4VCpxMW66wnFtqM7Ozs7MLC39TkFpaWZmZnZ2dYMr50rT8GKMy/2CaxryixJJVVVsbGXlLySVlbGxVVUSyUU59dqCEeWebChNC9khkln19XV1NTW/ktTU1NXV18+ShLAXNo1qKGTLarys6iKJi4sLDAz8jQRu4FHionq5cUzL6m+K5+a6H44NvH3w4MGfAbjcDow97D733HhNsb/tzp5zqa0ta8WzF9jhxbMVWW1tl+bMHr/tKhp70p1HT7Oy/iLJynr66E7SOxv74NEhaf3rNxvevt3w5vX6JOVHh/9xOPkPx59/ASFimCanAsIrAAAAAElFTkSuQmCC"
+  ],
+  "simulaciones": []
+}

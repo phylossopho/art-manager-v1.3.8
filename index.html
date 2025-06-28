@@ -688,6 +688,10 @@
                             if (data.sessionStorage.equipos) sessionStorage.setItem('equiposSimulados', data.sessionStorage.equipos);
                         }
                         
+                        localStorage.setItem('almacenMateriales', JSON.stringify(estado.almacenMateriales));
+                        localStorage.setItem('imagenesGaleria', JSON.stringify(estado.imagenesGaleria));
+                        localStorage.setItem('equiposSimulados', JSON.stringify(window.equiposSimulados));
+                        
                         console.log('📥 Datos importados exitosamente');
                         alert('Datos importados. Recarga la página para ver los cambios.');
                     } catch (error) {
