@@ -1,0 +1,42 @@
+{
+  "materials": {
+    "1": {
+      "nombre": "Espada de Acero",
+      "cantidad": 15,
+      "color": "blanco",
+      "clase": "Normal",
+      "nivel": "1"
+    },
+    "2": {
+      "nombre": "Botas de Cuero",
+      "cantidad": 8,
+      "color": "verde",
+      "clase": "Campeón",
+      "nivel": "2"
+    },
+    "3": {
+      "nombre": "Casco de Hierro",
+      "cantidad": 12,
+      "color": "azul",
+      "clase": "Planewalker",
+      "nivel": "3"
+    },
+    "4": {
+      "nombre": "Guantes Mágicos",
+      "cantidad": 6,
+      "color": "morado",
+      "clase": "Lord",
+      "nivel": "4"
+    },
+    "5": {
+      "nombre": "Cinturón Dorado",
+      "cantidad": 3,
+      "color": "dorado",
+      "clase": "Noble Lord",
+      "nivel": "5"
+    }
+  },
+  "lastUpdate": "2024-01-01T00:00:00.000Z",
+  "totalMaterials": 5,
+  "widgetVersion": "1.0"
+} 

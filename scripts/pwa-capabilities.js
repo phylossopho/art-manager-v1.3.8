@@ -18,6 +18,7 @@ class PWACapabilities {
         this.configurarPeriodicSync();
         this.configurarPushNotifications();
         this.configurarEdgeSidePanel();
+        this.inicializarActualizacionWidget();
     }
 
     // Service Worker para capacidades offline
@@ -337,6 +338,50 @@ class PWACapabilities {
                 console.error('Error al compartir:', error);
             }
         }
+    }
+
+    // Actualizar datos del widget
+    async actualizarDatosWidget() {
+        try {
+            const datosWidget = {
+                materials: this.estadoApp.almacenMateriales,
+                lastUpdate: new Date().toISOString(),
+                totalMaterials: Object.keys(this.estadoApp.almacenMateriales).length,
+                widgetVersion: "1.0"
+            };
+
+            // En un entorno real, aquí enviarías los datos al servidor
+            // Por ahora, los guardamos en localStorage para que el widget pueda acceder
+            localStorage.setItem('widgetData', JSON.stringify(datosWidget));
+            
+            console.log('Datos del widget actualizados');
+        } catch (error) {
+            console.error('Error al actualizar datos del widget:', error);
+        }
+    }
+
+    // Inicializar actualización automática del widget
+    inicializarActualizacionWidget() {
+        // Actualizar datos del widget cada vez que cambien los materiales
+        const observer = new MutationObserver(() => {
+            if (this.estadoApp.cambiosPendientes) {
+                this.actualizarDatosWidget();
+            }
+        });
+
+        // Observar cambios en el DOM que indiquen actualización de materiales
+        const materialsTable = document.getElementById('materials-table');
+        if (materialsTable) {
+            observer.observe(materialsTable, {
+                childList: true,
+                subtree: true
+            });
+        }
+
+        // También actualizar periódicamente
+        setInterval(() => {
+            this.actualizarDatosWidget();
+        }, 60000); // Cada minuto
     }
 }
 

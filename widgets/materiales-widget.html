@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Materiales</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .widget-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .widget-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .materials-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .material-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .material-name {
+            font-weight: 500;
+        }
+        
+        .material-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .widget-footer {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .open-app-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .open-app-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-header">
+        <img src="../images/icon-192.png" alt="Icono" class="widget-icon">
+        <h3 class="widget-title">Materiales DH</h3>
+    </div>
+    
+    <div class="materials-list" id="materials-list">
+        <!-- Los materiales se cargarán dinámicamente -->
+        <div class="material-item">
+            <span class="material-name">Cargando...</span>
+            <span class="material-count">0</span>
+        </div>
+    </div>
+    
+    <div class="widget-footer">
+        <button class="open-app-btn" onclick="openApp()">Abrir App</button>
+    </div>
+
+    <script>
+        // Cargar datos del widget
+        async function loadWidgetData() {
+            try {
+                // Intentar cargar desde localStorage primero
+                const localData = localStorage.getItem('widgetData');
+                if (localData) {
+                    const data = JSON.parse(localData);
+                    displayMaterials(data.materials);
+                    return;
+                }
+                
+                // Fallback: cargar desde archivo JSON
+                const response = await fetch('../widgets/materiales-data.json');
+                const data = await response.json();
+                displayMaterials(data.materials);
+            } catch (error) {
+                console.error('Error cargando datos del widget:', error);
+                showError();
+            }
+        }
+        
+        function displayMaterials(materials) {
+            const container = document.getElementById('materials-list');
+            container.innerHTML = '';
+            
+            if (!materials || Object.keys(materials).length === 0) {
+                container.innerHTML = '<div class="material-item"><span class="material-name">No hay materiales</span></div>';
+                return;
+            }
+            
+            // Mostrar solo los primeros 5 materiales
+            const materialEntries = Object.entries(materials).slice(0, 5);
+            
+            materialEntries.forEach(([id, material]) => {
+                const item = document.createElement('div');
+                item.className = 'material-item';
+                item.innerHTML = `
+                    <span class="material-name">${material.nombre}</span>
+                    <span class="material-count">${material.cantidad}</span>
+                `;
+                container.appendChild(item);
+            });
+            
+            // Si hay más de 5 materiales, mostrar indicador
+            if (Object.keys(materials).length > 5) {
+                const moreItem = document.createElement('div');
+                moreItem.className = 'material-item';
+                moreItem.innerHTML = `
+                    <span class="material-name">Y ${Object.keys(materials).length - 5} más...</span>
+                    <span class="material-count">+</span>
+                `;
+                container.appendChild(moreItem);
+            }
+        }
+        
+        function showError() {
+            const container = document.getElementById('materials-list');
+            container.innerHTML = '<div class="material-item"><span class="material-name">Error al cargar</span></div>';
+        }
+        
+        function openApp() {
+            // Abrir la aplicación principal
+            if (window.open) {
+                window.open('../index.html', '_blank');
+            }
+        }
+        
+        // Cargar datos al iniciar
+        loadWidgetData();
+        
+        // Actualizar cada 30 segundos
+        setInterval(loadWidgetData, 30000);
+        
+        // Escuchar cambios en localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'widgetData') {
+                loadWidgetData();
+            }
+        });
+    </script>
+</body>
+</html> 

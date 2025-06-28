@@ -1,5 +1,5 @@
 // Service Worker para Gestor de Materiales - Deck Heroes
-const CACHE_NAME = 'materiales-dh-v1.3';
+const CACHE_NAME = 'materiales-dh-v1.4';
 const urlsToCache = [
   './',
   './index.html',
@@ -21,6 +21,8 @@ const urlsToCache = [
   './scripts/arte.js',
   './scripts/baselogic.js',
   './scripts/pwa-capabilities.js',
+  './widgets/materiales-widget.html',
+  './widgets/materiales-data.json',
   './images/botas.png',
   './images/espada.png',
   './images/pecho.png',
@@ -28,7 +30,9 @@ const urlsToCache = [
   './images/guantes.png',
   './images/cinturon.png',
   './images/icon-192.png',
-  './images/icon-144x144.png'
+  './images/icon-144x144.png',
+  './images/icon-512.png',
+  './images/widget-screenshot.png'
 ];
 
 // Instalación del Service Worker
