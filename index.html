@@ -539,19 +539,50 @@
         // Verificar si está en modo standalone (instalada)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
         
-        console.log('PWA: Estado de instalación:', { isStandalone, isInApp });
+        console.log('PWA: Estado de instalación:', { isStandalone, isInApp, isInstalled });
         
-        if (isStandalone || isInApp) {
-            console.log('PWA: La app ya está instalada');
+        if (isStandalone || isInApp || isInstalled) {
+            console.log('PWA: La app ya está instalada - ocultando banner');
             // Ocultar el banner si ya está instalada
             if (installBanner) {
                 installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
             }
         } else {
             console.log('PWA: La app no está instalada');
         }
     });
+
+    // Verificación adicional al cambiar de pestaña o ventana
+    window.addEventListener('focus', () => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+        
+        if (isStandalone || isInApp || isInstalled) {
+            if (installBanner) {
+                installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
+            }
+        }
+    });
+
+    // Verificación periódica cada 5 segundos
+    setInterval(() => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+        
+        if (isStandalone || isInApp || isInstalled) {
+            if (installBanner && installBanner.style.display !== 'none') {
+                console.log('PWA: Detectada instalación durante verificación periódica');
+                installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
+            }
+        }
+    }, 5000);
 
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
