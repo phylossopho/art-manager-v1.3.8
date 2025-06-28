@@ -269,9 +269,6 @@ function configurarEventosModales() {
             // Activar pestaña Materiales
             document.querySelector('.tab-button[data-tab="materials"]').classList.add('active');
             document.getElementById('materials-tab').classList.add('active');
-            
-            // Actualizar la interfaz para mostrar el botón USAR
-            ui.actualizarUI(estado);
         });
     }
 }
