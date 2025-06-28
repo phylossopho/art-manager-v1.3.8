@@ -126,7 +126,7 @@
 <body>
 <div class="container">
     <!-- Banner de instalación PWA -->
-    <div id="install-banner" style="display: none;">
+    <div id="install-banner">
         <div>
             <strong>Instalar Gestor de Materiales</strong>
             <p>Para una mejor experiencia, instala esta aplicación</p>
@@ -443,6 +443,12 @@
     const installButton = document.getElementById('install-button');
     const closeInstall = document.getElementById('close-install');
 
+    console.log('PWA: Elementos encontrados:', {
+        banner: !!installBanner,
+        button: !!installButton,
+        close: !!closeInstall
+    });
+
     if (installBanner && installButton && closeInstall) {
         window.addEventListener('beforeinstallprompt', (e) => {
             console.log('PWA: beforeinstallprompt detectado');
@@ -452,14 +458,28 @@
             // Mostrar banner automático después de 3 segundos
             setTimeout(() => {
                 if (installBanner && deferredPrompt) {
+                    console.log('PWA: Intentando mostrar banner...');
                     installBanner.classList.add('visible');
                     setTimeout(() => {
                         installBanner.classList.add('show');
+                        console.log('PWA: Banner mostrado con éxito');
                     }, 100);
-                    console.log('PWA: Banner mostrado');
+                } else {
+                    console.log('PWA: No se pudo mostrar banner - deferredPrompt:', !!deferredPrompt);
                 }
             }, 3000);
         });
+
+        // Si no se dispara beforeinstallprompt después de 5 segundos, mostrar manualmente para testing
+        setTimeout(() => {
+            if (!deferredPrompt) {
+                console.log('PWA: No se detectó beforeinstallprompt, mostrando banner manualmente para testing');
+                installBanner.classList.add('visible');
+                setTimeout(() => {
+                    installBanner.classList.add('show');
+                }, 100);
+            }
+        }, 5000);
 
         installButton.addEventListener('click', () => {
             if (!deferredPrompt) {
@@ -501,6 +521,8 @@
         // Verificar si está en modo standalone (instalada)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const isInApp = window.navigator.standalone === true;
+        
+        console.log('PWA: Estado de instalación:', { isStandalone, isInApp });
         
         if (isStandalone || isInApp) {
             console.log('PWA: La app ya está instalada');
