@@ -83,21 +83,33 @@ export function generarTablaArte() {
                 if (color && mapaColores[color]) {
                     celda.style.backgroundColor = mapaColores[color];
                 }
-                const img = document.createElement('img');
-                const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                img.src = `images/${nombreImagen}.png`;
-                img.alt = material;
-                img.style.width = '33px';
-                img.style.height = 'auto';
-                img.style.display = 'block';
-                img.style.margin = '0 auto';
-                img.onerror = function() {
-                    this.style.display = 'none';
+                
+                // Verificar si el material es un color (no tiene imagen)
+                const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
+                if (colores.includes(material.toLowerCase())) {
+                    // Es un color, mostrar solo texto
                     const span = document.createElement('span');
                     span.textContent = material;
+                    span.style.fontWeight = 'bold';
                     celda.appendChild(span);
-                };
-                celda.appendChild(img);
+                } else {
+                    // Es un material, intentar cargar imagen
+                    const img = document.createElement('img');
+                    const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    img.src = `images/${nombreImagen}.png`;
+                    img.alt = material;
+                    img.style.width = '33px';
+                    img.style.height = 'auto';
+                    img.style.display = 'block';
+                    img.style.margin = '0 auto';
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        const span = document.createElement('span');
+                        span.textContent = material;
+                        celda.appendChild(span);
+                    };
+                    celda.appendChild(img);
+                }
             } else {
                 celda.innerHTML = '&nbsp;';
             }
