@@ -33,6 +33,7 @@ th {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 12px;
 }
 
 td {
@@ -41,6 +42,7 @@ td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 11px;
 }
 
 .material-cell {
@@ -104,6 +106,11 @@ td {
     width: 16% !important;
     min-width: 80px !important;
     text-align: left !important;
+    font-size: 10px !important;
+    max-width: 120px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 .col-color {
@@ -111,6 +118,7 @@ td {
     min-width: 55px !important;
     max-width: 75px !important;
     text-align: center !important;
+    font-size: 10px !important;
 }
 
 .col-clase {
@@ -118,6 +126,10 @@ td {
     min-width: 65px !important;
     max-width: 85px !important;
     text-align: center !important;
+    font-size: 10px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 .col-nivel {
@@ -161,6 +173,9 @@ td {
     text-align: center;
     padding: 5px 0;
     border: 2px solid;
+    font-size: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .color-input[data-color="dorado"] {
@@ -275,7 +290,7 @@ td {
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .materials-table {
-        font-size: 12px;
+        font-size: 10px;
         padding: 5px;
         overflow-x: auto;
     }
@@ -287,7 +302,24 @@ td {
     .materials-table th,
     .materials-table td {
         padding: 6px 4px;
-        font-size: 11px;
+        font-size: 9px;
+    }
+    
+    .col-nombre {
+        font-size: 8px !important;
+    }
+    
+    .col-clase {
+        font-size: 8px !important;
+    }
+    
+    .col-color {
+        font-size: 8px !important;
+    }
+    
+    .color-input {
+        font-size: 8px;
+        padding: 3px 0;
     }
     
     /* Ajustar porcentajes para móviles */
@@ -338,19 +370,19 @@ td {
     }
     
     .material-cell span {
-        font-size: 11px;
+        font-size: 9px;
     }
     
     .color-input {
         width: 90%;
         padding: 4px;
-        font-size: 11px;
+        font-size: 8px;
     }
     
     .conversion-legend-table th,
     .conversion-legend-table td {
         padding: 6px 4px;
-        font-size: 11px;
+        font-size: 9px;
     }
     
     .conversion-legend-table th:nth-child(1),
@@ -369,11 +401,34 @@ td {
         width: 20px;
         height: 20px;
     }
+    
+    /* Estilos específicos para ARTE en móviles */
+    .arte-table-table th {
+        font-size: 9px;
+        padding: 4px 2px;
+    }
+    
+    .arte-table-table td {
+        font-size: 8px;
+        padding: 4px 2px;
+    }
+    
+    .arte-table-table .col-clase {
+        font-size: 7px !important;
+    }
+    
+    .arte-table-table .col-material {
+        font-size: 7px !important;
+    }
+    
+    .arte-table-table .col-nivel {
+        font-size: 7px !important;
+    }
 }
 
 @media (max-width: 480px) {
     .materials-table {
-        font-size: 10px;
+        font-size: 8px;
         padding: 3px;
     }
     
@@ -384,7 +439,24 @@ td {
     .materials-table th,
     .materials-table td {
         padding: 4px 2px;
-        font-size: 10px;
+        font-size: 8px;
+    }
+    
+    .col-nombre {
+        font-size: 7px !important;
+    }
+    
+    .col-clase {
+        font-size: 7px !important;
+    }
+    
+    .col-color {
+        font-size: 7px !important;
+    }
+    
+    .color-input {
+        font-size: 7px;
+        padding: 2px 0;
     }
     
     /* Ajustar porcentajes para pantallas muy pequeñas */
@@ -435,18 +507,41 @@ td {
     }
     
     .material-cell span {
-        font-size: 10px;
+        font-size: 8px;
     }
     
     .color-input {
         width: 85%;
         padding: 3px;
-        font-size: 10px;
+        font-size: 7px;
     }
     
     #arte-table img {
         width: 18px;
         height: 18px;
+    }
+    
+    /* Estilos específicos para ARTE en pantallas muy pequeñas */
+    .arte-table-table th {
+        font-size: 8px;
+        padding: 3px 1px;
+    }
+    
+    .arte-table-table td {
+        font-size: 7px;
+        padding: 3px 1px;
+    }
+    
+    .arte-table-table .col-clase {
+        font-size: 6px !important;
+    }
+    
+    .arte-table-table .col-material {
+        font-size: 6px !important;
+    }
+    
+    .arte-table-table .col-nivel {
+        font-size: 6px !important;
     }
 }
 
@@ -455,6 +550,17 @@ td {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
+    font-size: 10px;
+}
+
+.arte-table-table th {
+    font-size: 11px;
+    padding: 6px 3px;
+}
+
+.arte-table-table td {
+    font-size: 10px;
+    padding: 6px 3px;
 }
 
 .arte-table-table .col-imagen {
@@ -463,27 +569,31 @@ td {
     max-width: 60px !important;
 }
 
-.arte-table-table .col-nombre {
-    width: 12% !important;
-    min-width: 60px !important;
-}
-
 .arte-table-table .col-clase {
     width: 10% !important;
     min-width: 55px !important;
     max-width: 70px !important;
+    font-size: 9px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 .arte-table-table .col-nivel {
     width: 6% !important;
     min-width: 40px !important;
     max-width: 50px !important;
+    font-size: 9px !important;
 }
 
 .arte-table-table .col-material {
     width: 9% !important;
     min-width: 50px !important;
     max-width: 65px !important;
+    font-size: 9px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 .arte-table-table .col-accion {
