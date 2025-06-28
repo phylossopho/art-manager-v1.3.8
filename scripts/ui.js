@@ -279,10 +279,13 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             // Ocultar selector por defecto
             selector.style.display = 'none';
 
-            // Mostrar lista simple de colores al hacer clic en el material
+            // Mostrar selector nativo al hacer clic en el material
             selectorMaterial.addEventListener('click', (e) => {
                 e.stopPropagation(); // Evitar que el clic se propague
-                mostrarListaColores(estado, claveAlmacen, material, selectorMaterial);
+                // Mostrar el selector nativo directamente
+                selector.style.display = 'block';
+                selector.focus();
+                selector.click(); // Abrir el dropdown nativo
             });
 
             // Cerrar selector al hacer clic fuera
@@ -296,85 +299,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
         contenedor.appendChild(selectorMaterial);
     } catch (error) {
         console.error('Error creando selector de material:', error);
-    }
-}
-
-// Función para mostrar lista de colores
-function mostrarListaColores(estado, claveAlmacen, material, selectorMaterial) {
-    try {
-        // Remover lista existente si hay una
-        const listaExistente = document.querySelector('.color-list');
-        if (listaExistente) {
-            listaExistente.remove();
-        }
-        
-        const overlayExistente = document.querySelector('.dropdown-overlay');
-        if (overlayExistente) {
-            overlayExistente.remove();
-        }
-
-        // Crear overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'dropdown-overlay';
-        document.body.appendChild(overlay);
-
-        // Crear lista de colores
-        const lista = document.createElement('div');
-        lista.className = 'color-list';
-        
-        const colorActual = estado.colorPorMaterialSeleccionado[claveAlmacen];
-        
-        lista.innerHTML = `
-            <div class="color-list-content">
-                <select id="color-list-select">
-                    <option value="">- Sin seleccionar -</option>
-                    <option value="blanco" ${colorActual === 'blanco' ? 'selected' : ''}>Blanco</option>
-                    <option value="verde" ${colorActual === 'verde' ? 'selected' : ''}>Verde</option>
-                    <option value="azul" ${colorActual === 'azul' ? 'selected' : ''}>Azul</option>
-                    <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
-                    <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
-                </select>
-            </div>
-        `;
-
-        document.body.appendChild(lista);
-
-        // Event listener para el select
-        const selectElement = lista.querySelector('#color-list-select');
-        
-        // Aplicar automáticamente al cambiar
-        selectElement.addEventListener('change', (e) => {
-            const colorSeleccionado = e.target.value;
-            if (colorSeleccionado) {
-                previsualizarUso(estado, claveAlmacen, colorSeleccionado, selectorMaterial);
-            }
-            cerrarLista();
-        });
-
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                cerrarLista();
-            }
-        });
-
-        // Cerrar con clic en overlay
-        overlay.addEventListener('click', () => {
-            cerrarLista();
-        });
-
-        function cerrarLista() {
-            lista.remove();
-            overlay.remove();
-        }
-
-        // Focus en el select
-        setTimeout(() => {
-            selectElement.focus();
-        }, 100);
-
-    } catch (error) {
-        console.error('Error mostrando lista de colores:', error);
     }
 }
 

@@ -804,34 +804,4 @@
     font-size: 14px;
 }
 
-/* Estilos responsive para lista de colores */
-.color-list {
-    min-width: 180px;
-    max-width: 280px;
-}
-
-.color-list-content {
-    padding: 12px;
-}
-
-.color-list select {
-    padding: 10px;
-    font-size: 14px;
-}
-
-/* Estilos responsive para lista en móviles pequeños */
-@media (max-width: 480px) {
-    .color-list {
-        min-width: 160px;
-        max-width: 260px;
-    }
-
-    .color-list-content {
-        padding: 10px;
-    }
-
-    .color-list select {
-        padding: 8px;
-        font-size: 13px;
-    }
-}
+/* Eliminar estilos de color-list que ya no se usan */
