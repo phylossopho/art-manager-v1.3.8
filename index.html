@@ -152,6 +152,10 @@
 
     <header>
         <h1>Gestor de Materiales y Creación de Equipos</h1>
+        <!-- Botón de instalación manual para testing -->
+        <button id="manual-install" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px; cursor: pointer; display: none;">
+            📱 Instalar App
+        </button>
     </header>
 
     <div class="top-section">
@@ -442,15 +446,48 @@
     const installBanner = document.getElementById('install-banner');
     const installButton = document.getElementById('install-button');
     const closeInstall = document.getElementById('close-install');
+    const manualInstall = document.getElementById('manual-install');
 
     if (installBanner && installButton && closeInstall) {
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA: beforeinstallprompt detectado');
             e.preventDefault();
             deferredPrompt = e;
+            
+            // Mostrar botón manual
+            if (manualInstall) {
+                manualInstall.style.display = 'inline-block';
+            }
+            
+            // Mostrar banner automático después de 3 segundos
             setTimeout(() => {
-                if (installBanner) installBanner.classList.add('show');
+                if (installBanner) {
+                    installBanner.classList.add('show');
+                    console.log('PWA: Banner mostrado');
+                }
             }, 3000);
         });
+
+        // Botón manual de instalación
+        if (manualInstall) {
+            manualInstall.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('PWA: Usuario instaló la app');
+                        } else {
+                            console.log('PWA: Usuario rechazó la instalación');
+                        }
+                        deferredPrompt = null;
+                        manualInstall.style.display = 'none';
+                    });
+                } else {
+                    console.log('PWA: No hay prompt de instalación disponible');
+                    alert('La instalación no está disponible en este momento');
+                }
+            });
+        }
 
         installButton.addEventListener('click', () => {
             if (!deferredPrompt) return;
@@ -458,9 +495,9 @@
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('Usuario instaló la PWA');
+                    console.log('PWA: Usuario instaló la app');
                 } else {
-                    console.log('Usuario rechazó la instalación');
+                    console.log('PWA: Usuario rechazó la instalación');
                 }
                 deferredPrompt = null;
             });
@@ -470,6 +507,15 @@
             installBanner.classList.remove('show');
         });
     }
+
+    // Verificar si la PWA ya está instalada
+    window.addEventListener('load', () => {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('PWA: La app ya está instalada');
+        } else {
+            console.log('PWA: La app no está instalada');
+        }
+    });
 </script>
 
 </body>
