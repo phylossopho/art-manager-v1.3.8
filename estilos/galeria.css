@@ -58,41 +58,6 @@
     transition: background 0.2s ease;
 }
 
-.delete-image:hover {
-    background: rgba(255, 0, 0, 1);
-}
-
-.floating-add-button {
-    position: fixed;
-    bottom: 110px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.floating-add-button:hover {
-    background-color: #45a049;
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-}
-
-.plus-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
 .gallery-item.loading {
     position: relative;
 }
@@ -185,14 +150,6 @@
         font-size: 12px;
     }
     
-    .floating-add-button {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-        bottom: 110px;
-        right: 20px;
-    }
-    
     .carousel-modal-content {
         width: 95vw;
         height: 70vh;
@@ -221,12 +178,9 @@
         font-size: 11px;
     }
     
-    .floating-add-button {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
-        bottom: 100px;
-        right: 15px;
+    .carousel-modal-content {
+        width: 95vw;
+        height: 70vh;
     }
 }
 

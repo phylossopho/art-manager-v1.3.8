@@ -434,37 +434,6 @@ header h1 {
     text-align: center;
 }
 
-.floating-add-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.floating-add-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
-}
-
-.plus-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
 /* Modales */
 .modal {
     display: none;
@@ -820,20 +789,25 @@ header h1 {
 
 .arte-back-container {
     text-align: center;
-    margin-top: 20px;
+    padding: 15px 0;
+    margin-top: 10px;
 }
 
 .arte-back-container .back-button {
-    background-color: #6c757d;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 25px;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .arte-back-container .back-button:hover {
-    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
