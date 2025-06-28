@@ -71,6 +71,14 @@ function configurarEventListeners(estado) {
             });
         }
 
+        // === BOTÓN VOLVER (MODAL GALERÍA) ===
+        const galleryBackButton = document.getElementById('gallery-back-button');
+        if (galleryBackButton) {
+            galleryBackButton.addEventListener('click', () => {
+                modales.cerrarModalConTransicion('gallery-modal');
+            });
+        }
+
         // === PESTAÑAS ===
         const tabButtons = document.querySelectorAll('.tab-button');
         tabButtons.forEach(button => {

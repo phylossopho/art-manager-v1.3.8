@@ -64,25 +64,25 @@
 
 .floating-add-button {
     position: fixed;
-    bottom: 30px;
+    bottom: 80px;
     right: 30px;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #2196F3;
+    background-color: #4CAF50;
     color: white;
     border: none;
     font-size: 24px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     transition: all 0.3s ease;
     z-index: 1000;
 }
 
 .floating-add-button:hover {
-    background-color: #1976D2;
+    background-color: #45a049;
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
 }
 
 .plus-icon {
@@ -170,7 +170,7 @@
         width: 50px;
         height: 50px;
         font-size: 20px;
-        bottom: 20px;
+        bottom: 70px;
         right: 20px;
     }
 }
@@ -186,7 +186,7 @@
         width: 45px;
         height: 45px;
         font-size: 18px;
-        bottom: 15px;
+        bottom: 60px;
         right: 15px;
     }
 }
@@ -307,4 +307,30 @@
         width: 95vw;
         height: 70vh;
     }
+}
+
+/* Contenedor del botón de volver en galería */
+.gallery-back-container {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 10px;
+}
+
+.gallery-back-container .back-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.gallery-back-container .back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }

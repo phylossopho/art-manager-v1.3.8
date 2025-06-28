@@ -585,13 +585,31 @@ function pastelizarColor(hex, factor = 0.7) {
     return `rgb(${r},${g},${b})`;
 }
 
+let fondoInicialAplicado = false;
+
 function aplicarFondoPorColorEquipo() {
     const colorSelect = document.getElementById('color-select');
     if (!colorSelect) return;
+    
+    // Si es la primera vez, mantener gris ónix por 2 segundos
+    if (!fondoInicialAplicado) {
+        document.body.style.background = '#2F2F2F'; // Gris ónix
+        fondoInicialAplicado = true;
+        
+        // Después de 2 segundos, aplicar el color del selector
+        setTimeout(() => {
+            const color = colorSelect.value;
+            const colorBase = mapaColores[color] || '#FFFFFF';
+            const pastel = pastelizarColor(colorBase, 0.7);
+            document.body.style.background = pastel;
+        }, 2000);
+        return;
+    }
+    
+    // Para cambios posteriores, aplicar inmediatamente
     const color = colorSelect.value;
     const colorBase = mapaColores[color] || '#FFFFFF';
     const pastel = pastelizarColor(colorBase, 0.7);
-    // Aplicar al body o al contenedor principal
     document.body.style.background = pastel;
 }
 
