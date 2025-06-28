@@ -272,6 +272,12 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
+            // Hacer el selector invisible pero funcional
+            selector.style.opacity = '0';
+            selector.style.position = 'absolute';
+            selector.style.pointerEvents = 'none';
+            selector.style.display = 'block';
+
             // Abrir lista nativa directamente al hacer clic en el material
             selectorMaterial.addEventListener('click', (e) => {
                 e.stopPropagation();

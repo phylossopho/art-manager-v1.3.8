@@ -371,7 +371,7 @@ header h1 {
 .material-selector select {
     width: 100%;
     margin-top: 5px;
-    display: none; /* Oculto por defecto */
+    /* El selector se maneja con JavaScript ahora */
 }
 
 .material-selector select[style*="display: block"] {
