@@ -279,26 +279,10 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             // Ocultar selector por defecto
             selector.style.display = 'none';
 
-            // Mostrar selector al hacer clic en el material
+            // Mostrar dropdown directamente al hacer clic en el material
             selectorMaterial.addEventListener('click', (e) => {
                 e.stopPropagation(); // Evitar que el clic se propague
-                const newDisplay = selector.style.display === 'none' ? 'block' : 'none';
-                selector.style.display = newDisplay;
-                
-                // Botón de prueba temporal
-                if (newDisplay === 'block') {
-                    const testButton = document.createElement('button');
-                    testButton.textContent = 'Test Color';
-                    testButton.style.position = 'absolute';
-                    testButton.style.top = '0';
-                    testButton.style.right = '0';
-                    testButton.style.zIndex = '100';
-                    testButton.onclick = (e) => {
-                        e.stopPropagation(); // Evitar que se propague
-                        previsualizarUso(estado, claveAlmacen, 'dorado', selectorMaterial);
-                    };
-                    selectorMaterial.appendChild(testButton);
-                }
+                mostrarDropdownColor(estado, claveAlmacen, material, selectorMaterial);
             });
 
             // Cerrar selector al hacer clic fuera
@@ -312,6 +296,99 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
         contenedor.appendChild(selectorMaterial);
     } catch (error) {
         console.error('Error creando selector de material:', error);
+    }
+}
+
+// Función para mostrar dropdown de color
+function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
+    try {
+        // Remover dropdown existente si hay uno
+        const dropdownExistente = document.querySelector('.color-dropdown');
+        if (dropdownExistente) {
+            dropdownExistente.remove();
+        }
+        
+        const overlayExistente = document.querySelector('.dropdown-overlay');
+        if (overlayExistente) {
+            overlayExistente.remove();
+        }
+
+        // Crear overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'dropdown-overlay';
+        document.body.appendChild(overlay);
+
+        // Crear dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'color-dropdown';
+        
+        const colorActual = estado.colorPorMaterialSeleccionado[claveAlmacen];
+        
+        dropdown.innerHTML = `
+            <div class="color-dropdown-header">
+                Seleccionar color para ${titulo}
+            </div>
+            <div class="color-dropdown-content">
+                <select id="dropdown-color-select">
+                    <option value="">- Sin seleccionar -</option>
+                    <option value="blanco" ${colorActual === 'blanco' ? 'selected' : ''}>Blanco</option>
+                    <option value="verde" ${colorActual === 'verde' ? 'selected' : ''}>Verde</option>
+                    <option value="azul" ${colorActual === 'azul' ? 'selected' : ''}>Azul</option>
+                    <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
+                    <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
+                </select>
+                <div class="color-dropdown-buttons">
+                    <button class="color-dropdown-btn cancel">Cancelar</button>
+                    <button class="color-dropdown-btn apply">Aplicar</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dropdown);
+
+        // Event listeners
+        const selectElement = dropdown.querySelector('#dropdown-color-select');
+        const cancelBtn = dropdown.querySelector('.cancel');
+        const applyBtn = dropdown.querySelector('.apply');
+
+        // Cerrar con Cancelar
+        cancelBtn.addEventListener('click', () => {
+            cerrarDropdown();
+        });
+
+        // Aplicar selección
+        applyBtn.addEventListener('click', () => {
+            const colorSeleccionado = selectElement.value;
+            if (colorSeleccionado) {
+                previsualizarUso(estado, claveAlmacen, colorSeleccionado, elementoOrigen);
+            }
+            cerrarDropdown();
+        });
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarDropdown();
+            }
+        });
+
+        // Cerrar con clic en overlay
+        overlay.addEventListener('click', () => {
+            cerrarDropdown();
+        });
+
+        function cerrarDropdown() {
+            dropdown.remove();
+            overlay.remove();
+        }
+
+        // Focus en el select
+        setTimeout(() => {
+            selectElement.focus();
+        }, 100);
+
+    } catch (error) {
+        console.error('Error mostrando dropdown de color:', error);
     }
 }
 
