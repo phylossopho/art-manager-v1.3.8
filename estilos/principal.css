@@ -962,8 +962,8 @@ header h1 {
     display: none;
 }
 
-/* Dropdown para selectores de color */
-.color-dropdown {
+/* Lista simple de colores */
+.color-list {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -978,7 +978,7 @@ header h1 {
     animation: dropdownFadeIn 0.3s ease;
 }
 
-.color-dropdown-header {
+.color-list-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 15px 20px;
@@ -988,11 +988,11 @@ header h1 {
     font-size: 16px;
 }
 
-.color-dropdown-content {
+.color-list-content {
     padding: 20px;
 }
 
-.color-dropdown select {
+.color-list select {
     width: 100%;
     padding: 12px;
     border: 2px solid #ddd;
@@ -1003,45 +1003,9 @@ header h1 {
     transition: border-color 0.3s ease;
 }
 
-.color-dropdown select:focus {
+.color-list select:focus {
     outline: none;
     border-color: #667eea;
-}
-
-.color-dropdown-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-}
-
-.color-dropdown-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.color-dropdown-btn.cancel {
-    background-color: #6c757d;
-    color: white;
-}
-
-.color-dropdown-btn.cancel:hover {
-    background-color: #5a6268;
-}
-
-.color-dropdown-btn.apply {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.color-dropdown-btn.apply:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Overlay para el fondo */

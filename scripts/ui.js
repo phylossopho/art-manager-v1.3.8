@@ -279,10 +279,10 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             // Ocultar selector por defecto
             selector.style.display = 'none';
 
-            // Mostrar dropdown directamente al hacer clic en el material
+            // Mostrar lista simple de colores al hacer clic en el material
             selectorMaterial.addEventListener('click', (e) => {
                 e.stopPropagation(); // Evitar que el clic se propague
-                mostrarDropdownColor(estado, claveAlmacen, material, selectorMaterial);
+                mostrarListaColores(estado, claveAlmacen, material, selectorMaterial);
             });
 
             // Cerrar selector al hacer clic fuera
@@ -299,13 +299,13 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
     }
 }
 
-// Función para mostrar dropdown de color
-function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
+// Función para mostrar lista de colores
+function mostrarListaColores(estado, claveAlmacen, material, selectorMaterial) {
     try {
-        // Remover dropdown existente si hay uno
-        const dropdownExistente = document.querySelector('.color-dropdown');
-        if (dropdownExistente) {
-            dropdownExistente.remove();
+        // Remover lista existente si hay una
+        const listaExistente = document.querySelector('.color-list');
+        if (listaExistente) {
+            listaExistente.remove();
         }
         
         const overlayExistente = document.querySelector('.dropdown-overlay');
@@ -318,18 +318,18 @@ function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
         overlay.className = 'dropdown-overlay';
         document.body.appendChild(overlay);
 
-        // Crear dropdown
-        const dropdown = document.createElement('div');
-        dropdown.className = 'color-dropdown';
+        // Crear lista de colores
+        const lista = document.createElement('div');
+        lista.className = 'color-list';
         
         const colorActual = estado.colorPorMaterialSeleccionado[claveAlmacen];
         
-        dropdown.innerHTML = `
-            <div class="color-dropdown-header">
-                Seleccionar color para ${titulo}
+        lista.innerHTML = `
+            <div class="color-list-header">
+                Seleccionar color para ${material}
             </div>
-            <div class="color-dropdown-content">
-                <select id="dropdown-color-select">
+            <div class="color-list-content">
+                <select id="color-list-select">
                     <option value="">- Sin seleccionar -</option>
                     <option value="blanco" ${colorActual === 'blanco' ? 'selected' : ''}>Blanco</option>
                     <option value="verde" ${colorActual === 'verde' ? 'selected' : ''}>Verde</option>
@@ -337,48 +337,37 @@ function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
                     <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
                     <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
                 </select>
-                <div class="color-dropdown-buttons">
-                    <button class="color-dropdown-btn cancel">Cancelar</button>
-                    <button class="color-dropdown-btn apply">Aplicar</button>
-                </div>
             </div>
         `;
 
-        document.body.appendChild(dropdown);
+        document.body.appendChild(lista);
 
-        // Event listeners
-        const selectElement = dropdown.querySelector('#dropdown-color-select');
-        const cancelBtn = dropdown.querySelector('.cancel');
-        const applyBtn = dropdown.querySelector('.apply');
-
-        // Cerrar con Cancelar
-        cancelBtn.addEventListener('click', () => {
-            cerrarDropdown();
-        });
-
-        // Aplicar selección
-        applyBtn.addEventListener('click', () => {
-            const colorSeleccionado = selectElement.value;
+        // Event listener para el select
+        const selectElement = lista.querySelector('#color-list-select');
+        
+        // Aplicar automáticamente al cambiar
+        selectElement.addEventListener('change', (e) => {
+            const colorSeleccionado = e.target.value;
             if (colorSeleccionado) {
-                previsualizarUso(estado, claveAlmacen, colorSeleccionado, elementoOrigen);
+                previsualizarUso(estado, claveAlmacen, colorSeleccionado, selectorMaterial);
             }
-            cerrarDropdown();
+            cerrarLista();
         });
 
         // Cerrar con Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                cerrarDropdown();
+                cerrarLista();
             }
         });
 
         // Cerrar con clic en overlay
         overlay.addEventListener('click', () => {
-            cerrarDropdown();
+            cerrarLista();
         });
 
-        function cerrarDropdown() {
-            dropdown.remove();
+        function cerrarLista() {
+            lista.remove();
             overlay.remove();
         }
 
@@ -388,7 +377,7 @@ function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
         }, 100);
 
     } catch (error) {
-        console.error('Error mostrando dropdown de color:', error);
+        console.error('Error mostrando lista de colores:', error);
     }
 }
 

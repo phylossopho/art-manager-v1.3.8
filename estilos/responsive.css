@@ -804,64 +804,44 @@
     font-size: 14px;
 }
 
-/* Estilos responsive para dropdown de color */
-.color-dropdown {
+/* Estilos responsive para lista de colores */
+.color-list {
     min-width: 180px;
     max-width: 280px;
 }
 
-.color-dropdown-header {
+.color-list-header {
     padding: 12px 16px;
     font-size: 14px;
 }
 
-.color-dropdown-content {
+.color-list-content {
     padding: 15px;
 }
 
-.color-dropdown select {
+.color-list select {
     padding: 10px;
     font-size: 14px;
 }
 
-.color-dropdown-buttons {
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.color-dropdown-btn {
-    padding: 6px 12px;
-    font-size: 13px;
-}
-
-/* Estilos responsive para dropdown en móviles pequeños */
+/* Estilos responsive para lista en móviles pequeños */
 @media (max-width: 480px) {
-    .color-dropdown {
+    .color-list {
         min-width: 160px;
         max-width: 260px;
     }
 
-    .color-dropdown-header {
+    .color-list-header {
         padding: 10px 14px;
         font-size: 13px;
     }
 
-    .color-dropdown-content {
+    .color-list-content {
         padding: 12px;
     }
 
-    .color-dropdown select {
+    .color-list select {
         padding: 8px;
         font-size: 13px;
-    }
-
-    .color-dropdown-buttons {
-        gap: 6px;
-        margin-top: 10px;
-    }
-
-    .color-dropdown-btn {
-        padding: 5px 10px;
-        font-size: 12px;
     }
 }
