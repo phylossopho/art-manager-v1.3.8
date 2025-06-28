@@ -8,20 +8,27 @@ function getEstadoApp() {
         // Buscar en módulos conocidos
         if (window.app && window.app.estadoApp) return window.app.estadoApp;
         // Fallback: crear objeto vacío
+        console.warn('No se pudo encontrar estadoApp global');
         return {};
     }
+    console.log('EstadoApp encontrado:', estado);
+    console.log('Materiales en estadoApp:', Object.keys(estado.almacenMateriales || {}).length);
+    console.log('Galería en estadoApp:', (estado.imagenesGaleria || []).length);
     return estado;
 }
 
 // Utilidad para obtener simulaciones (equiposSimulados)
 function getSimulaciones() {
     if (window.equiposSimulados && Array.isArray(window.equiposSimulados)) {
+        console.log('Simulaciones encontradas:', window.equiposSimulados.length);
         return window.equiposSimulados;
     }
     // Buscar en arte.js si está como export
     if (window.arte && Array.isArray(window.arte.equiposSimulados)) {
+        console.log('Simulaciones encontradas en arte:', window.arte.equiposSimulados.length);
         return window.arte.equiposSimulados;
     }
+    console.warn('No se encontraron simulaciones');
     return [];
 }
 
@@ -33,6 +40,10 @@ function refrescarUI() {
         location.reload();
     }
 }
+
+// Exponer funciones globalmente para reconstrucción
+window.construirMapaMaterialAEquipo = window.construirMapaMaterialAEquipo || function() {};
+window.inicializarAlmacenamientoMateriales = window.inicializarAlmacenamientoMateriales || function() {};
 
 // Crear el FAB y el menú flotante
 function crearFABBackup() {
@@ -78,10 +89,23 @@ function crearFABBackup() {
     // Guardar datos (descargar JSON)
     fabDownload.addEventListener('click', function() {
         try {
+            console.log('=== INICIANDO BACKUP ===');
+            
             // Usar solo los datos en memoria
             let materiales = getEstadoApp().almacenMateriales || {};
             let galeria = getEstadoApp().imagenesGaleria || [];
             let simulaciones = getSimulaciones() || [];
+
+            console.log('Datos a guardar:');
+            console.log('- Materiales:', Object.keys(materiales).length);
+            console.log('- Galería:', galeria.length);
+            console.log('- Simulaciones:', simulaciones.length);
+
+            // Verificar que hay datos para guardar
+            if (Object.keys(materiales).length === 0 && galeria.length === 0 && simulaciones.length === 0) {
+                alert('No hay datos para guardar. Asegúrate de tener materiales, imágenes o simulaciones antes de hacer backup.');
+                return;
+            }
 
             // Confirmar que las rutas de galería sean solo strings
             galeria = galeria.map(img => (typeof img === 'string' ? img : (img.ruta || img.url || '')));
@@ -107,8 +131,11 @@ function crearFABBackup() {
             a.download = nombre + '-' + fecha + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            alert('¡Datos guardados exitosamente!');
+            
+            console.log('Backup creado exitosamente:', nombre + '-' + fecha + '.json');
+            alert('¡Datos guardados exitosamente!\n\nMateriales: ' + Object.keys(materiales).length + '\nGalería: ' + galeria.length + '\nSimulaciones: ' + simulaciones.length);
         } catch (e) {
+            console.error('Error al guardar:', e);
             alert('Error al guardar los datos: ' + e.message);
         }
         fabMenu.style.display = 'none';

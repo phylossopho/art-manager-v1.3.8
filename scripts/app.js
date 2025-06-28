@@ -30,6 +30,9 @@ const estadoApp = {
     intervaloAutoguardado: null
 };
 
+// Exponer globalmente para que backup.js pueda acceder
+window.estadoApp = estadoApp;
+
 function iniciarApp() {
     try {
         // Asignar datos importantes al estado
