@@ -129,7 +129,7 @@
     <div id="install-banner">
         <div>
             <strong>Instalar App</strong>
-            <p>Mejor experiencia</p>
+            <p>Para una mejor experiencia</p>
         </div>
         <div>
             <button id="close-install">✕</button>
@@ -356,10 +356,10 @@
         
         <!-- Iconos de redes sociales -->
         <div class="social-icons">
-            <a href="https://chat.whatsapp.com/DN5X1L7BqiJAMk4llRkLrN" target="_blank" class="social-icon" title="Grupo de WhatsApp - ⚔ 𝕮𝖔𝖓𝖖𝖚𝖎𝖘𝖙𝖆𝖉𝖔𝖗𝖊𝖘 ⚔">
+            <a href="https://chat.whatsapp.com/DN5X1L7BqiJAMk4llRkLrN" target="_blank" class="social-icon" title="Grupo de WhatsApp - ⚔ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔">
                 <img src="images/whatsapp.png" alt="WhatsApp" onerror="this.style.display='none'">
             </a>
-            <a href="https://t.me/+MJ8GLGcdPX9iMTcx" target="_blank" class="social-icon" title="Grupo de Telegram - ⚔️ 𝕮𝖔𝖓𝖖𝖚𝖎𝖘𝖙𝖆𝖉𝖔𝖗𝖊𝖘 ⚔️">
+            <a href="https://t.me/+MJ8GLGcdPX9iMTcx" target="_blank" class="social-icon" title="Grupo de Telegram - ⚔️ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔️">
                 <img src="images/telegram.png" alt="Telegram" onerror="this.style.display='none'">
             </a>
             <a href="https://www.youtube.com/@DecodificandoDH" target="_blank" class="social-icon" title="Canal de YouTube - Decodificando DH">
@@ -539,19 +539,50 @@
         // Verificar si está en modo standalone (instalada)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
         const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
         
-        console.log('PWA: Estado de instalación:', { isStandalone, isInApp });
+        console.log('PWA: Estado de instalación:', { isStandalone, isInApp, isInstalled });
         
-        if (isStandalone || isInApp) {
-            console.log('PWA: La app ya está instalada');
+        if (isStandalone || isInApp || isInstalled) {
+            console.log('PWA: La app ya está instalada - ocultando banner');
             // Ocultar el banner si ya está instalada
             if (installBanner) {
                 installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
             }
         } else {
             console.log('PWA: La app no está instalada');
         }
     });
+
+    // Verificación adicional al cambiar de pestaña o ventana
+    window.addEventListener('focus', () => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+        
+        if (isStandalone || isInApp || isInstalled) {
+            if (installBanner) {
+                installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
+            }
+        }
+    });
+
+    // Verificación periódica cada 5 segundos
+    setInterval(() => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
+        
+        if (isStandalone || isInApp || isInstalled) {
+            if (installBanner && installBanner.style.display !== 'none') {
+                console.log('PWA: Detectada instalación durante verificación periódica');
+                installBanner.classList.remove('visible', 'show');
+                installBanner.style.display = 'none';
+            }
+        }
+    }, 5000);
 
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
