@@ -47,13 +47,13 @@ function crearFABBackup() {
                 <rect x="9" y="15" width="6" height="1.5" rx="0.75" fill="#fff"/>
             </svg>
         </button>
-        <div id="fab-save-menu" style="display: none; position: absolute; top: 115%; right: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); min-width: 140px; overflow: hidden; border: 1px solid #e0e0e0;">
-            <button id="fab-save-download" style="width: 100%; padding: 10px 16px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l-4-4m4 4l4-4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="2" rx="1" fill="#1976d2"/></svg> Guardar</button>
-            <button id="fab-save-upload" style="width: 100%; padding: 10px 16px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20V8m0 0l-4 4m4-4l4 4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="16" height="2" rx="1" fill="#1976d2"/></svg> Abrir</button>
-        </div>
-    `;
+        <div id="fab-save-menu" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); min-width: 180px; overflow: hidden; border: 1px solid #e0e0e0; z-index: 99999;">
+            <button id="fab-save-download" style="width: 100%; padding: 16px 24px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 18px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l-4-4m4 4l4-4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="2" rx="1" fill="#1976d2"/></svg> Guardar</button>
+                <button id="fab-save-upload" style="width: 100%; padding: 16px 24px; background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 18px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 20V8m0 0l-4 4m4-4l4 4" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="16" height="2" rx="1" fill="#1976d2"/></svg> Abrir</button>
+            </div>
+        `;
 
     // Referencias
     const fabSave = container.querySelector('#fab-save');
@@ -131,6 +131,19 @@ function crearFABBackup() {
                         if (estado) {
                             estado.almacenMateriales = data.materiales || {};
                             estado.imagenesGaleria = data.galeria || [];
+                            // Reconstruir mapas y estructuras
+                            if (window.datos && window.datos.datosMateriales) {
+                                estado.materialesData = window.datos.datosMateriales;
+                            }
+                            if (window.datos && window.datos.mapaColores) {
+                                estado.mapaColores = window.datos.mapaColores;
+                            }
+                            if (window.construirMapaMaterialAEquipo) {
+                                window.construirMapaMaterialAEquipo(estado);
+                            }
+                            if (window.inicializarAlmacenamientoMateriales) {
+                                window.inicializarAlmacenamientoMateriales(estado);
+                            }
                         }
                         // Restaurar simulaciones en memoria
                         if (window.equiposSimulados && Array.isArray(data.simulaciones)) {
