@@ -91,35 +91,52 @@ td {
     min-width: 60px; /* Ancho mínimo para cada celda */
 }
 
-/* Primera columna (imagen) - más estrecha */
-#materials-table th:nth-child(1),
-#materials-table td:nth-child(1),
-.tab-content th:nth-child(1),
-.tab-content td:nth-child(1) {
-    width: 80px;
-    min-width: 80px;
-    max-width: 80px;
-    text-align: center;
+/* === CLASES DE COLUMNAS === */
+.col-imagen {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    text-align: center !important;
 }
 
-/* Segunda columna (nombre del material) - más ancha */
-#materials-table th:nth-child(2),
-#materials-table td:nth-child(2),
-.tab-content th:nth-child(2),
-.tab-content td:nth-child(2) {
-    min-width: 120px;
-    text-align: left;
+.col-nombre {
+    min-width: 120px !important;
+    text-align: left !important;
 }
 
-/* Columnas de colores - ancho fijo */
-#materials-table th:nth-child(n+3),
-#materials-table td:nth-child(n+3),
-.tab-content th:nth-child(n+3),
-.tab-content td:nth-child(n+3) {
-    width: 80px;
-    min-width: 80px;
-    max-width: 80px;
-    text-align: center;
+.col-color {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    text-align: center !important;
+}
+
+.col-clase {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    text-align: center !important;
+}
+
+.col-nivel {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    text-align: center !important;
+}
+
+.col-material {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+    text-align: center !important;
+}
+
+.col-accion {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    text-align: center !important;
 }
 
 /* Tabla de leyenda de conversión */
@@ -272,29 +289,44 @@ td {
     }
     
     /* Reducir anchos en móviles */
-    #materials-table th:nth-child(1),
-    #materials-table td:nth-child(1),
-    .tab-content th:nth-child(1),
-    .tab-content td:nth-child(1) {
-        width: 60px;
-        min-width: 60px;
-        max-width: 60px;
+    .col-imagen {
+        width: 60px !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
     }
     
-    #materials-table th:nth-child(2),
-    #materials-table td:nth-child(2),
-    .tab-content th:nth-child(2),
-    .tab-content td:nth-child(2) {
-        min-width: 80px;
+    .col-nombre {
+        min-width: 80px !important;
     }
     
-    #materials-table th:nth-child(n+3),
-    #materials-table td:nth-child(n+3),
-    .tab-content th:nth-child(n+3),
-    .tab-content td:nth-child(n+3) {
-        width: 60px;
-        min-width: 60px;
-        max-width: 60px;
+    .col-color {
+        width: 60px !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
+    }
+    
+    .col-clase {
+        width: 80px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+    }
+    
+    .col-nivel {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
+    }
+    
+    .col-material {
+        width: 70px !important;
+        min-width: 70px !important;
+        max-width: 70px !important;
+    }
+    
+    .col-accion {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
     
     .material-cell img {
@@ -352,29 +384,45 @@ td {
         font-size: 10px;
     }
     
-    #materials-table th:nth-child(1),
-    #materials-table td:nth-child(1),
-    .tab-content th:nth-child(1),
-    .tab-content td:nth-child(1) {
-        width: 50px;
-        min-width: 50px;
-        max-width: 50px;
+    /* Reducir aún más en pantallas muy pequeñas */
+    .col-imagen {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
     
-    #materials-table th:nth-child(2),
-    #materials-table td:nth-child(2),
-    .tab-content th:nth-child(2),
-    .tab-content td:nth-child(2) {
-        min-width: 60px;
+    .col-nombre {
+        min-width: 60px !important;
     }
     
-    #materials-table th:nth-child(n+3),
-    #materials-table td:nth-child(n+3),
-    .tab-content th:nth-child(n+3),
-    .tab-content td:nth-child(n+3) {
-        width: 50px;
-        min-width: 50px;
-        max-width: 50px;
+    .col-color {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
+    }
+    
+    .col-clase {
+        width: 60px !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
+    }
+    
+    .col-nivel {
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+    }
+    
+    .col-material {
+        width: 60px !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
+    }
+    
+    .col-accion {
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
     }
     
     .material-cell img {

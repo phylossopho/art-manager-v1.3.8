@@ -14,14 +14,19 @@ export function actualizarTablaConversion(estado, tipoConversion) {
 
         // Crear tabla
         const tabla = document.createElement('table');
+        tabla.className = 'conversion-table';
         
         // Encabezados
         const encabezados = ["", "Material", "Dorado", "Morado", "Azul", "Verde", "Blanco"];
         const filaEncabezados = document.createElement('tr');
 
-        encabezados.forEach(encabezado => {
+        encabezados.forEach((encabezado, index) => {
             const th = document.createElement('th');
             th.textContent = encabezado;
+            // Agregar clases específicas para cada columna
+            if (index === 0) th.className = 'col-imagen';
+            else if (index === 1) th.className = 'col-nombre';
+            else th.className = 'col-color';
             filaEncabezados.appendChild(th);
         });
 
@@ -63,6 +68,7 @@ export function actualizarTablaConversion(estado, tipoConversion) {
 
             // Celda de imagen
             const celdaImagen = document.createElement('td');
+            celdaImagen.className = 'col-imagen';
             const imagen = document.createElement('img');
             const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             imagen.src = `images/${nombreImagen}.png`;
@@ -79,6 +85,7 @@ export function actualizarTablaConversion(estado, tipoConversion) {
 
             // Celda de nombre del material
             const celdaNombre = document.createElement('td');
+            celdaNombre.className = 'col-nombre';
             celdaNombre.textContent = material;
             fila.appendChild(celdaNombre);
 
@@ -96,6 +103,7 @@ export function actualizarTablaConversion(estado, tipoConversion) {
             // Celdas de colores
             ['dorado', 'morado', 'azul', 'verde', 'blanco'].forEach(color => {
                 const celdaColor = document.createElement('td');
+                celdaColor.className = 'col-color';
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.className = 'color-input';

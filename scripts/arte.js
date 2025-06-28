@@ -107,6 +107,7 @@ export function generarTablaArte() {
     }
 
     const table = document.createElement('table');
+    table.className = 'arte-table-table';
 
     // Encabezados con 10 columnas (agregamos Eliminar)
     const encabezados = [
@@ -116,9 +117,16 @@ export function generarTablaArte() {
     ];
     const filaEncabezados = document.createElement('tr');
 
-    encabezados.forEach(encabezado => {
+    encabezados.forEach((encabezado, index) => {
         const th = document.createElement('th');
         th.textContent = encabezado;
+        // Agregar clases específicas para cada columna
+        if (index === 0) th.className = 'col-imagen';
+        else if (index === 1) th.className = 'col-nombre';
+        else if (index === 2) th.className = 'col-clase';
+        else if (index === 3) th.className = 'col-nivel';
+        else if (index >= 4 && index <= 8) th.className = 'col-material';
+        else th.className = 'col-accion';
         filaEncabezados.appendChild(th);
     });
     table.appendChild(filaEncabezados);
@@ -168,6 +176,7 @@ export function generarTablaArte() {
         const fila = document.createElement('tr');
         // 1. Imagen del equipo con fondo de color
         const celdaEquipoImg = document.createElement('td');
+        celdaEquipoImg.className = 'col-imagen';
         if (equipo.color && mapaColores[equipo.color]) {
             celdaEquipoImg.style.backgroundColor = mapaColores[equipo.color];
         }
@@ -189,25 +198,33 @@ export function generarTablaArte() {
 
         // 2. Tipo de equipo (texto)
         const celdaTipo = document.createElement('td');
+        celdaTipo.className = 'col-nombre';
         celdaTipo.textContent = equipo.equipo;
         fila.appendChild(celdaTipo);
 
         // 3. Clase
         const celdaClase = document.createElement('td');
+        celdaClase.className = 'col-clase';
         celdaClase.textContent = equipo.clase;
         fila.appendChild(celdaClase);
 
         // 4. Nivel
         const celdaNivel = document.createElement('td');
+        celdaNivel.className = 'col-nivel';
         celdaNivel.textContent = equipo.nivel;
         fila.appendChild(celdaNivel);
 
         // 5. Material 3
-        fila.appendChild(crearCeldaMaterial(equipo.material3, equipo.material3Color));
+        const celdaMaterial3 = crearCeldaMaterial(equipo.material3, equipo.material3Color);
+        celdaMaterial3.className = 'col-material';
+        fila.appendChild(celdaMaterial3);
         // 6. Material 1
-        fila.appendChild(crearCeldaMaterial(equipo.material1, equipo.material1Color));
+        const celdaMaterial1 = crearCeldaMaterial(equipo.material1, equipo.material1Color);
+        celdaMaterial1.className = 'col-material';
+        fila.appendChild(celdaMaterial1);
         // 7. Base
         const celdaBase = document.createElement('td');
+        celdaBase.className = 'col-material';
         if (equipo.base && equipo.base !== 'N/A') {
             if (mapaColores[equipo.base]) {
                 celdaBase.style.backgroundColor = mapaColores[equipo.base];
@@ -240,12 +257,17 @@ export function generarTablaArte() {
         }
         fila.appendChild(celdaBase);
         // 8. Material 2
-        fila.appendChild(crearCeldaMaterial(equipo.material2, equipo.material2Color));
+        const celdaMaterial2 = crearCeldaMaterial(equipo.material2, equipo.material2Color);
+        celdaMaterial2.className = 'col-material';
+        fila.appendChild(celdaMaterial2);
         // 9. Material 4
-        fila.appendChild(crearCeldaMaterial(equipo.material4, equipo.material4Color));
+        const celdaMaterial4 = crearCeldaMaterial(equipo.material4, equipo.material4Color);
+        celdaMaterial4.className = 'col-material';
+        fila.appendChild(celdaMaterial4);
 
         // 10. Columna Eliminar
         const celdaEliminar = document.createElement('td');
+        celdaEliminar.className = 'col-accion';
         celdaEliminar.style.textAlign = 'center';
         const btnEliminar = document.createElement('img');
         btnEliminar.src = 'images/borrarsim.png';

@@ -28,12 +28,16 @@ export function actualizarTabla(estado) {
 
     try {
         const tabla = document.createElement('table');
+        tabla.className = 'materials-table-table';
         const encabezados = ["", "Material", "Dorado", "Morado", "Azul", "Verde", "Blanco"];
         const filaEncabezados = document.createElement('tr');
 
-        encabezados.forEach(encabezado => {
+        encabezados.forEach((encabezado, index) => {
             const th = document.createElement('th');
             th.textContent = encabezado;
+            th.className = 'col-color';
+            if (index === 0) th.className = 'col-imagen';
+            else if (index === 1) th.className = 'col-nombre';
             filaEncabezados.appendChild(th);
         });
 
@@ -96,6 +100,7 @@ export function actualizarTabla(estado) {
 
             // Celda de imagen
             const celdaImagen = document.createElement('td');
+            celdaImagen.className = 'col-imagen';
             const imagen = document.createElement('img');
             const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             imagen.src = `images/${nombreImagen}.png`;
@@ -112,12 +117,14 @@ export function actualizarTabla(estado) {
 
             // Celda de nombre
             const celdaNombre = document.createElement('td');
+            celdaNombre.className = 'col-nombre';
             celdaNombre.textContent = material;
             fila.appendChild(celdaNombre);
 
             // Celdas de colores
             ['dorado', 'morado', 'azul', 'verde', 'blanco'].forEach(color => {
                 const celdaColor = document.createElement('td');
+                celdaColor.className = 'col-color';
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.className = 'color-input';
