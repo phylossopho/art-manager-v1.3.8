@@ -274,10 +274,29 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             // Ocultar selector por defecto
             selector.style.display = 'none';
+            console.log('Selector oculto por defecto:', selector.style.display);
 
             // Mostrar selector al hacer clic en el material
             selectorMaterial.addEventListener('click', () => {
-                selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+                console.log('Clic en selector material:', selector.style.display);
+                const newDisplay = selector.style.display === 'none' ? 'block' : 'none';
+                selector.style.display = newDisplay;
+                console.log('Nuevo display:', newDisplay);
+                
+                // Botón de prueba temporal
+                if (newDisplay === 'block') {
+                    const testButton = document.createElement('button');
+                    testButton.textContent = 'Test Color';
+                    testButton.style.position = 'absolute';
+                    testButton.style.top = '0';
+                    testButton.style.right = '0';
+                    testButton.style.zIndex = '100';
+                    testButton.onclick = () => {
+                        console.log('Test button clicked');
+                        previsualizarUso(estado, claveAlmacen, 'dorado', selectorMaterial);
+                    };
+                    selectorMaterial.appendChild(testButton);
+                }
             });
 
             // Cerrar selector al hacer clic fuera

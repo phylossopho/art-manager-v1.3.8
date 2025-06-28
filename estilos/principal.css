@@ -374,6 +374,14 @@ header h1 {
     display: none; /* Oculto por defecto */
 }
 
+.material-selector select[style*="display: block"] {
+    display: block !important;
+}
+
+.material-selector select[style*="display:inline-block"] {
+    display: block !important;
+}
+
 .base-selector {
     width: 120px;
     min-height: 140px;
@@ -402,21 +410,23 @@ header h1 {
 }
 
 .base-selector .base-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
-    line-height: 1.2;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+    padding: 1px 4px !important;
+    border-radius: 2px !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .base-selector {
