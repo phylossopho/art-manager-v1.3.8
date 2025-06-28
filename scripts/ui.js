@@ -549,7 +549,7 @@ export function cambiarPestana(nombrePestana) {
             
             // Animar la entrada
             setTimeout(() => {
-                contenidoNuevo.style.transition = 'all 0.3s ease';
+                contenidoNuevo.style.transition = 'all 0.6s ease';
                 contenidoNuevo.style.opacity = '1';
                 contenidoNuevo.style.transform = 'translateY(0)';
             }, 10);
