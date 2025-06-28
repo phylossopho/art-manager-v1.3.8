@@ -451,6 +451,142 @@
     
     // También ejecutar al cargar la página por si ya está en la posición correcta
     window.addEventListener('load', handleSocialIconsAnimation);
+
+    // === FUNCIONES DE DEBUGGING PARA LOCALSTORAGE ===
+    // Estas funciones están disponibles en la consola del navegador para debugging
+    
+    // Función para verificar el estado del localStorage
+    window.debugLocalStorage = function() {
+        console.log('=== DEBUG LOCALSTORAGE ===');
+        
+        // Verificar disponibilidad
+        try {
+            const test = '__test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            console.log('✅ localStorage está disponible');
+        } catch (e) {
+            console.error('❌ localStorage NO está disponible:', e);
+            return;
+        }
+        
+        // Verificar datos guardados
+        const materiales = localStorage.getItem('almacenMateriales');
+        const imagenes = localStorage.getItem('imagenesGaleria');
+        const equipos = localStorage.getItem('equiposSimulados');
+        
+        console.log('📦 Materiales guardados:', materiales ? 'SÍ' : 'NO');
+        if (materiales) {
+            try {
+                const parsed = JSON.parse(materiales);
+                console.log('   - Cantidad de materiales:', Object.keys(parsed).length);
+                console.log('   - Tamaño de datos:', (materiales.length / 1024).toFixed(2) + ' KB');
+            } catch (e) {
+                console.error('   - Error al parsear materiales:', e);
+            }
+        }
+        
+        console.log('🖼️ Imágenes guardadas:', imagenes ? 'SÍ' : 'NO');
+        if (imagenes) {
+            try {
+                const parsed = JSON.parse(imagenes);
+                console.log('   - Cantidad de imágenes:', parsed.length);
+                console.log('   - Tamaño de datos:', (imagenes.length / 1024).toFixed(2) + ' KB');
+            } catch (e) {
+                console.error('   - Error al parsear imágenes:', e);
+            }
+        }
+        
+        console.log('⚔️ Equipos simulados:', equipos ? 'SÍ' : 'NO');
+        if (equipos) {
+            try {
+                const parsed = JSON.parse(equipos);
+                console.log('   - Cantidad de equipos:', parsed.length);
+                console.log('   - Tamaño de datos:', (equipos.length / 1024).toFixed(2) + ' KB');
+            } catch (e) {
+                console.error('   - Error al parsear equipos:', e);
+            }
+        }
+        
+        // Verificar espacio disponible
+        let totalSize = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                totalSize += localStorage[key].length;
+            }
+        }
+        console.log('💾 Espacio total usado:', (totalSize / 1024).toFixed(2) + ' KB');
+        console.log('📊 Espacio disponible (estimado): ~5-10 MB');
+    };
+    
+    // Función para limpiar localStorage
+    window.clearLocalStorage = function() {
+        if (confirm('¿Estás seguro de que quieres limpiar todos los datos guardados? Esta acción no se puede deshacer.')) {
+            localStorage.clear();
+            console.log('🗑️ localStorage limpiado completamente');
+            alert('Datos limpiados. Recarga la página para ver los cambios.');
+        }
+    };
+    
+    // Función para exportar datos del localStorage
+    window.exportLocalStorage = function() {
+        const data = {
+            materiales: localStorage.getItem('almacenMateriales'),
+            imagenes: localStorage.getItem('imagenesGaleria'),
+            equipos: localStorage.getItem('equiposSimulados'),
+            timestamp: new Date().toISOString()
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'localStorage-backup-' + new Date().toISOString().split('T')[0] + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        console.log('💾 Backup de localStorage exportado');
+    };
+    
+    // Función para importar datos al localStorage
+    window.importLocalStorage = function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (data.materiales) localStorage.setItem('almacenMateriales', data.materiales);
+                        if (data.imagenes) localStorage.setItem('imagenesGaleria', data.imagenes);
+                        if (data.equipos) localStorage.setItem('equiposSimulados', data.equipos);
+                        
+                        console.log('📥 Datos importados exitosamente');
+                        alert('Datos importados. Recarga la página para ver los cambios.');
+                    } catch (error) {
+                        console.error('❌ Error al importar datos:', error);
+                        alert('Error al importar datos. Verifica que el archivo sea válido.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+        input.click();
+    };
+    
+    // Mostrar información de debugging al cargar
+    window.addEventListener('load', () => {
+        console.log('🔧 Funciones de debugging disponibles:');
+        console.log('   - debugLocalStorage() - Verificar estado del localStorage');
+        console.log('   - clearLocalStorage() - Limpiar todos los datos');
+        console.log('   - exportLocalStorage() - Exportar backup de datos');
+        console.log('   - importLocalStorage() - Importar backup de datos');
+        console.log('');
+        console.log('💡 Ejecuta debugLocalStorage() para ver el estado actual');
+    });
 </script>
 
 </body>

@@ -1,8 +1,47 @@
 // scripts/arte.js - INICIO
 import { mapaColores } from './datos.js';
+import * as modales from './modales.js';
 
-// Array para almacenar los equipos simulados
-let equiposSimulados = JSON.parse(localStorage.getItem('equiposSimulados')) || [];
+// Función para verificar si localStorage está disponible
+function isLocalStorageAvailable() {
+    try {
+        const test = '__localStorage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('localStorage no está disponible:', e);
+        return false;
+    }
+}
+
+let equiposSimulados = [];
+
+// Inicializar equipos simulados al cargar el módulo
+try {
+    if (isLocalStorageAvailable()) {
+        const guardados = localStorage.getItem('equiposSimulados');
+        if (guardados) {
+            const parsed = JSON.parse(guardados);
+            if (Array.isArray(parsed)) {
+                equiposSimulados = parsed;
+                console.log('Equipos simulados cargados desde localStorage:', equiposSimulados.length, 'equipos');
+            } else {
+                console.warn('Datos de equipos simulados no son válidos, usando array vacío');
+                equiposSimulados = [];
+            }
+        } else {
+            console.log('No se encontraron equipos simulados en localStorage, usando array vacío');
+            equiposSimulados = [];
+        }
+    } else {
+        console.warn('localStorage no disponible para equipos simulados, usando array vacío');
+        equiposSimulados = [];
+    }
+} catch (e) {
+    console.error('Error al cargar equipos simulados desde localStorage:', e);
+    equiposSimulados = [];
+}
 
 export function agregarEquipoSimulado(equipo) {
     equiposSimulados.unshift(equipo); // Agregar al inicio
@@ -188,23 +227,43 @@ export function generarTablaArte() {
 // Guardar en localStorage
 function guardarEquiposEnLocalStorage() {
     try {
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible para equipos simulados, no se pueden guardar');
+            return;
+        }
+
         localStorage.setItem('equiposSimulados', JSON.stringify(equiposSimulados));
+        console.log('Equipos simulados guardados exitosamente en localStorage:', equiposSimulados.length, 'equipos');
     } catch (e) {
-        console.error('Error guardando equipos:', e);
+        console.error('Error al guardar equipos simulados en localStorage:', e);
     }
 }
 
 // Cargar desde localStorage
 export function cargarEquiposDesdeLocalStorage() {
     try {
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible para equipos simulados');
+            return;
+        }
+
         const guardados = localStorage.getItem('equiposSimulados');
         if (guardados) {
-            // Limpiar el array actual y cargar los guardados
-            equiposSimulados.length = 0;
-            equiposSimulados.push(...JSON.parse(guardados));
+            const parsed = JSON.parse(guardados);
+            if (Array.isArray(parsed)) {
+                equiposSimulados = parsed;
+                console.log('Equipos simulados cargados exitosamente desde localStorage:', equiposSimulados.length, 'equipos');
+            } else {
+                console.warn('Datos de equipos simulados no son válidos, usando array vacío');
+                equiposSimulados = [];
+            }
+        } else {
+            console.log('No se encontraron equipos simulados en localStorage, usando array vacío');
+            equiposSimulados = [];
         }
     } catch (e) {
-        console.error('Error cargando equipos:', e);
+        console.error('Error al cargar equipos simulados desde localStorage:', e);
+        equiposSimulados = [];
     }
 }
 // scripts/arte.js - FIN

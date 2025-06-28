@@ -1,14 +1,72 @@
 // scripts/galeria.js
 import * as modales from './modales.js';
 
+// Función para verificar si localStorage está disponible
+function isLocalStorageAvailable() {
+    try {
+        const test = '__localStorage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('localStorage no está disponible:', e);
+        return false;
+    }
+}
+
 export function cargarImagenesGuardadas(estado) {
     try {
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible para galería, usando array vacío');
+            estado.imagenesGaleria = [];
+            return;
+        }
+
         const imagenesGuardadas = localStorage.getItem('imagenesGaleria');
+        console.log('Intentando cargar imágenes desde localStorage:', imagenesGuardadas ? 'datos encontrados' : 'sin datos');
+        
         if (imagenesGuardadas) {
-            estado.imagenesGaleria = JSON.parse(imagenesGuardadas);
+            const parsed = JSON.parse(imagenesGuardadas);
+            if (Array.isArray(parsed)) {
+                estado.imagenesGaleria = parsed;
+                console.log('Imágenes cargadas exitosamente desde localStorage:', estado.imagenesGaleria.length, 'imágenes');
+            } else {
+                console.warn('Datos de imágenes en localStorage no son válidos, usando array vacío');
+                estado.imagenesGaleria = [];
+            }
+        } else {
+            console.log('No se encontraron imágenes guardadas en localStorage, usando array vacío');
+            estado.imagenesGaleria = [];
         }
     } catch (e) {
-        console.error('Error al cargar imágenes:', e);
+        console.error('Error al cargar imágenes desde localStorage:', e);
+        estado.imagenesGaleria = [];
+    }
+}
+
+export function guardarImagenesEnLocalStorage(estado) {
+    try {
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible para galería, no se pueden guardar las imágenes');
+            return;
+        }
+
+        localStorage.setItem('imagenesGaleria', JSON.stringify(estado.imagenesGaleria));
+        console.log('Imágenes guardadas exitosamente en localStorage:', estado.imagenesGaleria.length, 'imágenes');
+    } catch (e) {
+        console.error('Error al guardar imágenes en localStorage:', e);
+    }
+}
+
+export function eliminarImagen(index, estado) {
+    try {
+        if (index >= 0 && index < estado.imagenesGaleria.length) {
+            estado.imagenesGaleria.splice(index, 1);
+            guardarImagenesEnLocalStorage(estado);
+            console.log('Imagen eliminada exitosamente del localStorage');
+        }
+    } catch (e) {
+        console.error('Error al eliminar imagen:', e);
     }
 }
 
@@ -37,7 +95,7 @@ export function abrirGaleria(estado) {
         botonEliminar.innerHTML = '×';
         botonEliminar.addEventListener('click', (e) => {
             e.stopPropagation();
-            eliminarImagen(estado, index);
+            eliminarImagen(index, estado);
         });
 
         controles.appendChild(botonEliminar);
@@ -54,17 +112,11 @@ export function agregarImagenAGaleria(archivo, estado) {
 
     lector.onload = function(e) {
         estado.imagenesGaleria.push(e.target.result);
-        localStorage.setItem('imagenesGaleria', JSON.stringify(estado.imagenesGaleria));
+        guardarImagenesEnLocalStorage(estado);
         abrirGaleria(estado);
     };
 
     lector.readAsDataURL(archivo);
-}
-
-function eliminarImagen(estado, index) {
-    estado.imagenesGaleria.splice(index, 1);
-    localStorage.setItem('imagenesGaleria', JSON.stringify(estado.imagenesGaleria));
-    abrirGaleria(estado);
 }
 
 export function mostrarImagenCarrusel(estado) {

@@ -69,30 +69,72 @@ export function inicializarAlmacenamientoMateriales(estado) {
     }
 }
 
+// Función para verificar si localStorage está disponible
+function isLocalStorageAvailable() {
+    try {
+        const test = '__localStorage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('localStorage no está disponible:', e);
+        return false;
+    }
+}
+
 export function cargarMaterialesDesdeLocalStorage(estado) {
     try {
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible, usando valores por defecto');
+            return;
+        }
+
         const materialesGuardados = localStorage.getItem('almacenMateriales');
+        console.log('Intentando cargar materiales desde localStorage:', materialesGuardados ? 'datos encontrados' : 'sin datos');
+        
         if (materialesGuardados) {
-            estado.almacenMateriales = JSON.parse(materialesGuardados);
-            console.log('Materiales cargados desde localStorage');
-            estado.cambiosPendientes = true;
+            const parsed = JSON.parse(materialesGuardados);
+            if (parsed && typeof parsed === 'object') {
+                estado.almacenMateriales = parsed;
+                console.log('Materiales cargados exitosamente desde localStorage:', Object.keys(estado.almacenMateriales).length, 'materiales');
+                estado.cambiosPendientes = false; // No marcar como cambios pendientes al cargar
+            } else {
+                console.warn('Datos en localStorage no son válidos, usando valores por defecto');
+            }
         } else {
-            console.log('No se encontraron materiales guardados en localStorage');
+            console.log('No se encontraron materiales guardados en localStorage, usando valores por defecto');
         }
     } catch (e) {
         console.error('Error al cargar materiales desde localStorage:', e);
-        modales.mostrarMensaje('Error', 'Error al cargar materiales guardados', 'error');
+        // No mostrar error al usuario si es la primera vez que usa la app
+        if (localStorage.getItem('almacenMateriales')) {
+            modales.mostrarMensaje('Error', 'Error al cargar materiales guardados. Se usarán valores por defecto.', 'warning');
+        }
     }
 }
 
 export function guardarMaterialesEnLocalStorage(estado) {
     try {
-        localStorage.setItem('almacenMateriales', JSON.stringify(estado.almacenMateriales));
-        console.log('Materiales guardados en localStorage');
+        if (!isLocalStorageAvailable()) {
+            console.warn('localStorage no disponible, no se pueden guardar los datos');
+            return;
+        }
+
+        const datosParaGuardar = JSON.stringify(estado.almacenMateriales);
+        localStorage.setItem('almacenMateriales', datosParaGuardar);
+        console.log('Materiales guardados exitosamente en localStorage:', Object.keys(estado.almacenMateriales).length, 'materiales');
         estado.cambiosPendientes = false;
+        
+        // Verificar que se guardó correctamente
+        const verificado = localStorage.getItem('almacenMateriales');
+        if (verificado === datosParaGuardar) {
+            console.log('Verificación de guardado exitosa');
+        } else {
+            console.warn('Verificación de guardado falló');
+        }
     } catch (e) {
         console.error('Error al guardar materiales en localStorage:', e);
-        modales.mostrarMensaje('Error', 'Error al guardar materiales', 'error');
+        modales.mostrarMensaje('Error', 'Error al guardar materiales. Los datos no se han perdido.', 'error');
     }
 }
 
