@@ -761,3 +761,26 @@
     padding: 10px 20px;
     font-size: 13px;
 }
+
+.tab-button {
+    padding: 6px 8px;
+    font-size: 11px;
+    flex-grow: 1;
+    text-align: center;
+    white-space: nowrap;
+    min-width: 50px;
+}
+
+/* Pestaña de ayuda responsive */
+.tab-button[data-tab="ayuda"] {
+    min-width: 40px;
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+/* Pestaña de ayuda responsive para móviles pequeños */
+.tab-button[data-tab="ayuda"] {
+    min-width: 35px;
+    padding: 6px 8px;
+    font-size: 12px;
+}
