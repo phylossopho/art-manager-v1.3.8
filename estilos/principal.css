@@ -233,7 +233,7 @@ header h1 {
 
 #arte-table th,
 #arte-table td {
-    padding: 8px;
+    padding: 15px;
     border: 1px solid #ddd;
     text-align: center;
 }
@@ -243,8 +243,8 @@ header h1 {
 }
 
 #arte-table img {
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 150px;
+    max-height: 150px;
     display: block;
     margin: 0 auto;
 }
@@ -725,6 +725,17 @@ header h1 {
         height: 20px;
     }
 
+    /* Estilos específicos para tabla ARTE en móvil */
+    #arte-table img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+    #arte-table th,
+    #arte-table td {
+        padding: 8px;
+    }
+
     /* Ajuste para móvil: line-height y font-size del texto del material */
     .material-cell span {
         font-size: 13px;
@@ -828,6 +839,17 @@ header h1 {
     .use-button {
         padding: 6px 15px;
         font-size: 12px;
+    }
+
+    /* Estilos específicos para tabla ARTE en pantallas muy pequeñas */
+    #arte-table img {
+        max-width: 60px;
+        max-height: 60px;
+    }
+
+    #arte-table th,
+    #arte-table td {
+        padding: 5px;
     }
 }
 /* === FIN DEL ARCHIVO PRINCIPAL.CSS === */
