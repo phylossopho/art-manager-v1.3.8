@@ -64,15 +64,15 @@
 
 .floating-add-button {
     position: fixed;
-    bottom: 80px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
+    bottom: 110px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #4CAF50;
     color: white;
     border: none;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     transition: all 0.3s ease;
@@ -156,6 +156,11 @@
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
+    .gallery-modal-content {
+        width: 95vw;
+        height: 80vh;
+    }
+    
     .gallery-container {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 15px;
@@ -166,12 +171,31 @@
         height: 120px;
     }
     
+    .gallery-add-placeholder {
+        min-height: 120px;
+    }
+    
+    .gallery-add-placeholder .add-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .gallery-add-placeholder .add-text {
+        font-size: 12px;
+    }
+    
     .floating-add-button {
         width: 50px;
         height: 50px;
         font-size: 20px;
-        bottom: 70px;
+        bottom: 110px;
         right: 20px;
+    }
+    
+    .carousel-modal-content {
+        width: 95vw;
+        height: 70vh;
     }
 }
 
@@ -182,11 +206,26 @@
         padding: 12px;
     }
     
+    .gallery-add-placeholder {
+        min-height: 100px;
+    }
+    
+    .gallery-add-placeholder .add-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .gallery-add-placeholder .add-text {
+        font-size: 11px;
+    }
+    
     .floating-add-button {
         width: 45px;
         height: 45px;
         font-size: 18px;
-        bottom: 60px;
+        bottom: 100px;
         right: 15px;
     }
 }
@@ -285,30 +324,6 @@
     background: #d32f2f;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .gallery-modal-content {
-        width: 95vw;
-        height: 80vh;
-    }
-    
-    .gallery-container {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-        padding: 15px;
-        max-height: 400px;
-    }
-    
-    .gallery-item img {
-        height: 120px;
-    }
-    
-    .carousel-modal-content {
-        width: 95vw;
-        height: 70vh;
-    }
-}
-
 /* Contenedor del botón de volver en galería */
 .gallery-back-container {
     text-align: center;
@@ -333,4 +348,60 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* === ELEMENTO PLACEHOLDER PARA AGREGAR IMAGEN === */
+.gallery-add-placeholder {
+    position: relative;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+    border: 2px dashed #667eea;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+.gallery-add-placeholder:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: #4CAF50;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e0f0ff 100%);
+}
+
+.gallery-add-placeholder .add-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.gallery-add-placeholder:hover .add-icon {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+.gallery-add-placeholder .add-text {
+    color: #667eea;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.gallery-add-placeholder:hover .add-text {
+    color: #4CAF50;
 }

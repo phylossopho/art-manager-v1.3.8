@@ -20,6 +20,7 @@ export function abrirGaleria(estado) {
     const contenedor = document.getElementById('gallery-container');
     contenedor.innerHTML = '';
 
+    // Agregar las imágenes existentes
     estado.imagenesGaleria.forEach((rutaImagen, index) => {
         const item = document.createElement('div');
         item.className = 'gallery-item';
@@ -75,6 +76,25 @@ export function abrirGaleria(estado) {
         item.appendChild(deleteButton);
         contenedor.appendChild(item);
     });
+
+    // Agregar el elemento placeholder para agregar nueva imagen
+    const addPlaceholder = document.createElement('div');
+    addPlaceholder.className = 'gallery-add-placeholder';
+    addPlaceholder.onclick = () => {
+        document.getElementById('gallery-file-input').click();
+    };
+
+    const addIcon = document.createElement('div');
+    addIcon.className = 'add-icon';
+    addIcon.innerHTML = '+';
+
+    const addText = document.createElement('div');
+    addText.className = 'add-text';
+    addText.textContent = 'Agregar Imagen';
+
+    addPlaceholder.appendChild(addIcon);
+    addPlaceholder.appendChild(addText);
+    contenedor.appendChild(addPlaceholder);
 
     // Usar la nueva función con transición
     modales.abrirModalConTransicion('gallery-modal');
