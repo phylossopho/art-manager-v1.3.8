@@ -266,22 +266,24 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             `;
 
             selector.addEventListener('change', (e) => {
-                console.log('Evento change del selector:', e.target.value);
+                e.stopPropagation(); // Evitar que se propague
                 previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
+            });
+
+            selector.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
 
             selectorMaterial.appendChild(selector);
 
             // Ocultar selector por defecto
             selector.style.display = 'none';
-            console.log('Selector oculto por defecto:', selector.style.display);
 
             // Mostrar selector al hacer clic en el material
-            selectorMaterial.addEventListener('click', () => {
-                console.log('Clic en selector material:', selector.style.display);
+            selectorMaterial.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evitar que el clic se propague
                 const newDisplay = selector.style.display === 'none' ? 'block' : 'none';
                 selector.style.display = newDisplay;
-                console.log('Nuevo display:', newDisplay);
                 
                 // Botón de prueba temporal
                 if (newDisplay === 'block') {
@@ -291,8 +293,8 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
                     testButton.style.top = '0';
                     testButton.style.right = '0';
                     testButton.style.zIndex = '100';
-                    testButton.onclick = () => {
-                        console.log('Test button clicked');
+                    testButton.onclick = (e) => {
+                        e.stopPropagation(); // Evitar que se propague
                         previsualizarUso(estado, claveAlmacen, 'dorado', selectorMaterial);
                     };
                     selectorMaterial.appendChild(testButton);
@@ -301,7 +303,7 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             // Cerrar selector al hacer clic fuera
             document.addEventListener('click', (e) => {
-                if (!selectorMaterial.contains(e.target)) {
+                if (!selectorMaterial.contains(e.target) && !selector.contains(e.target)) {
                     selector.style.display = 'none';
                 }
             });
@@ -315,14 +317,10 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
 function previsualizarUso(estado, claveAlmacen, colorObjetivo, selectorMaterial) {
     try {
-        console.log('previsualizarUso llamado:', { claveAlmacen, colorObjetivo });
-        console.log('estado.mapaColores:', estado.mapaColores);
-        
         // MANEJO DE SELECTOR VACÍO: REINICIO VISUAL
         if (!colorObjetivo) {
             selectorMaterial.style.backgroundColor = estado.colorNoSeleccionado;
             delete estado.colorPorMaterialSeleccionado[claveAlmacen];
-            console.log('Selector vacío, reseteando color');
             return;
         }
 
@@ -330,13 +328,11 @@ function previsualizarUso(estado, claveAlmacen, colorObjetivo, selectorMaterial)
         if (estado.mapaColores[colorObjetivo]) {
             selectorMaterial.style.backgroundColor = estado.mapaColores[colorObjetivo];
             estado.colorPorMaterialSeleccionado[claveAlmacen] = colorObjetivo;
-            console.log('Color cambiado exitosamente a:', colorObjetivo);
         } else {
             selectorMaterial.style.backgroundColor = estado.colorNoSeleccionado;
             const selector = selectorMaterial.querySelector('select');
             if (selector) selector.value = '';
             delete estado.colorPorMaterialSeleccionado[claveAlmacen];
-            console.log('Color no válido:', colorObjetivo);
         }
     } catch (error) {
         console.error('Error en previsualización de uso:', error);
