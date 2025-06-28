@@ -11,10 +11,26 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Materiales DH">
+    
+    <!-- Meta tags específicos para Android -->
+    <meta name="application-name" content="Materiales DH">
+    <meta name="msapplication-TileColor" content="#4CAF50">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Materiales DH">
 
     <!-- Iconos PWA -->
     <link rel="icon" href="images/icon-192.png" sizes="192x192">
     <link rel="apple-touch-icon" href="images/icon-192.png">
+    
+    <!-- Iconos adicionales para Android -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icon-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icon-192.png">
+    <link rel="mask-icon" href="images/icon-192.png" color="#4CAF50">
+    <meta name="msapplication-TileImage" content="images/icon-192.png">
 
     <!-- Hojas de estilo -->
     <link rel="stylesheet" href="estilos/principal.css">
@@ -456,21 +472,32 @@
                         
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('PWA: Nueva versión instalada, actualizando...');
-                                // Actualizar automáticamente
-                                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                window.location.reload();
+                                console.log('PWA: Nueva versión instalada, verificando cambios reales...');
+                                // Verificar si realmente hay cambios antes de actualizar
+                                checkForRealUpdates(registration).then(hasRealUpdates => {
+                                    if (hasRealUpdates) {
+                                        console.log('PWA: Cambios reales detectados, actualizando...');
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    } else {
+                                        console.log('PWA: No hay cambios reales, no actualizando');
+                                    }
+                                });
                             }
                         });
+                    });
+                    
+                    // Escuchar mensajes del service worker
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                            console.log('PWA: Actualización disponible detectada por SW');
+                            showUpdateNotification(true);
+                        }
                     });
                     
                     // Escuchar cambios de estado del service worker
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
                         console.log('PWA: Service Worker actualizado');
-                        // Opcional: mostrar notificación de actualización
-                        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                            showUpdateNotification();
-                        }
                     });
                 })
                 .catch(error => {
@@ -479,17 +506,28 @@
         });
     }
 
+    // Función para verificar actualizaciones reales
+    async function checkForRealUpdates(registration) {
+        return new Promise((resolve) => {
+            const channel = new MessageChannel();
+            channel.port1.onmessage = event => {
+                resolve(event.data.hasUpdates);
+            };
+            registration.active.postMessage({ type: 'CHECK_UPDATES' }, [channel.port2]);
+        });
+    }
+
     // Función para mostrar notificación de actualización
-    function showUpdateNotification() {
+    function showUpdateNotification(isAvailable) {
         // Crear notificación toast
         const toast = document.createElement('div');
         toast.className = 'toast toast-success';
         toast.innerHTML = `
             <div class="toast-header">
-                <strong class="toast-title">¡Aplicación actualizada!</strong>
+                <strong class="toast-title">${isAvailable ? '¡Actualización disponible!' : '¡Aplicación actualizada!'}</strong>
                 <button type="button" class="toast-close">&times;</button>
             </div>
-            <div class="toast-body">La aplicación se ha actualizado automáticamente.</div>
+            <div class="toast-body">${isAvailable ? 'Actualiza ahora para disfrutar de las nuevas funciones.' : 'La aplicación se ha actualizado automáticamente.'}</div>
         `;
         
         const container = document.getElementById('toast-container');

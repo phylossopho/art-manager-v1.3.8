@@ -12,6 +12,8 @@
   "categories": ["utilities", "games", "productivity"],
   "lang": "es",
   "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "images/icon-192.png",
@@ -59,5 +61,11 @@
       "type": "image/png",
       "form_factor": "narrow"
     }
-  ]
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 } 
