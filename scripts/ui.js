@@ -1,6 +1,5 @@
 // scripts/ui.js
 import * as conversiones from './conversiones.js';
-import { guardarMaterialesEnLocalStorage } from './materiales.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
 import { generarTablaArte } from './arte.js';
 import * as modales from './modales.js';
@@ -142,7 +141,6 @@ export function actualizarTabla(estado) {
                             }
                             estado.almacenMateriales[claveAlmacen][color] = e.target.value;
                             estado.cambiosPendientes = true;
-                            guardarMaterialesEnLocalStorage(estado);
                         } else {
                             e.target.value = estado.almacenMateriales[claveAlmacen][color] || '0';
                         }
@@ -514,6 +512,39 @@ export function actualizarUI(estado) {
         console.error('Error en actualización de UI:', error);
         modales.mostrarMensaje('Error', 'Se produjo un error al actualizar la interfaz', 'error');
     }
+}
+
+export function cambiarPestana(nombrePestana) {
+    try {
+        // Desactivar todas las pestañas
+        const botonesPestaña = document.querySelectorAll('.tab-button');
+        botonesPestaña.forEach(boton => boton.classList.remove('active'));
+        
+        const contenidosPestaña = document.querySelectorAll('.tab-content');
+        contenidosPestaña.forEach(contenido => contenido.classList.remove('active'));
+
+        // Activar la pestaña seleccionada
+        const botonActivo = document.querySelector(`[data-tab="${nombrePestana}"]`);
+        if (botonActivo) {
+            botonActivo.classList.add('active');
+        }
+        
+        const contenidoActivo = document.getElementById(`${nombrePestana}-tab`);
+        if (contenidoActivo) {
+            contenidoActivo.classList.add('active');
+        }
+
+        // Actualizar la UI según la pestaña
+        if (window.estadoApp) {
+            actualizarUI(window.estadoApp);
+        }
+    } catch (error) {
+        console.error('Error al cambiar pestaña:', error);
+    }
+}
+
+export function actualizarTablaMateriales(estado) {
+    actualizarTabla(estado);
 }
 
 // === CAMBIO DE FONDO SEGÚN COLOR DE EQUIPO ===

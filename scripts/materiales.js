@@ -336,7 +336,6 @@ export function abrirListaMateriales(estado) {
                         }
                         estado.almacenMateriales[claveEncontrada][color] = valor;
                         estado.cambiosPendientes = true;
-                        guardarMaterialesEnLocalStorage(estado);
                     } else {
                         e.target.value = estado.almacenMateriales[claveEncontrada][color] || '0';
                     }

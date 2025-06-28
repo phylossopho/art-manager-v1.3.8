@@ -3,8 +3,9 @@
 import * as ui from './ui.js';
 import * as galeria from './galeria.js';
 import * as modales from './modales.js';
-import { simularUso } from './simulacion.js';
+import { usarMateriales } from './materiales.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
+import { abrirListaMateriales } from './materiales.js';
 
 function configurarEventListeners(estado) {
     try {
@@ -39,7 +40,7 @@ function configurarEventListeners(estado) {
         // === BOTÓN MOSTRAR MATERIALES ===
         const showMaterialsButton = document.getElementById('show-materials');
         showMaterialsButton.addEventListener('click', () => {
-            modales.abrirModalMateriales(estado);
+            abrirListaMateriales(estado);
         });
 
         // === BOTÓN GALERÍA ===
@@ -51,7 +52,7 @@ function configurarEventListeners(estado) {
         // === BOTÓN USAR MATERIALES ===
         const useMaterialsButton = document.getElementById('use-materials');
         useMaterialsButton.addEventListener('click', () => {
-            simularUso(estado);
+            usarMateriales(estado);
         });
 
         // === BOTÓN VOLVER A MATERIALES (ARTE) ===

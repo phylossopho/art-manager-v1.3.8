@@ -49,3 +49,10 @@ export function cerrarModales() {
     document.getElementById('gallery-modal').style.display = 'none';
     document.getElementById('carousel-modal').style.display = 'none';
 }
+
+export function cerrarModalMateriales() {
+    const modal = document.getElementById('materials-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
