@@ -688,12 +688,30 @@
                             if (data.sessionStorage.equipos) sessionStorage.setItem('equiposSimulados', data.sessionStorage.equipos);
                         }
                         
-                        localStorage.setItem('almacenMateriales', JSON.stringify(estado.almacenMateriales));
-                        localStorage.setItem('imagenesGaleria', JSON.stringify(estado.imagenesGaleria));
-                        localStorage.setItem('equiposSimulados', JSON.stringify(window.equiposSimulados));
-                        
-                        console.log('📥 Datos importados exitosamente');
-                        alert('Datos importados. Recarga la página para ver los cambios.');
+                        const estado = getEstadoApp();
+                        if (estado) {
+                            estado.almacenMateriales = data.materiales || {};
+                            estado.imagenesGaleria = data.galeria || [];
+                            // Reconstruir mapas y estructuras
+                            if (window.datos && window.datos.datosMateriales) {
+                                estado.materialesData = window.datos.datosMateriales;
+                            }
+                            if (window.datos && window.datos.mapaColores) {
+                                estado.mapaColores = window.datos.mapaColores;
+                            }
+                            if (window.construirMapaMaterialAEquipo) {
+                                window.construirMapaMaterialAEquipo(estado);
+                            }
+                            if (window.inicializarAlmacenamientoMateriales) {
+                                window.inicializarAlmacenamientoMateriales(estado);
+                            }
+                        }
+                        if (window.equiposSimulados && Array.isArray(data.simulaciones)) {
+                            window.equiposSimulados.length = 0;
+                            window.equiposSimulados.push(...data.simulaciones);
+                        }
+                        refrescarUI();
+                        alert('¡Datos cargados exitosamente!');
                     } catch (error) {
                         console.error('❌ Error al importar datos:', error);
                         alert('Error al importar datos. Verifica que el archivo sea válido.');
