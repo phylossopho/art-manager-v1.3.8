@@ -448,11 +448,82 @@
             navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
                     console.log('Service Worker registrado con éxito:', registration.scope);
+                    
+                    // Verificar actualizaciones
+                    registration.addEventListener('updatefound', () => {
+                        console.log('PWA: Nueva versión detectada');
+                        const newWorker = registration.installing;
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('PWA: Nueva versión instalada, actualizando...');
+                                // Actualizar automáticamente
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                window.location.reload();
+                            }
+                        });
+                    });
+                    
+                    // Escuchar cambios de estado del service worker
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        console.log('PWA: Service Worker actualizado');
+                        // Opcional: mostrar notificación de actualización
+                        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                            showUpdateNotification();
+                        }
+                    });
                 })
                 .catch(error => {
                     console.log('Error al registrar ServiceWorker:', error);
                 });
         });
+    }
+
+    // Función para mostrar notificación de actualización
+    function showUpdateNotification() {
+        // Crear notificación toast
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-success';
+        toast.innerHTML = `
+            <div class="toast-header">
+                <strong class="toast-title">¡Aplicación actualizada!</strong>
+                <button type="button" class="toast-close">&times;</button>
+            </div>
+            <div class="toast-body">La aplicación se ha actualizado automáticamente.</div>
+        `;
+        
+        const container = document.getElementById('toast-container');
+        if (container) {
+            container.appendChild(toast);
+            
+            // Mostrar la notificación
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Ocultar después de 3 segundos
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+            
+            // Botón de cerrar
+            const closeBtn = toast.querySelector('.toast-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                });
+            }
+        }
     }
 
     // Banner de instalación PWA
@@ -631,6 +702,18 @@
             hideInstallBanner();
         }
     });
+
+    // Verificación periódica de actualizaciones (cada 30 minutos)
+    setInterval(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(registration => {
+                if (registration) {
+                    registration.update();
+                    console.log('PWA: Verificación periódica de actualizaciones');
+                }
+            });
+        }
+    }, 30 * 60 * 1000); // 30 minutos
 
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
