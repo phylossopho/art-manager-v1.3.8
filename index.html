@@ -547,6 +547,28 @@
             console.log('PWA: La app no está instalada');
         }
     });
+
+    // Animación de iconos sociales con scroll
+    function handleSocialIconsAnimation() {
+        const socialIcons = document.querySelector('.social-icons');
+        if (!socialIcons) return;
+
+        const rect = socialIcons.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Calcular cuándo debe aparecer (cuando el elemento está a 200px de entrar en pantalla)
+        const triggerPoint = windowHeight - 200;
+        
+        if (rect.top <= triggerPoint) {
+            socialIcons.classList.add('reveal');
+        }
+    }
+
+    // Escuchar el evento de scroll
+    window.addEventListener('scroll', handleSocialIconsAnimation);
+    
+    // También ejecutar al cargar la página por si ya está en la posición correcta
+    window.addEventListener('load', handleSocialIconsAnimation);
 </script>
 
 </body>
