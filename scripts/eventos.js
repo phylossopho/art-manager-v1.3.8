@@ -257,6 +257,20 @@ function configurarEventosModales() {
             document.getElementById('materials-modal').style.display = 'none';
         });
     }
+
+    // Botón Volver en pestaña ARTE
+    const arteBackBtn = document.getElementById('arte-back-button');
+    if (arteBackBtn) {
+        arteBackBtn.addEventListener('click', () => {
+            // Desactivar pestaña ARTE
+            document.querySelector('.tab-button[data-tab="arte"]').classList.remove('active');
+            document.getElementById('arte-tab').classList.remove('active');
+            
+            // Activar pestaña Materiales
+            document.querySelector('.tab-button[data-tab="materials"]').classList.add('active');
+            document.getElementById('materials-tab').classList.add('active');
+        });
+    }
 }
 
 function configurarEventosGlobales(estado) {

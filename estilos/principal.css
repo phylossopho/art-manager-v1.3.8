@@ -253,41 +253,45 @@ header h1 {
 .bottom-buttons {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.use-button {
-    padding: 10px 30px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.use-button:hover {
-    background-color: #45a049;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .gallery-button {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
+    background-color: #4CAF50;
+    color: white;
     border: none;
+    padding: 10px;
     border-radius: 50%;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 
 .gallery-button:hover {
-    background-color: #0069d9;
-    transform: scale(1.05);
+    background-color: #45a049;
+}
+
+.use-button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    height: 40px; /* Misma altura que los otros elementos */
+}
+
+.use-button:hover {
+    background-color: #1976D2;
 }
 
 .gallery-icon {
@@ -916,7 +920,7 @@ header h1 {
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-left: 20px; /* Espacio desde el botón USAR */
+    flex: 1; /* Ocupar el espacio disponible */
     /* Sin fondo, sin padding, sin sombra */
     background: transparent;
     border-radius: 0;
@@ -937,8 +941,9 @@ header h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    height: 40px; /* Misma altura que los otros botones */
+    width: auto; /* Ancho automático */
+    min-width: 40px;
     border-radius: 50%;
     background: transparent; /* Sin fondo */
     box-shadow: none; /* Sin sombra */
@@ -974,8 +979,8 @@ header h1 {
 }
 
 .social-icon img {
-    width: 28px;
-    height: 28px;
+    height: 32px; /* Misma altura que otros iconos */
+    width: auto; /* Ancho automático */
     object-fit: contain;
 }
 
@@ -996,33 +1001,53 @@ header h1 {
 @media (max-width: 768px) {
     .social-icons {
         gap: 12px;
-        margin-left: 15px;
     }
     
     .social-icon {
-        width: 35px;
         height: 35px;
+        min-width: 35px;
     }
     
     .social-icon img {
-        width: 24px;
-        height: 24px;
+        height: 28px;
     }
 }
 
 @media (max-width: 480px) {
     .social-icons {
         gap: 10px;
-        margin-left: 10px;
     }
     
     .social-icon {
-        width: 30px;
         height: 30px;
+        min-width: 30px;
     }
     
     .social-icon img {
-        width: 20px;
-        height: 20px;
+        height: 24px;
     }
+}
+
+/* === ESTILOS BOTÓN VOLVER ARTE === */
+.arte-back-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    padding: 10px;
+}
+
+.arte-back-container .back-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.arte-back-container .back-button:hover {
+    background-color: #5a6268;
 }
