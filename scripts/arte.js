@@ -78,7 +78,6 @@ try {
 
 export function agregarEquipoSimulado(equipo) {
     equiposSimulados.unshift(equipo); // Agregar al inicio
-    guardarEquiposEnLocalStorage();
 }
 
 export function generarTablaArte() {
@@ -245,7 +244,6 @@ export function generarTablaArte() {
         const realIdx = equiposSimulados.length - 1 - idx;
         btnEliminar.addEventListener('click', () => {
             equiposSimulados.splice(realIdx, 1);
-            guardarEquiposEnLocalStorage();
             generarTablaArte();
         });
         celdaEliminar.appendChild(btnEliminar);
@@ -257,74 +255,4 @@ export function generarTablaArte() {
     arteTable.appendChild(table);
 }
 
-// Guardar en storage
-function guardarEquiposEnLocalStorage() {
-    try {
-        const datosParaGuardar = JSON.stringify(equiposSimulados);
-        
-        // En móviles, guardar en ambos storages para mayor seguridad
-        if (isMobileDevice()) {
-            console.log('Dispositivo móvil detectado, guardando equipos en ambos storages...');
-            
-            if (isLocalStorageAvailable()) {
-                localStorage.setItem('equiposSimulados', datosParaGuardar);
-                console.log('Equipos guardados en localStorage (móvil)');
-            }
-            
-            if (isSessionStorageAvailable()) {
-                sessionStorage.setItem('equiposSimulados', datosParaGuardar);
-                console.log('Equipos guardados en sessionStorage (móvil)');
-            }
-        } else {
-            if (isLocalStorageAvailable()) {
-                localStorage.setItem('equiposSimulados', datosParaGuardar);
-                console.log('Equipos simulados guardados exitosamente:', equiposSimulados.length, 'equipos');
-            }
-        }
-    } catch (e) {
-        console.error('Error al guardar equipos simulados en storage:', e);
-    }
-}
-
-// Cargar desde storage
-export function cargarEquiposDesdeLocalStorage() {
-    try {
-        // En móviles, intentar cargar desde localStorage primero, luego sessionStorage
-        let equiposGuardados = null;
-        if (isMobileDevice()) {
-            console.log('Dispositivo móvil detectado, verificando ambos storages para equipos...');
-            
-            if (isLocalStorageAvailable()) {
-                equiposGuardados = localStorage.getItem('equiposSimulados');
-                console.log('localStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
-            }
-            
-            if (!equiposGuardados && isSessionStorageAvailable()) {
-                equiposGuardados = sessionStorage.getItem('equiposSimulados');
-                console.log('sessionStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
-            }
-        } else {
-            if (isLocalStorageAvailable()) {
-                equiposGuardados = localStorage.getItem('equiposSimulados');
-            }
-        }
-        
-        if (equiposGuardados) {
-            const parsed = JSON.parse(equiposGuardados);
-            if (Array.isArray(parsed)) {
-                equiposSimulados = parsed;
-                console.log('Equipos simulados cargados exitosamente:', equiposSimulados.length, 'equipos');
-            } else {
-                console.warn('Datos de equipos simulados no son válidos, usando array vacío');
-                equiposSimulados = [];
-            }
-        } else {
-            console.log('No se encontraron equipos simulados en storage, usando array vacío');
-            equiposSimulados = [];
-        }
-    } catch (e) {
-        console.error('Error al cargar equipos simulados desde storage:', e);
-        equiposSimulados = [];
-    }
-}
 // scripts/arte.js - FIN

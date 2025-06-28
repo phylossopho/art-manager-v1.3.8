@@ -5,24 +5,13 @@ import * as ui from './ui.js';
 import configurarEventListeners from './eventos.js';
 import {
     construirMapaMaterialAEquipo,
-    inicializarAlmacenamientoMateriales,
-    cargarMaterialesDesdeLocalStorage,
-    guardarMaterialesEnLocalStorage
+    inicializarAlmacenamientoMateriales
 } from './materiales.js';
 import * as galeria from './galeria.js';
 import * as conversiones from './conversiones.js';
 import { simularUso } from './simulacion.js';
 import * as modales from './modales.js';
-import { cargarEquiposDesdeLocalStorage } from './arte.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
-import { 
-    cargarMaterialesRobustos, 
-    guardarMaterialesRobustos,
-    cargarImagenesRobustas,
-    guardarImagenesRobustas,
-    cargarEquiposRobustos,
-    guardarEquiposRobustos
-} from './storage-fallback.js';
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -41,7 +30,7 @@ const estadoApp = {
     intervaloAutoguardado: null
 };
 
-async function iniciarApp() {
+function iniciarApp() {
     try {
         // Asignar datos importantes al estado
         estadoApp.materialesData = datos.datosMateriales;
@@ -51,36 +40,16 @@ async function iniciarApp() {
         construirMapaMaterialAEquipo(estadoApp);
         inicializarAlmacenamientoMateriales(estadoApp);
 
-        // Cargar datos persistentes usando sistema robusto
-        await cargarMaterialesRobustos(estadoApp);
-        await cargarImagenesRobustas(estadoApp);
-        const equipos = await cargarEquiposRobustos();
-        if (equipos.length > 0) {
-            // Actualizar el array de equipos simulados en arte.js
-            const { equiposSimulados } = await import('./arte.js');
-            equiposSimulados.length = 0;
-            equiposSimulados.push(...equipos);
-        }
-
         // Configurar todos los event listeners
         configurarEventListeners(estadoApp);
 
         // Inicializar la interfaz de usuario
         ui.actualizarUI(estadoApp);
 
-        // Configurar el intervalo de autoguardado usando sistema robusto
-        estadoApp.intervaloAutoguardado = setInterval(async () => {
-            if (estadoApp.cambiosPendientes) {
-                await guardarMaterialesRobustos(estadoApp);
-                console.log('Autoguardado robusto realizado');
-                estadoApp.cambiosPendientes = false;
-            }
-        }, 30000); // 30 segundos
-
         // Asignar la función de simulación al estado
         estadoApp.simularUso = simularUso;
         
-        console.log('✅ Aplicación iniciada con sistema de almacenamiento robusto');
+        console.log('✅ Aplicación iniciada (sin almacenamiento persistente)');
     } catch (error) {
         console.error('Error al iniciar la aplicación:', error);
         modales.mostrarMensaje('Error Crítico', 
@@ -89,29 +58,6 @@ async function iniciarApp() {
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
-
-window.addEventListener('beforeunload', (e) => {
-    if (estadoApp.cambiosPendientes) {
-        const message = 'Hay cambios sin guardar. ¿Seguro que deseas salir?';
-        e.returnValue = message;
-        return message;
-    }
-});
-
-window.addEventListener('unload', async () => {
-    try {
-        if (estadoApp.cambiosPendientes) {
-            await guardarMaterialesRobustos(estadoApp);
-        }
-        
-        // Limpiar el intervalo de autoguardado
-        if (estadoApp.intervaloAutoguardado) {
-            clearInterval(estadoApp.intervaloAutoguardado);
-        }
-    } catch (error) {
-        console.error('Error al cerrar la aplicación:', error);
-    }
-});
 
 // Manejo de errores global no controlados
 window.addEventListener('error', (event) => {
