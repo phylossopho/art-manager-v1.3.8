@@ -784,3 +784,82 @@
     padding: 6px 8px;
     font-size: 12px;
 }
+
+.material-selector img, .base-selector img {
+    width: 66px;
+    height: 66px;
+    text-align: center;
+}
+
+/* Estilos responsive para textos superpuestos en móviles pequeños */
+.material-selector .material-text,
+.base-selector .base-text {
+    font-size: 9px;
+    padding: 2px 4px;
+    bottom: 6px;
+}
+
+.use-button {
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
+/* Estilos responsive para dropdown de color */
+.color-dropdown {
+    min-width: 180px;
+    max-width: 280px;
+}
+
+.color-dropdown-header {
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+.color-dropdown-content {
+    padding: 15px;
+}
+
+.color-dropdown select {
+    padding: 10px;
+    font-size: 14px;
+}
+
+.color-dropdown-buttons {
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.color-dropdown-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* Estilos responsive para dropdown en móviles pequeños */
+.color-dropdown {
+    min-width: 160px;
+    max-width: 260px;
+}
+
+.color-dropdown-header {
+    padding: 10px 14px;
+    font-size: 13px;
+}
+
+.color-dropdown-content {
+    padding: 12px;
+}
+
+.color-dropdown select {
+    padding: 8px;
+    font-size: 13px;
+}
+
+.color-dropdown-buttons {
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.color-dropdown-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}

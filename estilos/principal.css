@@ -357,6 +357,8 @@ header h1 {
     flex-direction: column;
     align-items: center;
     transition: background-color 0.3s ease;
+    position: relative;
+    cursor: pointer;
 }
 
 .material-selector img {
@@ -369,6 +371,23 @@ header h1 {
 .material-selector select {
     width: 100%;
     margin-top: 5px;
+    display: none; /* Oculto por defecto */
+}
+
+.material-selector .material-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 2;
 }
 
 .base-selector {
@@ -381,6 +400,8 @@ header h1 {
     flex-direction: column;
     align-items: center;
     transition: background-color 0.3s ease;
+    position: relative;
+    cursor: pointer;
 }
 
 .base-title {
@@ -393,6 +414,23 @@ header h1 {
 .base-selector select {
     width: 100%;
     margin-bottom: 5px;
+    display: none; /* Oculto por defecto */
+}
+
+.base-selector .base-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 2;
 }
 
 .base-selector {
@@ -914,4 +952,136 @@ header h1 {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Estilos para selectores activos */
+.material-selector.active select,
+.base-selector.active select {
+    display: none; /* Ya no se muestra inline */
+}
+
+.material-selector.active .material-text,
+.base-selector.active .base-text {
+    display: none;
+}
+
+/* Dropdown para selectores de color */
+.color-dropdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    min-width: 200px;
+    max-width: 300px;
+    animation: dropdownFadeIn 0.3s ease;
+}
+
+.color-dropdown-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 6px 6px 0 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.color-dropdown-content {
+    padding: 20px;
+}
+
+.color-dropdown select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.color-dropdown select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.color-dropdown-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.color-dropdown-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.color-dropdown-btn.cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.color-dropdown-btn.cancel:hover {
+    background-color: #5a6268;
+}
+
+.color-dropdown-btn.apply {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.color-dropdown-btn.apply:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Overlay para el fondo */
+.dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: overlayFadeIn 0.3s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Efecto hover para indicar que es clickeable */
+.material-selector:hover,
+.base-selector:hover {
+    border-color: #4CAF50;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
