@@ -125,6 +125,18 @@
 </head>
 <body>
 <div class="container">
+    <!-- Banner de instalación PWA -->
+    <div id="install-banner" style="display: none;">
+        <div>
+            <strong>Instalar Gestor de Materiales</strong>
+            <p>Para una mejor experiencia, instala esta aplicación</p>
+        </div>
+        <div>
+            <button id="close-install">X</button>
+            <button id="install-button">Instalar</button>
+        </div>
+    </div>
+
     <!-- Botón CSV móvil -->
     <div class="mobile-csv-toggle-container">
         <button id="csv-menu-toggle" class="mobile-only">
@@ -422,6 +434,40 @@
                 .catch(error => {
                     console.log('Error al registrar ServiceWorker:', error);
                 });
+        });
+    }
+
+    // Banner de instalación PWA
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const installButton = document.getElementById('install-button');
+    const closeInstall = document.getElementById('close-install');
+
+    if (installBanner && installButton && closeInstall) {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                if (installBanner) installBanner.classList.add('show');
+            }, 3000);
+        });
+
+        installButton.addEventListener('click', () => {
+            if (!deferredPrompt) return;
+            installBanner.classList.remove('show');
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Usuario instaló la PWA');
+                } else {
+                    console.log('Usuario rechazó la instalación');
+                }
+                deferredPrompt = null;
+            });
+        });
+
+        closeInstall.addEventListener('click', () => {
+            installBanner.classList.remove('show');
         });
     }
 </script>
