@@ -9,6 +9,7 @@
     background-color: white;
     overflow-x: auto;
     max-width: 100%;
+    width: 100%;
 }
 
 table img {
@@ -22,7 +23,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
-    min-width: 600px; /* Ancho mínimo para evitar compresión excesiva */
+    min-width: 100%; /* Usar todo el ancho disponible */
 }
 
 th {
@@ -93,48 +94,49 @@ td {
 
 /* === CLASES DE COLUMNAS === */
 .col-imagen {
-    width: 80px !important;
-    min-width: 80px !important;
+    width: 8% !important;
+    min-width: 60px !important;
     max-width: 80px !important;
     text-align: center !important;
 }
 
 .col-nombre {
-    min-width: 120px !important;
+    width: 20% !important;
+    min-width: 100px !important;
     text-align: left !important;
 }
 
 .col-color {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
+    width: 12% !important;
+    min-width: 70px !important;
+    max-width: 90px !important;
     text-align: center !important;
 }
 
 .col-clase {
-    width: 100px !important;
-    min-width: 100px !important;
+    width: 10% !important;
+    min-width: 80px !important;
     max-width: 100px !important;
     text-align: center !important;
 }
 
 .col-nivel {
-    width: 60px !important;
-    min-width: 60px !important;
+    width: 6% !important;
+    min-width: 50px !important;
     max-width: 60px !important;
     text-align: center !important;
 }
 
 .col-material {
-    width: 90px !important;
-    min-width: 90px !important;
+    width: 9% !important;
+    min-width: 70px !important;
     max-width: 90px !important;
     text-align: center !important;
 }
 
 .col-accion {
-    width: 60px !important;
-    min-width: 60px !important;
+    width: 6% !important;
+    min-width: 50px !important;
     max-width: 60px !important;
     text-align: center !important;
 }
@@ -279,7 +281,7 @@ td {
     }
     
     table {
-        min-width: 500px; /* Reducir el ancho mínimo en móviles */
+        min-width: 100%; /* Usar todo el ancho disponible */
     }
     
     .materials-table th,
@@ -288,44 +290,45 @@ td {
         font-size: 11px;
     }
     
-    /* Reducir anchos en móviles */
+    /* Ajustar porcentajes para móviles */
     .col-imagen {
-        width: 60px !important;
-        min-width: 60px !important;
+        width: 10% !important;
+        min-width: 50px !important;
         max-width: 60px !important;
     }
     
     .col-nombre {
+        width: 25% !important;
         min-width: 80px !important;
     }
     
     .col-color {
-        width: 60px !important;
+        width: 13% !important;
         min-width: 60px !important;
-        max-width: 60px !important;
+        max-width: 70px !important;
     }
     
     .col-clase {
-        width: 80px !important;
-        min-width: 80px !important;
+        width: 12% !important;
+        min-width: 70px !important;
         max-width: 80px !important;
     }
     
     .col-nivel {
-        width: 50px !important;
-        min-width: 50px !important;
+        width: 8% !important;
+        min-width: 45px !important;
         max-width: 50px !important;
     }
     
     .col-material {
-        width: 70px !important;
-        min-width: 70px !important;
-        max-width: 70px !important;
+        width: 11% !important;
+        min-width: 65px !important;
+        max-width: 75px !important;
     }
     
     .col-accion {
-        width: 50px !important;
-        min-width: 50px !important;
+        width: 8% !important;
+        min-width: 45px !important;
         max-width: 50px !important;
     }
     
@@ -339,7 +342,7 @@ td {
     }
     
     .color-input {
-        width: 50px;
+        width: 90%;
         padding: 4px;
         font-size: 11px;
     }
@@ -352,13 +355,13 @@ td {
     
     .conversion-legend-table th:nth-child(1),
     .conversion-legend-table td:nth-child(1) {
-        width: 80px;
+        width: 25%;
         min-width: 80px;
     }
     
     .conversion-legend-table th:nth-child(n+2),
     .conversion-legend-table td:nth-child(n+2) {
-        width: 60px;
+        width: 15%;
         min-width: 60px;
     }
     
@@ -375,7 +378,7 @@ td {
     }
     
     table {
-        min-width: 400px;
+        min-width: 100%;
     }
     
     .materials-table th,
@@ -384,45 +387,46 @@ td {
         font-size: 10px;
     }
     
-    /* Reducir aún más en pantallas muy pequeñas */
+    /* Ajustar porcentajes para pantallas muy pequeñas */
     .col-imagen {
-        width: 50px !important;
-        min-width: 50px !important;
+        width: 12% !important;
+        min-width: 40px !important;
         max-width: 50px !important;
     }
     
     .col-nombre {
+        width: 28% !important;
         min-width: 60px !important;
     }
     
     .col-color {
-        width: 50px !important;
+        width: 12% !important;
         min-width: 50px !important;
-        max-width: 50px !important;
+        max-width: 60px !important;
     }
     
     .col-clase {
-        width: 60px !important;
+        width: 14% !important;
         min-width: 60px !important;
-        max-width: 60px !important;
+        max-width: 70px !important;
     }
     
     .col-nivel {
-        width: 40px !important;
+        width: 10% !important;
         min-width: 40px !important;
-        max-width: 40px !important;
+        max-width: 45px !important;
     }
     
     .col-material {
-        width: 60px !important;
-        min-width: 60px !important;
-        max-width: 60px !important;
+        width: 12% !important;
+        min-width: 55px !important;
+        max-width: 65px !important;
     }
     
     .col-accion {
-        width: 40px !important;
+        width: 10% !important;
         min-width: 40px !important;
-        max-width: 40px !important;
+        max-width: 45px !important;
     }
     
     .material-cell img {
@@ -435,7 +439,7 @@ td {
     }
     
     .color-input {
-        width: 40px;
+        width: 85%;
         padding: 3px;
         font-size: 10px;
     }
