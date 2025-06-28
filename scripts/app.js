@@ -15,7 +15,6 @@ import { simularUso } from './simulacion.js';
 import * as modales from './modales.js';
 import { cargarEquiposDesdeLocalStorage } from './arte.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
-import PWACapabilities from './pwa-capabilities.js';
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -31,8 +30,7 @@ const estadoApp = {
     colorBaseSeleccionado: null,
     mapaColores: datos.mapaColores,
     materialesData: datos.datosMateriales,
-    intervaloAutoguardado: null,
-    pwaCapabilities: null
+    intervaloAutoguardado: null
 };
 
 function iniciarApp() {
@@ -55,9 +53,6 @@ function iniciarApp() {
 
         // Inicializar la interfaz de usuario
         ui.actualizarUI(estadoApp);
-
-        // Inicializar capacidades PWA
-        estadoApp.pwaCapabilities = new PWACapabilities(estadoApp);
 
         // Configurar el intervalo de autoguardado
         estadoApp.intervaloAutoguardado = setInterval(() => {
@@ -102,7 +97,7 @@ window.addEventListener('unload', () => {
     }
 });
 
-// Manejo de errores global no controlados
+// Manejo de errores global no controlado
 window.addEventListener('error', (event) => {
     console.error('Error no controlado:', event.error);
     modales.mostrarMensaje('Error Inesperado', 

@@ -75,256 +75,116 @@ header h1 {
 .right-panel {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
+    align-items: flex-start;
 }
 
 .right-panel button {
-    padding: 5px;
-    cursor: pointer;
-    width: 150px;
-}
-
-/* Botón CSV móvil */
-.mobile-csv-toggle-container {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 200;
-}
-
-#csv-menu-toggle {
-    width: 40px;
-    height: 40px;
+    padding: 10px 20px;
     background-color: #4CAF50;
+    color: white;
     border: none;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    font-size: 14px;
+    transition: background-color 0.3s;
 }
 
-.file-icon {
-    width: 20px;
-    height: 24px;
-    background-color: white;
-    position: relative;
-    border-radius: 2px;
+.right-panel button:hover {
+    background-color: #45a049;
 }
 
-.file-icon::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 6px;
-    height: 6px;
+.right-panel button:active {
+    background-color: #3d8b40;
+}
+
+/* === BOTONES MÓVILES === */
+.mobile-csv-toggle-container {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.mobile-csv-toggle-container button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background-color: #4CAF50;
-    clip-path: polygon(0 0, 100% 100%, 0 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.file-icon::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 3px;
-    right: 3px;
-    height: 2px;
-    background-color: #4CAF50;
-    border-radius: 1px;
-    box-shadow: 0 4px 0 #4CAF50, 0 8px 0 #4CAF50;
-}
-
-/* Menú CSV móvil */
 .mobile-csv-menu {
     display: none;
     position: fixed;
-    top: 60px;
-    right: 10px;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 150;
-    padding: 10px;
-    border-radius: 8px;
-    min-width: 150px;
-}
-
-.mobile-csv-menu.visible {
-    display: block;
+    top: 80px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
 }
 
 .mobile-csv-menu button {
     display: block;
     width: 100%;
-    margin: 5px 0;
-    padding: 8px 12px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 15px;
+    border: none;
+    background: none;
     cursor: pointer;
-    font-size: 14px;
+    text-align: left;
 }
 
 .mobile-csv-menu button:hover {
-    background-color: #e0e0e0;
+    background-color: #f5f5f5;
 }
 
-/* Pestañas */
-.tabs-container {
-    margin-bottom: 10px;
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+    
+    .mobile-csv-toggle-container {
+        display: block;
+    }
+    
+    .right-panel {
+        display: none;
+    }
 }
 
-.tab-buttons {
-    display: flex;
-    border-bottom: 2px solid #ccc;
-    gap: 2px;
-}
-
-.tab-button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-bottom: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px 5px 0 0;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.tab-button:hover {
-    background-color: #e0e0e0;
-}
-
-.tab-button.active {
-    background-color: white;
-    border-bottom: 2px solid white;
-    font-weight: bold;
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-.conversion-description {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.conversion-description p {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
-}
-
-/* Estilos para la tabla de arte */
-#arte-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#arte-table th,
-#arte-table td {
-    padding: 15px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-#arte-table td {
-    vertical-align: middle;
-}
-
-#arte-table img {
-    width: 33px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-/* Botones inferiores */
+/* === BOTONES INFERIORES === */
 .bottom-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    margin-top: 20px;
 }
 
 .gallery-button {
-    background-color: #4CAF50;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #6c757d;
     color: white;
     border: none;
-    padding: 10px;
-    border-radius: 50%;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+    font-size: 20px;
+    transition: background-color 0.3s;
 }
 
 .gallery-button:hover {
-    background-color: #45a049;
-}
-
-.use-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    height: 40px;
-}
-
-.use-button:hover {
-    background-color: #45a049;
-}
-
-.gallery-icon {
-    width: 24px;
-    height: 20px;
-    background-color: white;
-    position: relative;
-    border-radius: 2px;
-}
-
-.gallery-icon::before {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 8px;
-    height: 8px;
-    background-color: #007bff;
-    border-radius: 50%;
-}
-
-.gallery-icon::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    left: 2px;
-    right: 2px;
-    height: 8px;
-    background: linear-gradient(45deg, #007bff 25%, transparent 25%, transparent 75%, #007bff 75%),
-    linear-gradient(45deg, #007bff 25%, transparent 25%, transparent 75%, #007bff 75%);
-    background-size: 4px 4px;
-    background-position: 0 0, 2px 2px;
-    border-radius: 1px;
+    background-color: #5a6268;
 }
 
 /* === ESTILOS PARA SELECTORES INFERIORES === */
@@ -865,7 +725,7 @@ header h1 {
     right: 0;
     background: #333;
     color: white;
-    padding: 15px;
+    padding: 12px 15px;
     display: none; /* Oculto por defecto */
     justify-content: space-between;
     align-items: center;
@@ -883,12 +743,23 @@ header h1 {
     display: flex;
 }
 
+#install-banner strong {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+#install-banner p {
+    font-size: 12px;
+    margin: 0;
+    opacity: 0.9;
+}
+
 #install-button {
     background-color: #4CAF50;
     color: white;
-    font-size: 12px;
+    font-size: 13px;
     border: none;
-    padding: 8px 12px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -899,19 +770,20 @@ header h1 {
 }
 
 #close-install {
-    background: #f69a6a;
+    background: transparent;
     border: none;
-    color: #0c0c0c;
-    font-size: 16px;
-    padding: 8px 16px;
+    color: #ccc;
+    font-size: 18px;
+    padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 10px;
-    transition: background-color 0.3s ease;
+    margin-right: 8px;
+    transition: all 0.3s ease;
 }
 
 #close-install:hover {
-    background: #f57c4a;
+    background: rgba(255,255,255,0.1);
+    color: white;
 }
 
 /* === ESTILOS ICONOS REDES SOCIALES === */
