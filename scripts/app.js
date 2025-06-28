@@ -15,6 +15,14 @@ import { simularUso } from './simulacion.js';
 import * as modales from './modales.js';
 import { cargarEquiposDesdeLocalStorage } from './arte.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
+import { 
+    cargarMaterialesRobustos, 
+    guardarMaterialesRobustos,
+    cargarImagenesRobustas,
+    guardarImagenesRobustas,
+    cargarEquiposRobustos,
+    guardarEquiposRobustos
+} from './storage-fallback.js';
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -33,7 +41,7 @@ const estadoApp = {
     intervaloAutoguardado: null
 };
 
-function iniciarApp() {
+async function iniciarApp() {
     try {
         // Asignar datos importantes al estado
         estadoApp.materialesData = datos.datosMateriales;
@@ -43,10 +51,16 @@ function iniciarApp() {
         construirMapaMaterialAEquipo(estadoApp);
         inicializarAlmacenamientoMateriales(estadoApp);
 
-        // Cargar datos persistentes
-        cargarMaterialesDesdeLocalStorage(estadoApp);
-        galeria.cargarImagenesGuardadas(estadoApp);
-        cargarEquiposDesdeLocalStorage();
+        // Cargar datos persistentes usando sistema robusto
+        await cargarMaterialesRobustos(estadoApp);
+        await cargarImagenesRobustas(estadoApp);
+        const equipos = await cargarEquiposRobustos();
+        if (equipos.length > 0) {
+            // Actualizar el array de equipos simulados en arte.js
+            const { equiposSimulados } = await import('./arte.js');
+            equiposSimulados.length = 0;
+            equiposSimulados.push(...equipos);
+        }
 
         // Configurar todos los event listeners
         configurarEventListeners(estadoApp);
@@ -54,17 +68,19 @@ function iniciarApp() {
         // Inicializar la interfaz de usuario
         ui.actualizarUI(estadoApp);
 
-        // Configurar el intervalo de autoguardado
-        estadoApp.intervaloAutoguardado = setInterval(() => {
+        // Configurar el intervalo de autoguardado usando sistema robusto
+        estadoApp.intervaloAutoguardado = setInterval(async () => {
             if (estadoApp.cambiosPendientes) {
-                guardarMaterialesEnLocalStorage(estadoApp);
-                console.log('Autoguardado realizado');
+                await guardarMaterialesRobustos(estadoApp);
+                console.log('Autoguardado robusto realizado');
                 estadoApp.cambiosPendientes = false;
             }
         }, 30000); // 30 segundos
 
         // Asignar la función de simulación al estado
         estadoApp.simularUso = simularUso;
+        
+        console.log('✅ Aplicación iniciada con sistema de almacenamiento robusto');
     } catch (error) {
         console.error('Error al iniciar la aplicación:', error);
         modales.mostrarMensaje('Error Crítico', 
@@ -82,10 +98,10 @@ window.addEventListener('beforeunload', (e) => {
     }
 });
 
-window.addEventListener('unload', () => {
+window.addEventListener('unload', async () => {
     try {
         if (estadoApp.cambiosPendientes) {
-            guardarMaterialesEnLocalStorage(estadoApp);
+            await guardarMaterialesRobustos(estadoApp);
         }
         
         // Limpiar el intervalo de autoguardado

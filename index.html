@@ -452,7 +452,7 @@
     // También ejecutar al cargar la página por si ya está en la posición correcta
     window.addEventListener('load', handleSocialIconsAnimation);
 
-    // === FUNCIONES DE DEBUGGING PARA LOCALSTORAGE ===
+    // === FUNCIONES DE DEBUGGING PARA SISTEMA ROBUSTO ===
     // Estas funciones están disponibles en la consola del navegador para debugging
     
     // Función para detectar si es un dispositivo móvil
@@ -461,9 +461,9 @@
                (window.innerWidth <= 768);
     }
     
-    // Función para verificar el estado del localStorage
-    window.debugLocalStorage = function() {
-        console.log('=== DEBUG STORAGE ===');
+    // Función para verificar el estado del storage robusto
+    window.debugStorage = function() {
+        console.log('=== DEBUG SISTEMA ROBUSTO ===');
         console.log('📱 Dispositivo móvil:', isMobileDevice() ? 'SÍ' : 'NO');
         console.log('🌐 User Agent:', navigator.userAgent);
         console.log('📏 Ancho de pantalla:', window.innerWidth);
@@ -471,6 +471,7 @@
         // Verificar disponibilidad de storages
         let localStorageAvailable = false;
         let sessionStorageAvailable = false;
+        let indexedDBAvailable = false;
         
         try {
             const test = '__test__';
@@ -492,7 +493,14 @@
             console.error('❌ sessionStorage NO está disponible:', e);
         }
         
-        if (!localStorageAvailable && !sessionStorageAvailable) {
+        try {
+            indexedDBAvailable = !!window.indexedDB;
+            console.log('✅ IndexedDB está disponible:', indexedDBAvailable);
+        } catch (e) {
+            console.error('❌ IndexedDB NO está disponible:', e);
+        }
+        
+        if (!localStorageAvailable && !sessionStorageAvailable && !indexedDBAvailable) {
             console.error('❌ NINGÚN STORAGE DISPONIBLE');
             return;
         }
@@ -590,10 +598,26 @@
         }
         console.log('\n💾 Espacio total usado:', (totalSize / 1024).toFixed(2) + ' KB');
         console.log('📊 Espacio disponible (estimado): ~5-10 MB');
+        
+        // Mostrar recomendaciones
+        console.log('\n💡 RECOMENDACIONES:');
+        if (!localStorageAvailable && !sessionStorageAvailable) {
+            console.log('   ⚠️ localStorage y sessionStorage no disponibles');
+            if (indexedDBAvailable) {
+                console.log('   ✅ IndexedDB disponible - usar sistema robusto');
+            }
+        }
+        
+        // Mostrar método de almacenamiento recomendado
+        if (isMobileDevice()) {
+            console.log('   📱 Dispositivo móvil detectado - usando doble almacenamiento');
+        } else {
+            console.log('   💻 Dispositivo de escritorio - usando almacenamiento simple');
+        }
     };
     
-    // Función para limpiar localStorage
-    window.clearLocalStorage = function() {
+    // Función para limpiar storage
+    window.clearStorage = function() {
         if (confirm('¿Estás seguro de que quieres limpiar todos los datos guardados? Esta acción no se puede deshacer.')) {
             localStorage.clear();
             sessionStorage.clear();
@@ -602,8 +626,8 @@
         }
     };
     
-    // Función para exportar datos del localStorage
-    window.exportLocalStorage = function() {
+    // Función para exportar datos del storage
+    window.exportStorage = function() {
         const data = {
             localStorage: {
                 materiales: localStorage.getItem('almacenMateriales'),
@@ -634,8 +658,8 @@
         console.log('💾 Backup de storages exportado');
     };
     
-    // Función para importar datos al localStorage
-    window.importLocalStorage = function() {
+    // Función para importar datos al storage
+    window.importStorage = function() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
@@ -707,13 +731,13 @@
     // Mostrar información de debugging al cargar
     window.addEventListener('load', () => {
         console.log('🔧 Funciones de debugging disponibles:');
-        console.log('   - debugLocalStorage() - Verificar estado del storage');
-        console.log('   - clearLocalStorage() - Limpiar todos los datos');
-        console.log('   - exportLocalStorage() - Exportar backup de datos');
-        console.log('   - importLocalStorage() - Importar backup de datos');
+        console.log('   - debugStorage() - Verificar estado del sistema robusto');
+        console.log('   - clearStorage() - Limpiar todos los datos');
+        console.log('   - exportStorage() - Exportar backup de datos');
+        console.log('   - importStorage() - Importar backup de datos');
         console.log('   - forceSave() - Forzar guardado en ambos storages');
         console.log('');
-        console.log('💡 Ejecuta debugLocalStorage() para ver el estado actual');
+        console.log('💡 Ejecuta debugStorage() para ver el estado actual');
         console.log('📱 Dispositivo móvil detectado:', isMobileDevice() ? 'SÍ' : 'NO');
     });
 </script>
