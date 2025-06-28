@@ -231,14 +231,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             deniedImage.style.height = '100px';
             deniedImage.style.objectFit = 'contain';
             selectorMaterial.appendChild(deniedImage);
-            
-            // Mensaje de ayuda
-            const mensaje = document.createElement('div');
-            mensaje.textContent = 'No disponible en este nivel';
-            mensaje.style.fontSize = '0.8em';
-            mensaje.style.textAlign = 'center';
-            mensaje.style.marginTop = '5px';
-            selectorMaterial.appendChild(mensaje);
         } else {
             const imagen = document.createElement('img');
             const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
