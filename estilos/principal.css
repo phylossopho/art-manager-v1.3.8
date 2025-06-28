@@ -408,14 +408,15 @@ header h1 {
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
     font-weight: bold;
     text-align: center;
     white-space: nowrap;
     z-index: 10;
     pointer-events: none;
+    line-height: 1.2;
 }
 
 .base-selector {

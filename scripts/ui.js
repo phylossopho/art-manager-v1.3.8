@@ -266,6 +266,7 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             `;
 
             selector.addEventListener('change', (e) => {
+                console.log('Evento change del selector:', e.target.value);
                 previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
             });
 
@@ -295,39 +296,28 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
 function previsualizarUso(estado, claveAlmacen, colorObjetivo, selectorMaterial) {
     try {
+        console.log('previsualizarUso llamado:', { claveAlmacen, colorObjetivo });
+        console.log('estado.mapaColores:', estado.mapaColores);
+        
         // MANEJO DE SELECTOR VACÍO: REINICIO VISUAL
         if (!colorObjetivo) {
             selectorMaterial.style.backgroundColor = estado.colorNoSeleccionado;
             delete estado.colorPorMaterialSeleccionado[claveAlmacen];
+            console.log('Selector vacío, reseteando color');
             return;
         }
 
-        const cantidadesActuales = {};
-        for (const c in estado.mapaColores) {
-            cantidadesActuales[c] = parseInt(estado.almacenMateriales[claveAlmacen]?.[c] || '0') || 0;
-        }
-
-        if (!estado.simularUso) {
-            console.error('Función simularUso no definida en estado');
-            modales.mostrarMensaje('Error', 'Función de simulación no disponible', 'error');
-            return;
-        }
-
-        const resultado = estado.simularUso(cantidadesActuales, colorObjetivo);
-
-        if (resultado && resultado.exito) {
+        // Simplificar: siempre permitir el cambio de color
+        if (estado.mapaColores[colorObjetivo]) {
             selectorMaterial.style.backgroundColor = estado.mapaColores[colorObjetivo];
             estado.colorPorMaterialSeleccionado[claveAlmacen] = colorObjetivo;
+            console.log('Color cambiado exitosamente a:', colorObjetivo);
         } else {
             selectorMaterial.style.backgroundColor = estado.colorNoSeleccionado;
             const selector = selectorMaterial.querySelector('select');
             if (selector) selector.value = '';
             delete estado.colorPorMaterialSeleccionado[claveAlmacen];
-            
-            if (resultado && !resultado.exito) {
-                modales.mostrarMensaje('Materiales insuficientes', 
-                    `No tienes suficientes materiales para crear ${colorObjetivo}`, 'warning');
-            }
+            console.log('Color no válido:', colorObjetivo);
         }
     } catch (error) {
         console.error('Error en previsualización de uso:', error);
