@@ -548,11 +548,12 @@
     }
 
     .tab-button {
-        padding: 8px 10px;
-        font-size: 12px;
+        padding: 5px 6px;
+        font-size: 10px;
         flex-grow: 1;
         text-align: center;
         white-space: nowrap;
+        min-width: 40px;
     }
 
     th, td {
