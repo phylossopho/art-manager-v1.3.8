@@ -8,134 +8,89 @@
 
 .gallery-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
-    padding: 30px;
-    max-height: 70vh;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    max-height: 500px;
     overflow-y: auto;
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-    border-radius: 20px;
-    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 10px;
 }
 
 .gallery-item {
     position: relative;
     background: white;
-    border-radius: 20px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
     cursor: pointer;
-    aspect-ratio: 1;
 }
 
 .gallery-item:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.gallery-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1;
-}
-
-.gallery-item:hover::before {
-    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .gallery-item img {
     width: 100%;
-    height: 100%;
+    height: 150px;
     object-fit: cover;
     display: block;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    z-index: 2;
 }
 
-.gallery-item:hover img {
-    transform: scale(1.1);
-}
-
-.gallery-item .delete-btn {
+.delete-image {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.8);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 6px 16px rgba(244, 67, 54, 0.3);
-    opacity: 0;
-    transform: scale(0.8) rotate(-90deg);
-    z-index: 3;
+    transition: background 0.2s ease;
 }
 
-.gallery-item:hover .delete-btn {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-}
-
-.gallery-item .delete-btn:hover {
-    transform: scale(1.1) rotate(0deg);
-    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
-    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+.delete-image:hover {
+    background: rgba(255, 0, 0, 1);
 }
 
 .floating-add-button {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background-color: #2196F3;
     color: white;
     border: none;
+    font-size: 24px;
     cursor: pointer;
-    font-size: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 1001;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
 }
 
 .floating-add-button:hover {
-    transform: translateY(-5px) scale(1.1);
-    box-shadow: 0 15px 35px rgba(79, 172, 254, 0.5);
-    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    background-color: #1976D2;
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
 }
 
-.floating-add-button:active {
-    transform: translateY(-2px) scale(1.05);
-}
-
-.floating-add-button .plus-icon {
-    font-weight: bold;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.floating-add-button:hover .plus-icon {
-    transform: rotate(90deg) scale(1.1);
+.plus-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .gallery-item.loading {
@@ -203,60 +158,34 @@
 @media (max-width: 768px) {
     .gallery-container {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 20px;
-        padding: 20px;
-    }
-    
-    .gallery-item {
-        aspect-ratio: 1;
-    }
-    
-    .gallery-item .delete-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
-        top: 8px;
-        right: 8px;
-    }
-    
-    .floating-add-button {
-        width: 55px;
-        height: 55px;
-        font-size: 24px;
-        bottom: 20px;
-        right: 20px;
-    }
-    
-    .gallery-empty {
-        padding: 40px 15px;
-        font-size: 16px;
-    }
-    
-    .gallery-empty::before {
-        font-size: 36px;
-        margin-bottom: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .gallery-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 15px;
         padding: 15px;
     }
     
-    .gallery-item .delete-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-        top: 6px;
-        right: 6px;
+    .gallery-item img {
+        height: 120px;
     }
     
     .floating-add-button {
         width: 50px;
         height: 50px;
         font-size: 20px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .floating-add-button {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
         bottom: 15px;
         right: 15px;
     }
@@ -372,14 +301,6 @@
     
     .gallery-item img {
         height: 120px;
-    }
-    
-    .floating-add-button {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 20px;
     }
     
     .carousel-modal-content {

@@ -1,266 +1,231 @@
+/* === ESTILOS DE TABLAS === */
+
 /* Tabla de materiales */
 .materials-table {
-    width: 100%;
-    overflow-x: auto;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    background: white;
-}
-
-.materials-table table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.materials-table th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 18px 15px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-.materials-table th::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.materials-table th:hover::before {
-    left: 100%;
-}
-
-.materials-table td {
-    padding: 15px 12px;
-    text-align: center;
-    border-bottom: 1px solid #f0f0f0;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.materials-table tr {
-    transition: all 0.3s ease;
-}
-
-.materials-table tr:hover {
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-}
-
-.materials-table tr:hover td {
-    color: #667eea;
-    font-weight: 600;
-}
-
-.materials-table tr:last-child td {
-    border-bottom: none;
-}
-
-/* Inputs de color modernos */
-.color-input {
-    width: 70px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
     padding: 10px;
-    border: 2px solid #e1e5e9;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    background: white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    background-color: white;
+    overflow-x: auto;
 }
 
-.color-input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
+table img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
-.color-input:hover {
-    border-color: #667eea;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-}
-
-/* Tabla de conversión de leyenda */
-.conversion-legend-table {
+table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+th {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+}
+
+td {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.material-cell {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.material-cell img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
+.material-cell span {
+    font-size: 14px;
+    line-height: 26px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+/* Estilos para tablas */
+#materials-table table,
+.tab-content table,
+.conversion-legend-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#materials-table th,
+#materials-table td,
+.tab-content th,
+.tab-content td,
 .conversion-legend-table th,
 .conversion-legend-table td {
-    padding: 15px;
+    padding: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 1px solid #ccc;
+}
+
+#materials-table th:nth-child(1),
+#materials-table td:nth-child(1),
+.tab-content th:nth-child(1),
+.tab-content td:nth-child(1),
+.conversion-legend-table th:nth-child(1),
+.conversion-legend-table td:nth-child(1) {
+    width: 8%;
     text-align: center;
-    border: 1px solid #e1e5e9;
-    font-weight: 600;
-    transition: all 0.3s ease;
 }
 
-.conversion-legend-table th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+#materials-table th:nth-child(n+3),
+#materials-table td:nth-child(n+3),
+.tab-content th:nth-child(n+3),
+.tab-content td:nth-child(n+3) {
+    width: 14.4%;
+    text-align: center;
 }
 
-.conversion-legend-table td {
-    background: white;
-    font-size: 16px;
-    color: #333;
+.conversion-legend-table th:nth-child(1),
+.conversion-legend-table td:nth-child(1) {
+    width: 20%;
+    text-align: left;
 }
 
-.conversion-legend-table tr:hover td {
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-    color: #667eea;
-    transform: scale(1.02);
+.conversion-legend-table th:nth-child(n+2),
+.conversion-legend-table td:nth-child(n+2) {
+    width: 16%;
+    text-align: center;
 }
 
-/* Descripción de conversión */
-.conversion-description {
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-    padding: 20px;
-    border-radius: 15px;
+.color-input {
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    border: 2px solid;
+}
+
+.color-input[data-color="dorado"] {
+    border-color: #FFD700;
+}
+
+.color-input[data-color="morado"] {
+    border-color: #DDA0DD;
+}
+
+.color-input[data-color="azul"] {
+    border-color: #ADD8E6;
+}
+
+.color-input[data-color="verde"] {
+    border-color: #90EE90;
+}
+
+.color-input[data-color="blanco"] {
+    border-color: #000;
+}
+
+/* Selectores de color de material */
+.bottom-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 20px;
-    border-left: 4px solid #667eea;
+    justify-content: center;
 }
 
-.conversion-description p {
-    margin: 0;
-    font-weight: 600;
-    color: #333;
-    font-size: 16px;
+.material-selector {
+    width: 120px;
+    border: 1px solid #808080;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s ease;
 }
 
-.conversion-notes {
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 20px;
-    border-left: 4px solid #ff9800;
+.material-selector img {
+    width: 100px;
+    height: 100px;
+    background-color: transparent !important;
+    object-fit: contain;
 }
 
-.conversion-notes p {
-    margin: 0 0 15px 0;
-    font-weight: 600;
-    color: #333;
-    font-size: 16px;
+.material-selector select {
+    width: 100%;
+    margin-top: 5px;
 }
 
-.conversion-notes ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.conversion-notes li {
-    margin-bottom: 8px;
-    color: #555;
-    font-weight: 500;
-}
-
-/* Tabla de arte */
+/* === NUEVOS ESTILOS PARA TABLA ARTE === */
 #arte-table table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 #arte-table th,
 #arte-table td {
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #f0f0f0;
-    transition: all 0.3s ease;
-}
-
-#arte-table th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center; /* Centrado de todo el contenido */
 }
 
 #arte-table td {
     vertical-align: middle;
-    font-weight: 500;
-}
-
-#arte-table tr:hover td {
-    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-    color: #667eea;
 }
 
 #arte-table img {
-    width: 40px;
+    width: 33px;
     height: auto;
     display: block;
+    margin: 0 auto; /* Centrado de imágenes */
+}
+
+#arte-table td img {
+    width: 24px !important;
+    height: 24px !important;
+    display: block;
     margin: 0 auto;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-#arte-table img:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Botón volver en arte */
-.arte-back-container {
+#arte-table th:last-child,
+#arte-table td:last-child {
+    width: 32px;
     text-align: center;
-    margin-top: 30px;
 }
 
-.back-button {
-    padding: 15px 30px;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 16px rgba(240, 147, 251, 0.3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* === ESTILOS PARA TABLAS DE CONVERSIÓN === */
+.conversion-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.back-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 24px rgba(240, 147, 251, 0.4);
+.conversion-table th,
+.conversion-table td {
+    padding: 8px;
+    text-align: center; /* Centrado de contenido */
+    border: 1px solid #ddd;
 }
 
-.back-button:active {
-    transform: translateY(-1px);
+.conversion-table img {
+    max-width: 40px;
+    max-height: 40px;
+    display: block;
+    margin: 0 auto; /* Centrado de imágenes */
 }
 
-/* Responsive para tablas */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .materials-table {
         font-size: 12px;
