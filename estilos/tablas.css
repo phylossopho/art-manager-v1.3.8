@@ -12,6 +12,38 @@
     width: 100%;
 }
 
+/* Asegurar contraste del texto en tablas */
+.materials-table,
+.tab-content,
+#materials-table,
+.conversion-legend-table,
+#arte-table {
+    color: #333333 !important; /* Texto oscuro para contraste */
+}
+
+.materials-table th,
+.tab-content th,
+#materials-table th,
+.conversion-legend-table th,
+#arte-table th {
+    color: #333333 !important;
+    background-color: #f8f9fa !important;
+    font-weight: bold;
+}
+
+.materials-table td,
+.tab-content td,
+#materials-table td,
+.conversion-legend-table td,
+#arte-table td {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+}
+
+.material-cell span {
+    color: #333333 !important;
+}
+
 table img {
     max-width: 100%;
     height: auto;

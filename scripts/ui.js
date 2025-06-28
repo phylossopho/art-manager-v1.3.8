@@ -490,17 +490,18 @@ export function actualizarUI(estado) {
         const idPestaña = pestañaActiva ? pestañaActiva.dataset.tab : 'materials';
         const esLeyenda = idPestaña === 'conversionlegend';
         const esArte = idPestaña === 'arte';
+        const esAyuda = idPestaña === 'ayuda';
 
         const topSection = document.querySelector('.top-section');
-        if (topSection) topSection.style.display = (esLeyenda || esArte) ? 'none' : 'flex';
+        if (topSection) topSection.style.display = (esLeyenda || esArte || esAyuda) ? 'none' : 'flex';
 
         const bottomSection = document.getElementById('bottom-section');
-        if (bottomSection) bottomSection.style.display = (esLeyenda || esArte) ? 'none' : 'flex';
+        if (bottomSection) bottomSection.style.display = (esLeyenda || esArte || esAyuda) ? 'none' : 'flex';
 
         const useButton = document.getElementById('use-materials');
         if (useButton) {
-            // Ocultar en ARTE y en Leyenda de Conversión, mostrar en el resto
-            if (esArte || esLeyenda) {
+            // Ocultar en ARTE, Ayuda y en Leyenda de Conversión, mostrar en el resto
+            if (esArte || esLeyenda || esAyuda) {
                 useButton.style.display = 'none';
             } else {
                 useButton.style.display = 'block';
@@ -508,7 +509,7 @@ export function actualizarUI(estado) {
         }
 
         const galleryButton = document.getElementById('gallery-button');
-        if (galleryButton) galleryButton.style.display = esLeyenda ? 'none' : 'flex';
+        if (galleryButton) galleryButton.style.display = (esLeyenda || esAyuda) ? 'none' : 'flex';
 
         if (idPestaña === 'arte') {
             generarTablaArte();

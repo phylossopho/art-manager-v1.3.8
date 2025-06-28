@@ -62,6 +62,14 @@ function configurarEventListeners(estado) {
             });
         }
 
+        // === BOTÓN VOLVER A MATERIALES (AYUDA) ===
+        const ayudaBackButton = document.getElementById('ayuda-back-button');
+        if (ayudaBackButton) {
+            ayudaBackButton.addEventListener('click', () => {
+                ui.cambiarPestana('materials');
+            });
+        }
+
         // === BOTÓN VOLVER (MODAL MATERIALES) ===
         const materialsBackButton = document.getElementById('materials-back-button');
         if (materialsBackButton) {
