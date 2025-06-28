@@ -57,7 +57,7 @@ export function crearBaseSelector(estado, contenedor) {
         }
         // Para clase Normal, no se agrega imagen
 
-        // Agregar texto superpuesto
+        // Agregar texto superpuesto para restricciones
         const baseText = document.createElement('div');
         baseText.className = 'base-text';
         baseText.textContent = textoTitulo;
@@ -113,15 +113,18 @@ export function crearBaseSelector(estado, contenedor) {
         dynamicContainer.appendChild(deniedImage);
         baseSelector.appendChild(dynamicContainer);
 
-        // Agregar funcionalidad de clic
+        // Ocultar selector por defecto
+        selector.style.display = 'none';
+
+        // Mostrar selector al hacer clic en el base
         baseSelector.addEventListener('click', () => {
-            mostrarDropdownColorBase(estado, baseSelector, textoTitulo);
+            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
         });
 
         // Cerrar selector al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!baseSelector.contains(e.target)) {
-                baseSelector.classList.remove('active');
+                selector.style.display = 'none';
             }
         });
 
@@ -155,9 +158,10 @@ export function actualizarEstadoBase(estado) {
         const selector = baseSelector.querySelector('select');
         const deniedImage = baseSelector.querySelector('img[data-testid="base-denied-image"]');
         const title = baseSelector.querySelector('.base-title');
+        const baseText = baseSelector.querySelector('.base-text');
         const equipoImg = baseSelector.querySelector('.base-equipo-img');
 
-        if (!selector || !deniedImage || !title) {
+        if (!selector || !deniedImage || !title || !baseText) {
             console.warn('Elementos internos del selector base no encontrados');
             return;
         }
@@ -165,7 +169,7 @@ export function actualizarEstadoBase(estado) {
         // Para clases especiales, mostrar imagen y texto
         if (["Campeón", "Planewalker", "Lord", "Noble Lord"].includes(estado.claseActual)) {
             deniedImage.style.display = 'none';
-            selector.style.display = 'block';
+            selector.style.display = 'none'; // Oculto por defecto
             let texto = '';
             if (estado.claseActual === "Campeón") {
                 texto = "Equipo normal de nivel 4";
@@ -177,6 +181,7 @@ export function actualizarEstadoBase(estado) {
                 texto = "Equipo Lord de nivel 5";
             }
             title.textContent = texto;
+            baseText.textContent = texto;
             // Actualizar imagen del equipo si existe
             if (equipoImg) {
                 equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
@@ -207,6 +212,7 @@ export function actualizarEstadoBase(estado) {
             deniedImage.style.display = 'block';
             selector.style.display = 'none';
             title.textContent = 'NO DISPONIBLE';
+            baseText.textContent = 'NO DISPONIBLE';
             baseSelector.style.backgroundColor = '#f8d7da'; // Color de error
             estado.colorBaseSeleccionado = null; // Resetear selección
             // Resetear el selector
@@ -216,16 +222,19 @@ export function actualizarEstadoBase(estado) {
             if (equipoImg) equipoImg.style.display = 'none';
         } else {
             deniedImage.style.display = 'none';
-            selector.style.display = 'block';
+            selector.style.display = 'none'; // Oculto por defecto
             // Para clase Normal, mostrar texto según el nivel
             if (estado.claseActual === "Normal") {
                 if (estado.nivelActual === "1") {
                     title.textContent = "Equipo de nivel 1";
+                    baseText.textContent = "Equipo de nivel 1";
                 } else {
                     title.textContent = `Equipo de nivel ${estado.nivelActual} o menor`;
+                    baseText.textContent = `Equipo de nivel ${estado.nivelActual} o menor`;
                 }
             } else {
                 title.textContent = "Base";
+                baseText.textContent = "Base";
             }
             // Ocultar imagen si existe
             if (equipoImg) equipoImg.style.display = 'none';
@@ -250,104 +259,5 @@ export function reiniciarSelectorBase(estado) {
     } catch (error) {
         console.error('Error reiniciando selector base:', error);
         modales.mostrarMensaje('Error', 'Error al reiniciar selector base', 'error');
-    }
-}
-
-// Función para mostrar dropdown de color para el selector base
-function mostrarDropdownColorBase(estado, elementoOrigen, titulo) {
-    try {
-        // Remover dropdown existente si hay uno
-        const dropdownExistente = document.querySelector('.color-dropdown');
-        if (dropdownExistente) {
-            dropdownExistente.remove();
-        }
-        
-        const overlayExistente = document.querySelector('.dropdown-overlay');
-        if (overlayExistente) {
-            overlayExistente.remove();
-        }
-
-        // Crear overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'dropdown-overlay';
-        document.body.appendChild(overlay);
-
-        // Crear dropdown
-        const dropdown = document.createElement('div');
-        dropdown.className = 'color-dropdown';
-        
-        const colorActual = estado.colorBaseSeleccionado;
-        
-        dropdown.innerHTML = `
-            <div class="color-dropdown-header">
-                Seleccionar color para ${titulo}
-            </div>
-            <div class="color-dropdown-content">
-                <select id="dropdown-color-select">
-                    <option value="">- Sin seleccionar -</option>
-                    <option value="blanco" ${colorActual === 'blanco' ? 'selected' : ''}>Blanco</option>
-                    <option value="verde" ${colorActual === 'verde' ? 'selected' : ''}>Verde</option>
-                    <option value="azul" ${colorActual === 'azul' ? 'selected' : ''}>Azul</option>
-                    <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
-                    <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
-                </select>
-                <div class="color-dropdown-buttons">
-                    <button class="color-dropdown-btn cancel">Cancelar</button>
-                    <button class="color-dropdown-btn apply">Aplicar</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(dropdown);
-
-        // Event listeners
-        const selectElement = dropdown.querySelector('#dropdown-color-select');
-        const cancelBtn = dropdown.querySelector('.cancel');
-        const applyBtn = dropdown.querySelector('.apply');
-
-        // Cerrar con Cancelar
-        cancelBtn.addEventListener('click', () => {
-            cerrarDropdown();
-        });
-
-        // Aplicar selección
-        applyBtn.addEventListener('click', () => {
-            const colorSeleccionado = selectElement.value;
-            if (colorSeleccionado) {
-                estado.colorBaseSeleccionado = colorSeleccionado;
-                if (estado.mapaColores[colorSeleccionado]) {
-                    elementoOrigen.style.backgroundColor = estado.mapaColores[colorSeleccionado];
-                }
-            } else {
-                estado.colorBaseSeleccionado = null;
-                elementoOrigen.style.backgroundColor = estado.colorNoSeleccionado || '#808080';
-            }
-            cerrarDropdown();
-        });
-
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                cerrarDropdown();
-            }
-        });
-
-        // Cerrar con clic en overlay
-        overlay.addEventListener('click', () => {
-            cerrarDropdown();
-        });
-
-        function cerrarDropdown() {
-            dropdown.remove();
-            overlay.remove();
-        }
-
-        // Focus en el select
-        setTimeout(() => {
-            selectElement.focus();
-        }, 100);
-
-    } catch (error) {
-        console.error('Error mostrando dropdown de color base:', error);
     }
 }

@@ -255,12 +255,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             };
             selectorMaterial.appendChild(imagen);
 
-            // Agregar texto superpuesto
-            const materialText = document.createElement('div');
-            materialText.className = 'material-text';
-            materialText.textContent = material;
-            selectorMaterial.appendChild(materialText);
-
             const selector = document.createElement('select');
             selector.innerHTML = `
                 <option value="">-</option>
@@ -277,15 +271,18 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
-            // Agregar funcionalidad de clic
+            // Ocultar selector por defecto
+            selector.style.display = 'none';
+
+            // Mostrar selector al hacer clic en el material
             selectorMaterial.addEventListener('click', () => {
-                mostrarDropdownColor(estado, claveAlmacen, material, selectorMaterial);
+                selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
             });
 
             // Cerrar selector al hacer clic fuera
             document.addEventListener('click', (e) => {
                 if (!selectorMaterial.contains(e.target)) {
-                    selectorMaterial.classList.remove('active');
+                    selector.style.display = 'none';
                 }
             });
         }
@@ -293,99 +290,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
         contenedor.appendChild(selectorMaterial);
     } catch (error) {
         console.error('Error creando selector de material:', error);
-    }
-}
-
-// Función para mostrar dropdown de color
-function mostrarDropdownColor(estado, claveAlmacen, titulo, elementoOrigen) {
-    try {
-        // Remover dropdown existente si hay uno
-        const dropdownExistente = document.querySelector('.color-dropdown');
-        if (dropdownExistente) {
-            dropdownExistente.remove();
-        }
-        
-        const overlayExistente = document.querySelector('.dropdown-overlay');
-        if (overlayExistente) {
-            overlayExistente.remove();
-        }
-
-        // Crear overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'dropdown-overlay';
-        document.body.appendChild(overlay);
-
-        // Crear dropdown
-        const dropdown = document.createElement('div');
-        dropdown.className = 'color-dropdown';
-        
-        const colorActual = estado.colorPorMaterialSeleccionado[claveAlmacen];
-        
-        dropdown.innerHTML = `
-            <div class="color-dropdown-header">
-                Seleccionar color para ${titulo}
-            </div>
-            <div class="color-dropdown-content">
-                <select id="dropdown-color-select">
-                    <option value="">- Sin seleccionar -</option>
-                    <option value="blanco" ${colorActual === 'blanco' ? 'selected' : ''}>Blanco</option>
-                    <option value="verde" ${colorActual === 'verde' ? 'selected' : ''}>Verde</option>
-                    <option value="azul" ${colorActual === 'azul' ? 'selected' : ''}>Azul</option>
-                    <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
-                    <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
-                </select>
-                <div class="color-dropdown-buttons">
-                    <button class="color-dropdown-btn cancel">Cancelar</button>
-                    <button class="color-dropdown-btn apply">Aplicar</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(dropdown);
-
-        // Event listeners
-        const selectElement = dropdown.querySelector('#dropdown-color-select');
-        const cancelBtn = dropdown.querySelector('.cancel');
-        const applyBtn = dropdown.querySelector('.apply');
-
-        // Cerrar con Cancelar
-        cancelBtn.addEventListener('click', () => {
-            cerrarDropdown();
-        });
-
-        // Aplicar selección
-        applyBtn.addEventListener('click', () => {
-            const colorSeleccionado = selectElement.value;
-            if (colorSeleccionado) {
-                previsualizarUso(estado, claveAlmacen, colorSeleccionado, elementoOrigen);
-            }
-            cerrarDropdown();
-        });
-
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                cerrarDropdown();
-            }
-        });
-
-        // Cerrar con clic en overlay
-        overlay.addEventListener('click', () => {
-            cerrarDropdown();
-        });
-
-        function cerrarDropdown() {
-            dropdown.remove();
-            overlay.remove();
-        }
-
-        // Focus en el select
-        setTimeout(() => {
-            selectElement.focus();
-        }, 100);
-
-    } catch (error) {
-        console.error('Error mostrando dropdown de color:', error);
     }
 }
 
