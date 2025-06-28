@@ -1,5 +1,5 @@
 // Service Worker para Gestor de Materiales - Deck Heroes
-const CACHE_NAME = 'materiales-dh-v1';
+const CACHE_NAME = 'materiales-dh-v1.2';
 const urlsToCache = [
   './',
   './index.html',

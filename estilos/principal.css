@@ -865,7 +865,7 @@ header h1 {
     right: 0;
     background: #333;
     color: white;
-    padding: 15px;
+    padding: 12px 15px;
     display: none; /* Oculto por defecto */
     justify-content: space-between;
     align-items: center;
@@ -883,12 +883,23 @@ header h1 {
     display: flex;
 }
 
+#install-banner strong {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+#install-banner p {
+    font-size: 12px;
+    margin: 0;
+    opacity: 0.9;
+}
+
 #install-button {
     background-color: #4CAF50;
     color: white;
-    font-size: 12px;
+    font-size: 13px;
     border: none;
-    padding: 8px 12px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -899,19 +910,20 @@ header h1 {
 }
 
 #close-install {
-    background: #f69a6a;
+    background: transparent;
     border: none;
-    color: #0c0c0c;
-    font-size: 16px;
-    padding: 8px 16px;
+    color: #ccc;
+    font-size: 18px;
+    padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 10px;
-    transition: background-color 0.3s ease;
+    margin-right: 8px;
+    transition: all 0.3s ease;
 }
 
 #close-install:hover {
-    background: #f57c4a;
+    background: rgba(255,255,255,0.1);
+    color: white;
 }
 
 /* === ESTILOS ICONOS REDES SOCIALES === */

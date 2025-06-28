@@ -25,7 +25,7 @@ export default function configurarEventListeners(estado) {
         configurarEventosPestanas(estado);
         
         // ===== [6] MODALES Y CIERRE =====
-        configurarEventosModales();
+        configurarEventosModales(estado);
         
         // ===== [7] EVENTOS GLOBALES =====
         configurarEventosGlobales(estado);
@@ -241,7 +241,7 @@ function configurarEventosPestanas(estado) {
     }
 }
 
-function configurarEventosModales() {
+function configurarEventosModales(estado) {
     // Botones de cierre
     const botonesCerrar = document.querySelectorAll('.close, #message-ok');
     if (botonesCerrar.length > 0) {
@@ -269,6 +269,9 @@ function configurarEventosModales() {
             // Activar pestaña Materiales
             document.querySelector('.tab-button[data-tab="materials"]').classList.add('active');
             document.getElementById('materials-tab').classList.add('active');
+            
+            // Actualizar la interfaz para mostrar el botón USAR
+            ui.actualizarUI(estado);
         });
     }
 }

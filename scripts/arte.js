@@ -37,8 +37,48 @@ export function generarTablaArte() {
     });
     table.appendChild(filaEncabezados);
 
+    // Función para crear celdas de material (movida fuera del forEach)
+    const crearCeldaMaterial = (material, color) => {
+        const celda = document.createElement('td');
+        if (material && material !== 'N/A') {
+            if (color && mapaColores[color]) {
+                celda.style.backgroundColor = mapaColores[color];
+            }
+            
+            // Verificar si el material es un color (no tiene imagen)
+            const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
+            if (colores.includes(material.toLowerCase())) {
+                // Es un color, mostrar solo texto
+                const span = document.createElement('span');
+                span.textContent = material;
+                span.style.fontWeight = 'bold';
+                celda.appendChild(span);
+            } else {
+                // Es un material, intentar cargar imagen
+                const img = document.createElement('img');
+                const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                img.src = `images/${nombreImagen}.png`;
+                img.alt = material;
+                img.style.width = '33px';
+                img.style.height = 'auto';
+                img.style.display = 'block';
+                img.style.margin = '0 auto';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const span = document.createElement('span');
+                    span.textContent = material;
+                    celda.appendChild(span);
+                };
+                celda.appendChild(img);
+            }
+        } else {
+            celda.innerHTML = '&nbsp;';
+        }
+        return celda;
+    };
+
     // Filas con datos - ORDEN INVERSO (más antiguo primero)
-    [...equiposSimulados].reverse().forEach((equipo, idx, arr) => {
+    [...equiposSimulados].reverse().forEach((equipo, idx) => {
         const fila = document.createElement('tr');
         // 1. Imagen del equipo con fondo de color
         const celdaEquipoImg = document.createElement('td');
@@ -76,34 +116,6 @@ export function generarTablaArte() {
         celdaNivel.textContent = equipo.nivel;
         fila.appendChild(celdaNivel);
 
-        // Función para crear celdas de material
-        const crearCeldaMaterial = (material, color) => {
-            const celda = document.createElement('td');
-            if (material && material !== 'N/A') {
-                if (color && mapaColores[color]) {
-                    celda.style.backgroundColor = mapaColores[color];
-                }
-                const img = document.createElement('img');
-                const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                img.src = `images/${nombreImagen}.png`;
-                img.alt = material;
-                img.style.width = '33px';
-                img.style.height = 'auto';
-                img.style.display = 'block';
-                img.style.margin = '0 auto';
-                img.onerror = function() {
-                    this.style.display = 'none';
-                    const span = document.createElement('span');
-                    span.textContent = material;
-                    celda.appendChild(span);
-                };
-                celda.appendChild(img);
-            } else {
-                celda.innerHTML = '&nbsp;';
-            }
-            return celda;
-        };
-
         // 5. Material 3
         fila.appendChild(crearCeldaMaterial(equipo.material3, equipo.material3Color));
         // 6. Material 1
@@ -114,19 +126,29 @@ export function generarTablaArte() {
             if (mapaColores[equipo.base]) {
                 celdaBase.style.backgroundColor = mapaColores[equipo.base];
             }
-            const nombreBase = equipo.base.toLowerCase();
-            const imgBase = document.createElement('img');
-            imgBase.src = `images/${nombreBase}.png`;
-            imgBase.alt = equipo.base;
-            imgBase.style.width = '33px';
-            imgBase.style.height = 'auto';
-            imgBase.style.display = 'block';
-            imgBase.style.margin = '0 auto';
-            imgBase.onerror = function() {
-                this.style.display = 'none';
+            
+            // Verificar si la base es un color (no tiene imagen)
+            const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
+            if (colores.includes(equipo.base.toLowerCase())) {
+                // Es un color, mostrar solo texto
                 celdaBase.textContent = equipo.base;
-            };
-            celdaBase.appendChild(imgBase);
+                celdaBase.style.fontWeight = 'bold';
+            } else {
+                // Es un material, intentar cargar imagen
+                const nombreBase = equipo.base.toLowerCase();
+                const imgBase = document.createElement('img');
+                imgBase.src = `images/${nombreBase}.png`;
+                imgBase.alt = equipo.base;
+                imgBase.style.width = '33px';
+                imgBase.style.height = 'auto';
+                imgBase.style.display = 'block';
+                imgBase.style.margin = '0 auto';
+                imgBase.onerror = function() {
+                    this.style.display = 'none';
+                    celdaBase.textContent = equipo.base;
+                };
+                celdaBase.appendChild(imgBase);
+            }
         } else {
             celdaBase.textContent = 'N/A';
         }
