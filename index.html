@@ -467,37 +467,94 @@
         close: !!closeInstall
     });
 
+    // Función para verificar si la app está instalada
+    function isAppInstalled() {
+        // Múltiples métodos de detección
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+        const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
+        const isBrowser = window.matchMedia('(display-mode: browser)').matches;
+        
+        // Verificar si está en modo PWA (no en browser)
+        const isPWA = isStandalone || isInApp || isFullscreen || isMinimalUI;
+        
+        console.log('PWA: Verificación de instalación:', {
+            isStandalone, isInApp, isFullscreen, isMinimalUI, isBrowser, isPWA
+        });
+        
+        return isPWA;
+    }
+
+    // Función para ocultar el banner
+    function hideInstallBanner() {
+        if (installBanner) {
+            console.log('PWA: Ocultando banner de instalación');
+            installBanner.classList.remove('visible', 'show');
+            installBanner.style.display = 'none';
+            // Limpiar cualquier timeout pendiente
+            if (window.bannerTimeout) {
+                clearTimeout(window.bannerTimeout);
+                window.bannerTimeout = null;
+            }
+        }
+    }
+
+    // Función para mostrar el banner (solo si no está instalada)
+    function showInstallBanner() {
+        if (installBanner && !isAppInstalled() && deferredPrompt) {
+            console.log('PWA: Mostrando banner de instalación');
+            installBanner.classList.add('visible');
+            setTimeout(() => {
+                installBanner.classList.add('show');
+            }, 100);
+        }
+    }
+
     if (installBanner && installButton && closeInstall) {
+        // Verificar inmediatamente si ya está instalada
+        if (isAppInstalled()) {
+            console.log('PWA: App ya instalada al cargar - ocultando banner');
+            hideInstallBanner();
+        } else {
+            console.log('PWA: App no instalada - configurando banner');
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             console.log('PWA: beforeinstallprompt detectado');
             e.preventDefault();
             deferredPrompt = e;
             
-            // Mostrar banner automático después de 3 segundos
-            setTimeout(() => {
-                if (installBanner && deferredPrompt) {
-                    console.log('PWA: Intentando mostrar banner...');
-                    installBanner.classList.add('visible');
-                    setTimeout(() => {
-                        installBanner.classList.add('show');
-                        console.log('PWA: Banner mostrado con éxito');
-                    }, 100);
-                } else {
-                    console.log('PWA: No se pudo mostrar banner - deferredPrompt:', !!deferredPrompt);
-                }
-            }, 3000);
+            // Solo mostrar banner si no está instalada
+            if (!isAppInstalled()) {
+                // Mostrar banner automático después de 3 segundos
+                window.bannerTimeout = setTimeout(() => {
+                    if (installBanner && deferredPrompt && !isAppInstalled()) {
+                        console.log('PWA: Mostrando banner después de beforeinstallprompt');
+                        showInstallBanner();
+                    }
+                }, 3000);
+            }
         });
 
-        // Si no se dispara beforeinstallprompt después de 5 segundos, mostrar manualmente para testing
-        setTimeout(() => {
-            if (!deferredPrompt) {
-                console.log('PWA: No se detectó beforeinstallprompt, mostrando banner manualmente para testing');
-                installBanner.classList.add('visible');
-                setTimeout(() => {
-                    installBanner.classList.add('show');
-                }, 100);
+        // Verificación de instalación al cargar
+        window.addEventListener('load', () => {
+            if (isAppInstalled()) {
+                console.log('PWA: App instalada detectada al cargar');
+                hideInstallBanner();
+            } else {
+                console.log('PWA: App no instalada al cargar');
+                // Solo mostrar banner manual si no hay beforeinstallprompt y no está instalada
+                if (!deferredPrompt) {
+                    window.bannerTimeout = setTimeout(() => {
+                        if (!isAppInstalled()) {
+                            console.log('PWA: Mostrando banner manual (sin beforeinstallprompt)');
+                            showInstallBanner();
+                        }
+                    }, 5000);
+                }
             }
-        }, 5000);
+        });
 
         installButton.addEventListener('click', () => {
             if (!deferredPrompt) {
@@ -505,20 +562,22 @@
                 return;
             }
             
-            installBanner.classList.remove('show');
+            hideInstallBanner();
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('PWA: Usuario instaló la app');
                     // Ocultar el banner después de la instalación exitosa
                     setTimeout(() => {
-                        installBanner.classList.remove('visible');
+                        hideInstallBanner();
                     }, 1000);
                 } else {
                     console.log('PWA: Usuario rechazó la instalación');
-                    // Volver a mostrar el banner si el usuario lo rechazó
+                    // Solo volver a mostrar si no está instalada
                     setTimeout(() => {
-                        installBanner.classList.add('show');
+                        if (!isAppInstalled()) {
+                            showInstallBanner();
+                        }
                     }, 2000);
                 }
                 deferredPrompt = null;
@@ -526,63 +585,30 @@
         });
 
         closeInstall.addEventListener('click', () => {
-            installBanner.classList.remove('show');
-            // Ocultar completamente después de la animación
-            setTimeout(() => {
-                installBanner.classList.remove('visible');
-            }, 300);
+            hideInstallBanner();
         });
     }
 
-    // Verificar si la PWA ya está instalada
-    window.addEventListener('load', () => {
-        // Verificar si está en modo standalone (instalada)
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInApp = window.navigator.standalone === true;
-        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
-        
-        console.log('PWA: Estado de instalación:', { isStandalone, isInApp, isInstalled });
-        
-        if (isStandalone || isInApp || isInstalled) {
-            console.log('PWA: La app ya está instalada - ocultando banner');
-            // Ocultar el banner si ya está instalada
-            if (installBanner) {
-                installBanner.classList.remove('visible', 'show');
-                installBanner.style.display = 'none';
-            }
-        } else {
-            console.log('PWA: La app no está instalada');
-        }
-    });
-
-    // Verificación adicional al cambiar de pestaña o ventana
-    window.addEventListener('focus', () => {
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInApp = window.navigator.standalone === true;
-        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
-        
-        if (isStandalone || isInApp || isInstalled) {
-            if (installBanner) {
-                installBanner.classList.remove('visible', 'show');
-                installBanner.style.display = 'none';
-            }
-        }
-    });
-
-    // Verificación periódica cada 5 segundos
+    // Verificación periódica cada 3 segundos
     setInterval(() => {
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInApp = window.navigator.standalone === true;
-        const isInstalled = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches;
-        
-        if (isStandalone || isInApp || isInstalled) {
-            if (installBanner && installBanner.style.display !== 'none') {
-                console.log('PWA: Detectada instalación durante verificación periódica');
-                installBanner.classList.remove('visible', 'show');
-                installBanner.style.display = 'none';
-            }
+        if (isAppInstalled()) {
+            hideInstallBanner();
         }
-    }, 5000);
+    }, 3000);
+
+    // Verificación al cambiar de pestaña o ventana
+    window.addEventListener('focus', () => {
+        if (isAppInstalled()) {
+            hideInstallBanner();
+        }
+    });
+
+    // Verificación al cambiar el tamaño de ventana
+    window.addEventListener('resize', () => {
+        if (isAppInstalled()) {
+            hideInstallBanner();
+        }
+    });
 
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
