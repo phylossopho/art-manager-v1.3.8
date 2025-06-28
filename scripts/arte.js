@@ -109,9 +109,9 @@ export function generarTablaArte() {
     const table = document.createElement('table');
     table.className = 'arte-table-table';
 
-    // Encabezados con 10 columnas (agregamos Eliminar)
+    // Encabezados con 9 columnas (eliminamos "Tipo")
     const encabezados = [
-        "Icono", "Tipo", "Clase", "Nivel",
+        "Icono", "Clase", "Nivel",
         "Material 3", "Material 1", "Base",
         "Material 2", "Material 4", "Eliminar"
     ];
@@ -122,10 +122,9 @@ export function generarTablaArte() {
         th.textContent = encabezado;
         // Agregar clases específicas para cada columna
         if (index === 0) th.className = 'col-imagen';
-        else if (index === 1) th.className = 'col-nombre';
-        else if (index === 2) th.className = 'col-clase';
-        else if (index === 3) th.className = 'col-nivel';
-        else if (index >= 4 && index <= 8) th.className = 'col-material';
+        else if (index === 1) th.className = 'col-clase';
+        else if (index === 2) th.className = 'col-nivel';
+        else if (index >= 3 && index <= 7) th.className = 'col-material';
         else th.className = 'col-accion';
         filaEncabezados.appendChild(th);
     });
@@ -153,8 +152,9 @@ export function generarTablaArte() {
                 const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 img.src = `images/${nombreImagen}.png`;
                 img.alt = material;
-                img.style.width = '33px';
+                img.style.width = '100%';
                 img.style.height = 'auto';
+                img.style.maxWidth = '100%';
                 img.style.display = 'block';
                 img.style.margin = '0 auto';
                 img.onerror = function() {
@@ -183,8 +183,9 @@ export function generarTablaArte() {
         const imgEquipo = document.createElement('img');
         imgEquipo.src = `images/${equipo.equipo.toLowerCase()}.png`;
         imgEquipo.alt = equipo.equipo;
-        imgEquipo.style.width = '33px';
+        imgEquipo.style.width = '100%';
         imgEquipo.style.height = 'auto';
+        imgEquipo.style.maxWidth = '100%';
         imgEquipo.style.display = 'block';
         imgEquipo.style.margin = '0 auto';
         imgEquipo.onerror = function() {
@@ -196,33 +197,27 @@ export function generarTablaArte() {
         celdaEquipoImg.appendChild(imgEquipo);
         fila.appendChild(celdaEquipoImg);
 
-        // 2. Tipo de equipo (texto)
-        const celdaTipo = document.createElement('td');
-        celdaTipo.className = 'col-nombre';
-        celdaTipo.textContent = equipo.equipo;
-        fila.appendChild(celdaTipo);
-
-        // 3. Clase
+        // 2. Clase
         const celdaClase = document.createElement('td');
         celdaClase.className = 'col-clase';
         celdaClase.textContent = equipo.clase;
         fila.appendChild(celdaClase);
 
-        // 4. Nivel
+        // 3. Nivel
         const celdaNivel = document.createElement('td');
         celdaNivel.className = 'col-nivel';
         celdaNivel.textContent = equipo.nivel;
         fila.appendChild(celdaNivel);
 
-        // 5. Material 3
+        // 4. Material 3
         const celdaMaterial3 = crearCeldaMaterial(equipo.material3, equipo.material3Color);
         celdaMaterial3.className = 'col-material';
         fila.appendChild(celdaMaterial3);
-        // 6. Material 1
+        // 5. Material 1
         const celdaMaterial1 = crearCeldaMaterial(equipo.material1, equipo.material1Color);
         celdaMaterial1.className = 'col-material';
         fila.appendChild(celdaMaterial1);
-        // 7. Base
+        // 6. Base
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material';
         if (equipo.base && equipo.base !== 'N/A') {
@@ -242,8 +237,9 @@ export function generarTablaArte() {
                 const imgBase = document.createElement('img');
                 imgBase.src = `images/${nombreBase}.png`;
                 imgBase.alt = equipo.base;
-                imgBase.style.width = '33px';
+                imgBase.style.width = '100%';
                 imgBase.style.height = 'auto';
+                imgBase.style.maxWidth = '100%';
                 imgBase.style.display = 'block';
                 imgBase.style.margin = '0 auto';
                 imgBase.onerror = function() {
@@ -256,24 +252,25 @@ export function generarTablaArte() {
             celdaBase.textContent = 'N/A';
         }
         fila.appendChild(celdaBase);
-        // 8. Material 2
+        // 7. Material 2
         const celdaMaterial2 = crearCeldaMaterial(equipo.material2, equipo.material2Color);
         celdaMaterial2.className = 'col-material';
         fila.appendChild(celdaMaterial2);
-        // 9. Material 4
+        // 8. Material 4
         const celdaMaterial4 = crearCeldaMaterial(equipo.material4, equipo.material4Color);
         celdaMaterial4.className = 'col-material';
         fila.appendChild(celdaMaterial4);
 
-        // 10. Columna Eliminar
+        // 9. Columna Eliminar
         const celdaEliminar = document.createElement('td');
         celdaEliminar.className = 'col-accion';
         celdaEliminar.style.textAlign = 'center';
         const btnEliminar = document.createElement('img');
         btnEliminar.src = 'images/borrarsim.png';
         btnEliminar.alt = 'Eliminar';
-        btnEliminar.style.width = '33px';
+        btnEliminar.style.width = '100%';
         btnEliminar.style.height = 'auto';
+        btnEliminar.style.maxWidth = '100%';
         btnEliminar.style.cursor = 'pointer';
         btnEliminar.style.display = 'block';
         btnEliminar.style.margin = '0 auto';

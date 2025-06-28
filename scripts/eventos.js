@@ -18,23 +18,22 @@ function configurarEventListeners(estado) {
         // Event listeners para selectores
         equipmentSelect.addEventListener('change', () => {
             estado.equipoActual = equipmentSelect.value;
-            ui.actualizarImagenEquipo(estado);
-            ui.actualizarTablaMateriales(estado);
+            ui.actualizarUI(estado);
         });
 
         classSelect.addEventListener('change', () => {
             estado.claseActual = classSelect.value;
-            ui.actualizarTablaMateriales(estado);
+            ui.actualizarUI(estado);
         });
 
         levelSelect.addEventListener('change', () => {
             estado.nivelActual = levelSelect.value;
-            ui.actualizarTablaMateriales(estado);
+            ui.actualizarUI(estado);
         });
 
         colorSelect.addEventListener('change', () => {
             estado.colorActual = colorSelect.value;
-            ui.actualizarTablaMateriales(estado);
+            ui.actualizarUI(estado);
         });
 
         // === BOTÓN MOSTRAR MATERIALES ===
