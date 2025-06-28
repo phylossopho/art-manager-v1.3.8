@@ -810,13 +810,8 @@
     max-width: 280px;
 }
 
-.color-list-header {
-    padding: 12px 16px;
-    font-size: 14px;
-}
-
 .color-list-content {
-    padding: 15px;
+    padding: 12px;
 }
 
 .color-list select {
@@ -831,13 +826,8 @@
         max-width: 260px;
     }
 
-    .color-list-header {
-        padding: 10px 14px;
-        font-size: 13px;
-    }
-
     .color-list-content {
-        padding: 12px;
+        padding: 10px;
     }
 
     .color-list select {

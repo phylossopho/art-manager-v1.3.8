@@ -978,18 +978,8 @@ header h1 {
     animation: dropdownFadeIn 0.3s ease;
 }
 
-.color-list-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 6px 6px 0 0;
-    text-align: center;
-    font-weight: bold;
-    font-size: 16px;
-}
-
 .color-list-content {
-    padding: 20px;
+    padding: 15px;
 }
 
 .color-list select {

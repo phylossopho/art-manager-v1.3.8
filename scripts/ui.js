@@ -325,9 +325,6 @@ function mostrarListaColores(estado, claveAlmacen, material, selectorMaterial) {
         const colorActual = estado.colorPorMaterialSeleccionado[claveAlmacen];
         
         lista.innerHTML = `
-            <div class="color-list-header">
-                Seleccionar color para ${material}
-            </div>
             <div class="color-list-content">
                 <select id="color-list-select">
                     <option value="">- Sin seleccionar -</option>
