@@ -82,32 +82,84 @@ function isLocalStorageAvailable() {
     }
 }
 
+// Función para verificar si sessionStorage está disponible
+function isSessionStorageAvailable() {
+    try {
+        const test = '__sessionStorage_test__';
+        sessionStorage.setItem(test, test);
+        sessionStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('sessionStorage no está disponible:', e);
+        return false;
+    }
+}
+
+// Función para obtener el storage disponible (localStorage o sessionStorage como fallback)
+function getAvailableStorage() {
+    if (isLocalStorageAvailable()) {
+        console.log('Usando localStorage');
+        return localStorage;
+    } else if (isSessionStorageAvailable()) {
+        console.log('localStorage no disponible, usando sessionStorage como fallback');
+        return sessionStorage;
+    } else {
+        console.error('Ningún storage disponible');
+        return null;
+    }
+}
+
+// Función para detectar si es un dispositivo móvil
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768);
+}
+
 export function cargarMaterialesDesdeLocalStorage(estado) {
     try {
-        if (!isLocalStorageAvailable()) {
-            console.warn('localStorage no disponible, usando valores por defecto');
+        const storage = getAvailableStorage();
+        if (!storage) {
+            console.warn('Ningún storage disponible, usando valores por defecto');
             return;
         }
 
-        const materialesGuardados = localStorage.getItem('almacenMateriales');
-        console.log('Intentando cargar materiales desde localStorage:', materialesGuardados ? 'datos encontrados' : 'sin datos');
+        // En móviles, intentar cargar desde localStorage primero, luego sessionStorage
+        let materialesGuardados = null;
+        if (isMobileDevice()) {
+            console.log('Dispositivo móvil detectado, verificando ambos storages...');
+            
+            // Intentar localStorage primero
+            if (isLocalStorageAvailable()) {
+                materialesGuardados = localStorage.getItem('almacenMateriales');
+                console.log('localStorage en móvil:', materialesGuardados ? 'datos encontrados' : 'sin datos');
+            }
+            
+            // Si no hay datos en localStorage, intentar sessionStorage
+            if (!materialesGuardados && isSessionStorageAvailable()) {
+                materialesGuardados = sessionStorage.getItem('almacenMateriales');
+                console.log('sessionStorage en móvil:', materialesGuardados ? 'datos encontrados' : 'sin datos');
+            }
+        } else {
+            // En desktop, usar el storage disponible
+            materialesGuardados = storage.getItem('almacenMateriales');
+            console.log('Intentando cargar materiales desde storage:', materialesGuardados ? 'datos encontrados' : 'sin datos');
+        }
         
         if (materialesGuardados) {
             const parsed = JSON.parse(materialesGuardados);
             if (parsed && typeof parsed === 'object') {
                 estado.almacenMateriales = parsed;
-                console.log('Materiales cargados exitosamente desde localStorage:', Object.keys(estado.almacenMateriales).length, 'materiales');
-                estado.cambiosPendientes = false; // No marcar como cambios pendientes al cargar
+                console.log('Materiales cargados exitosamente:', Object.keys(estado.almacenMateriales).length, 'materiales');
+                estado.cambiosPendientes = false;
             } else {
-                console.warn('Datos en localStorage no son válidos, usando valores por defecto');
+                console.warn('Datos en storage no son válidos, usando valores por defecto');
             }
         } else {
-            console.log('No se encontraron materiales guardados en localStorage, usando valores por defecto');
+            console.log('No se encontraron materiales guardados, usando valores por defecto');
         }
     } catch (e) {
-        console.error('Error al cargar materiales desde localStorage:', e);
-        // No mostrar error al usuario si es la primera vez que usa la app
-        if (localStorage.getItem('almacenMateriales')) {
+        console.error('Error al cargar materiales desde storage:', e);
+        if (localStorage.getItem('almacenMateriales') || sessionStorage.getItem('almacenMateriales')) {
             modales.mostrarMensaje('Error', 'Error al cargar materiales guardados. Se usarán valores por defecto.', 'warning');
         }
     }
@@ -115,25 +167,44 @@ export function cargarMaterialesDesdeLocalStorage(estado) {
 
 export function guardarMaterialesEnLocalStorage(estado) {
     try {
-        if (!isLocalStorageAvailable()) {
-            console.warn('localStorage no disponible, no se pueden guardar los datos');
+        const storage = getAvailableStorage();
+        if (!storage) {
+            console.warn('Ningún storage disponible, no se pueden guardar los datos');
             return;
         }
 
         const datosParaGuardar = JSON.stringify(estado.almacenMateriales);
-        localStorage.setItem('almacenMateriales', datosParaGuardar);
-        console.log('Materiales guardados exitosamente en localStorage:', Object.keys(estado.almacenMateriales).length, 'materiales');
+        
+        // En móviles, guardar en ambos storages para mayor seguridad
+        if (isMobileDevice()) {
+            console.log('Dispositivo móvil detectado, guardando en ambos storages...');
+            
+            if (isLocalStorageAvailable()) {
+                localStorage.setItem('almacenMateriales', datosParaGuardar);
+                console.log('Datos guardados en localStorage (móvil)');
+            }
+            
+            if (isSessionStorageAvailable()) {
+                sessionStorage.setItem('almacenMateriales', datosParaGuardar);
+                console.log('Datos guardados en sessionStorage (móvil)');
+            }
+        } else {
+            // En desktop, usar el storage disponible
+            storage.setItem('almacenMateriales', datosParaGuardar);
+            console.log('Materiales guardados exitosamente:', Object.keys(estado.almacenMateriales).length, 'materiales');
+        }
+        
         estado.cambiosPendientes = false;
         
         // Verificar que se guardó correctamente
-        const verificado = localStorage.getItem('almacenMateriales');
+        const verificado = storage.getItem('almacenMateriales');
         if (verificado === datosParaGuardar) {
             console.log('Verificación de guardado exitosa');
         } else {
             console.warn('Verificación de guardado falló');
         }
     } catch (e) {
-        console.error('Error al guardar materiales en localStorage:', e);
+        console.error('Error al guardar materiales en storage:', e);
         modales.mostrarMensaje('Error', 'Error al guardar materiales. Los datos no se han perdido.', 'error');
     }
 }

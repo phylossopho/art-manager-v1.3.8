@@ -15,31 +15,64 @@ function isLocalStorageAvailable() {
     }
 }
 
+// Función para verificar si sessionStorage está disponible
+function isSessionStorageAvailable() {
+    try {
+        const test = '__sessionStorage_test__';
+        sessionStorage.setItem(test, test);
+        sessionStorage.removeItem(test);
+        return true;
+    } catch (e) {
+        console.warn('sessionStorage no está disponible:', e);
+        return false;
+    }
+}
+
+// Función para detectar si es un dispositivo móvil
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768);
+}
+
 let equiposSimulados = [];
 
 // Inicializar equipos simulados al cargar el módulo
 try {
-    if (isLocalStorageAvailable()) {
-        const guardados = localStorage.getItem('equiposSimulados');
-        if (guardados) {
-            const parsed = JSON.parse(guardados);
-            if (Array.isArray(parsed)) {
-                equiposSimulados = parsed;
-                console.log('Equipos simulados cargados desde localStorage:', equiposSimulados.length, 'equipos');
-            } else {
-                console.warn('Datos de equipos simulados no son válidos, usando array vacío');
-                equiposSimulados = [];
-            }
+    // En móviles, intentar cargar desde localStorage primero, luego sessionStorage
+    let equiposGuardados = null;
+    if (isMobileDevice()) {
+        console.log('Dispositivo móvil detectado, verificando ambos storages para equipos...');
+        
+        if (isLocalStorageAvailable()) {
+            equiposGuardados = localStorage.getItem('equiposSimulados');
+            console.log('localStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
+        }
+        
+        if (!equiposGuardados && isSessionStorageAvailable()) {
+            equiposGuardados = sessionStorage.getItem('equiposSimulados');
+            console.log('sessionStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
+        }
+    } else {
+        if (isLocalStorageAvailable()) {
+            equiposGuardados = localStorage.getItem('equiposSimulados');
+        }
+    }
+    
+    if (equiposGuardados) {
+        const parsed = JSON.parse(equiposGuardados);
+        if (Array.isArray(parsed)) {
+            equiposSimulados = parsed;
+            console.log('Equipos simulados cargados desde storage:', equiposSimulados.length, 'equipos');
         } else {
-            console.log('No se encontraron equipos simulados en localStorage, usando array vacío');
+            console.warn('Datos de equipos simulados no son válidos, usando array vacío');
             equiposSimulados = [];
         }
     } else {
-        console.warn('localStorage no disponible para equipos simulados, usando array vacío');
+        console.log('No se encontraron equipos simulados en storage, usando array vacío');
         equiposSimulados = [];
     }
 } catch (e) {
-    console.error('Error al cargar equipos simulados desde localStorage:', e);
+    console.error('Error al cargar equipos simulados desde storage:', e);
     equiposSimulados = [];
 }
 
@@ -224,45 +257,73 @@ export function generarTablaArte() {
     arteTable.appendChild(table);
 }
 
-// Guardar en localStorage
+// Guardar en storage
 function guardarEquiposEnLocalStorage() {
     try {
-        if (!isLocalStorageAvailable()) {
-            console.warn('localStorage no disponible para equipos simulados, no se pueden guardar');
-            return;
+        const datosParaGuardar = JSON.stringify(equiposSimulados);
+        
+        // En móviles, guardar en ambos storages para mayor seguridad
+        if (isMobileDevice()) {
+            console.log('Dispositivo móvil detectado, guardando equipos en ambos storages...');
+            
+            if (isLocalStorageAvailable()) {
+                localStorage.setItem('equiposSimulados', datosParaGuardar);
+                console.log('Equipos guardados en localStorage (móvil)');
+            }
+            
+            if (isSessionStorageAvailable()) {
+                sessionStorage.setItem('equiposSimulados', datosParaGuardar);
+                console.log('Equipos guardados en sessionStorage (móvil)');
+            }
+        } else {
+            if (isLocalStorageAvailable()) {
+                localStorage.setItem('equiposSimulados', datosParaGuardar);
+                console.log('Equipos simulados guardados exitosamente:', equiposSimulados.length, 'equipos');
+            }
         }
-
-        localStorage.setItem('equiposSimulados', JSON.stringify(equiposSimulados));
-        console.log('Equipos simulados guardados exitosamente en localStorage:', equiposSimulados.length, 'equipos');
     } catch (e) {
-        console.error('Error al guardar equipos simulados en localStorage:', e);
+        console.error('Error al guardar equipos simulados en storage:', e);
     }
 }
 
-// Cargar desde localStorage
+// Cargar desde storage
 export function cargarEquiposDesdeLocalStorage() {
     try {
-        if (!isLocalStorageAvailable()) {
-            console.warn('localStorage no disponible para equipos simulados');
-            return;
+        // En móviles, intentar cargar desde localStorage primero, luego sessionStorage
+        let equiposGuardados = null;
+        if (isMobileDevice()) {
+            console.log('Dispositivo móvil detectado, verificando ambos storages para equipos...');
+            
+            if (isLocalStorageAvailable()) {
+                equiposGuardados = localStorage.getItem('equiposSimulados');
+                console.log('localStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
+            }
+            
+            if (!equiposGuardados && isSessionStorageAvailable()) {
+                equiposGuardados = sessionStorage.getItem('equiposSimulados');
+                console.log('sessionStorage para equipos en móvil:', equiposGuardados ? 'datos encontrados' : 'sin datos');
+            }
+        } else {
+            if (isLocalStorageAvailable()) {
+                equiposGuardados = localStorage.getItem('equiposSimulados');
+            }
         }
-
-        const guardados = localStorage.getItem('equiposSimulados');
-        if (guardados) {
-            const parsed = JSON.parse(guardados);
+        
+        if (equiposGuardados) {
+            const parsed = JSON.parse(equiposGuardados);
             if (Array.isArray(parsed)) {
                 equiposSimulados = parsed;
-                console.log('Equipos simulados cargados exitosamente desde localStorage:', equiposSimulados.length, 'equipos');
+                console.log('Equipos simulados cargados exitosamente:', equiposSimulados.length, 'equipos');
             } else {
                 console.warn('Datos de equipos simulados no son válidos, usando array vacío');
                 equiposSimulados = [];
             }
         } else {
-            console.log('No se encontraron equipos simulados en localStorage, usando array vacío');
+            console.log('No se encontraron equipos simulados en storage, usando array vacío');
             equiposSimulados = [];
         }
     } catch (e) {
-        console.error('Error al cargar equipos simulados desde localStorage:', e);
+        console.error('Error al cargar equipos simulados desde storage:', e);
         equiposSimulados = [];
     }
 }
