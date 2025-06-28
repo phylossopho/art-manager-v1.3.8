@@ -5,9 +5,7 @@ import * as ui from './ui.js';
 import configurarEventListeners from './eventos.js';
 import {
     construirMapaMaterialAEquipo,
-    inicializarAlmacenamientoMateriales,
-    cargarMaterialesDesdeLocalStorage,
-    guardarMaterialesEnLocalStorage
+    inicializarAlmacenamientoMateriales
 } from './materiales.js';
 import * as galeria from './galeria.js';
 import * as conversiones from './conversiones.js';

@@ -1,305 +1,173 @@
 // scripts/eventos.js
 // ============= INICIO DE eventos.js =============
 import * as ui from './ui.js';
-import * as materiales from './materiales.js';
 import * as galeria from './galeria.js';
-import * as csv from './csv.js';
 import * as modales from './modales.js';
-import { actualizarEstadoBase } from './baselogic.js';
+import { simularUso } from './simulacion.js';
+import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
 
-export default function configurarEventListeners(estado) {
+function configurarEventListeners(estado) {
     try {
-        // ===== [1] SELECTORES PRINCIPALES =====
-        configurarSelectoresPrincipales(estado);
-        
-        // ===== [2] BOTONES PRINCIPALES =====
-        configurarBotonesPrincipales(estado);
-        
-        // ===== [3] GALERÍA DE IMÁGENES =====
-        configurarEventosGaleria(estado);
-        
-        // ===== [4] CARRUSEL DE IMÁGENES =====
-        configurarEventosCarrusel(estado);
-        
-        // ===== [5] PESTAÑAS =====
-        configurarEventosPestanas(estado);
-        
-        // ===== [6] MODALES Y CIERRE =====
-        configurarEventosModales(estado);
-        
-        // ===== [7] EVENTOS GLOBALES =====
-        configurarEventosGlobales(estado);
-        
-        console.log('Event listeners configurados con éxito');
-    } catch (error) {
-        console.error('Error configurando event listeners:', error);
-        modales.mostrarMensaje('Error', 'Error al configurar eventos', 'error');
-    }
-}
+        // === SELECTORES PRINCIPALES ===
+        const equipmentSelect = document.getElementById('equipment-select');
+        const classSelect = document.getElementById('class-select');
+        const levelSelect = document.getElementById('level-select');
+        const colorSelect = document.getElementById('color-select');
 
-function configurarSelectoresPrincipales(estado) {
-    // Selector de equipo
-    const equipmentSelect = document.getElementById('equipment-select');
-    if (equipmentSelect) {
-        equipmentSelect.addEventListener('change', (e) => {
-            estado.equipoActual = e.target.value;
-            ui.actualizarUI(estado);
-            actualizarEstadoBase(estado);
+        // Event listeners para selectores
+        equipmentSelect.addEventListener('change', () => {
+            estado.equipoActual = equipmentSelect.value;
+            ui.actualizarImagenEquipo(estado);
+            ui.actualizarTablaMateriales(estado);
         });
-    }
 
-    // Selector de nivel
-    const levelSelect = document.getElementById('level-select');
-    if (levelSelect) {
-        levelSelect.addEventListener('change', (e) => {
-            estado.nivelActual = e.target.value;
-            ui.actualizarUI(estado);
-            actualizarEstadoBase(estado);
+        classSelect.addEventListener('change', () => {
+            estado.claseActual = classSelect.value;
+            ui.actualizarTablaMateriales(estado);
         });
-    }
 
-    // Selector de clase
-    const classSelect = document.getElementById('class-select');
-    if (classSelect) {
-        classSelect.addEventListener('change', (e) => {
-            estado.claseActual = e.target.value;
-            ui.actualizarUI(estado);
-            actualizarEstadoBase(estado);
-            
-            // Restablecer selector de color cuando se cambia de clase
-            if (estado.claseActual !== "Campeón") {
-                const colorSelect = document.getElementById('color-select');
-                if (colorSelect) {
-                    estado.colorActual = "blanco";
-                    colorSelect.value = "blanco";
-                }
-            }
+        levelSelect.addEventListener('change', () => {
+            estado.nivelActual = levelSelect.value;
+            ui.actualizarTablaMateriales(estado);
         });
-    }
 
-    // Selector de color
-    const colorSelect = document.getElementById('color-select');
-    if (colorSelect) {
-        colorSelect.addEventListener('change', (e) => {
-            estado.colorActual = e.target.value;
-            ui.actualizarUI(estado);
-            actualizarEstadoBase(estado);
+        colorSelect.addEventListener('change', () => {
+            estado.colorActual = colorSelect.value;
+            ui.actualizarTablaMateriales(estado);
         });
-    }
-}
 
-function configurarBotonesPrincipales(estado) {
-    // Botón Exportar CSV (desktop)
-    const exportBtn = document.getElementById('export-csv');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', () => csv.exportarCSV(estado));
-    }
-
-    // Botón Importar CSV (desktop)
-    const importBtn = document.getElementById('import-csv');
-    if (importBtn) {
-        importBtn.addEventListener('click', () => {
-            document.getElementById('csv-file').click();
+        // === BOTÓN MOSTRAR MATERIALES ===
+        const showMaterialsButton = document.getElementById('show-materials');
+        showMaterialsButton.addEventListener('click', () => {
+            modales.abrirModalMateriales(estado);
         });
-    }
 
-    // Botones móviles
-    const mobileExport = document.getElementById('mobile-export-csv');
-    if (mobileExport) {
-        mobileExport.addEventListener('click', () => {
-            csv.exportarCSV(estado);
-            modales.ocultarMenuCSVMovil();
-        });
-    }
-
-    const mobileImport = document.getElementById('mobile-import-csv');
-    if (mobileImport) {
-        mobileImport.addEventListener('click', () => {
-            document.getElementById('csv-file').click();
-            modales.ocultarMenuCSVMovil();
-        });
-    }
-
-    // Toggle del menú CSV móvil
-    const csvMenuToggle = document.getElementById('csv-menu-toggle');
-    if (csvMenuToggle) {
-        csvMenuToggle.addEventListener('click', modales.alternarMenuCSVMovil);
-    }
-
-    // Input de archivo CSV
-    const csvFileInput = document.getElementById('csv-file');
-    if (csvFileInput) {
-        csvFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                csv.importarCSV(e.target.files[0], estado);
-                ui.actualizarUI(estado);
-                actualizarEstadoBase(estado);
-                e.target.value = '';
-            }
-        });
-    }
-
-    // Botón Mostrar Materiales
-    const showMaterialsBtn = document.getElementById('show-materials');
-    if (showMaterialsBtn) {
-        showMaterialsBtn.addEventListener('click', () => {
-            materiales.abrirListaMateriales(estado);
-        });
-    }
-
-    // Botón USAR Materiales (CON ACTUALIZACIÓN DE UI MEJORADA)
-    const useMaterialsBtn = document.getElementById('use-materials');
-    if (useMaterialsBtn) {
-        useMaterialsBtn.addEventListener('click', () => {
-            materiales.usarMateriales(estado);
-            // FORZAR ACTUALIZACIÓN COMPLETA DE LA UI
-            ui.actualizarUI(estado);
-            actualizarEstadoBase(estado);
-        });
-    }
-}
-
-function configurarEventosGaleria(estado) {
-    // Botón Galería
-    const galleryButton = document.getElementById('gallery-button');
-    if (galleryButton) {
+        // === BOTÓN GALERÍA ===
+        const galleryButton = document.getElementById('gallery-button');
         galleryButton.addEventListener('click', () => {
             galeria.abrirGaleria(estado);
         });
-    }
 
-    // Botón Agregar Imagen
-    const addImageButton = document.getElementById('add-image-button');
-    if (addImageButton) {
-        addImageButton.addEventListener('click', () => {
-            document.getElementById('gallery-file-input').click();
+        // === BOTÓN USAR MATERIALES ===
+        const useMaterialsButton = document.getElementById('use-materials');
+        useMaterialsButton.addEventListener('click', () => {
+            simularUso(estado);
         });
-    }
 
-    // Input de archivo de galería
-    const galleryFileInput = document.getElementById('gallery-file-input');
-    if (galleryFileInput) {
+        // === BOTÓN VOLVER A MATERIALES (ARTE) ===
+        const arteBackButton = document.getElementById('arte-back-button');
+        if (arteBackButton) {
+            arteBackButton.addEventListener('click', () => {
+                ui.cambiarPestana('materials');
+            });
+        }
+
+        // === BOTÓN VOLVER (MODAL MATERIALES) ===
+        const materialsBackButton = document.getElementById('materials-back-button');
+        if (materialsBackButton) {
+            materialsBackButton.addEventListener('click', () => {
+                modales.cerrarModalMateriales();
+            });
+        }
+
+        // === PESTAÑAS ===
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.getAttribute('data-tab');
+                ui.cambiarPestana(tabName);
+            });
+        });
+
+        // === GALERÍA ===
+        const addImageButton = document.getElementById('add-image-button');
+        const galleryFileInput = document.getElementById('gallery-file-input');
+
+        addImageButton.addEventListener('click', () => {
+            galleryFileInput.click();
+        });
+
         galleryFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                galeria.agregarImagenAGaleria(e.target.files[0], estado);
+            const file = e.target.files[0];
+            if (file) {
+                galeria.agregarImagenAGaleria(file, estado);
             }
         });
-    }
-}
 
-function configurarEventosCarrusel(estado) {
-    // Botón Cerrar Carrusel
-    const carouselClose = document.getElementById('carousel-close');
-    if (carouselClose) {
-        carouselClose.addEventListener('click', () => {
-            document.getElementById('carousel-modal').style.display = 'none';
-        });
-    }
+        // === CARRUSEL ===
+        const carouselPrev = document.getElementById('carousel-prev');
+        const carouselNext = document.getElementById('carousel-next');
+        const carouselClose = document.getElementById('carousel-close');
 
-    // Botón Imagen Anterior
-    const carouselPrev = document.getElementById('carousel-prev');
-    if (carouselPrev) {
-        carouselPrev.addEventListener('click', () => {
-            galeria.mostrarImagenAnteriorCarrusel(estado);
-        });
-    }
+        if (carouselPrev) {
+            carouselPrev.addEventListener('click', () => {
+                if (estado.imagenesGaleria.length > 0) {
+                    estado.indiceCarruselActual = (estado.indiceCarruselActual - 1 + estado.imagenesGaleria.length) % estado.imagenesGaleria.length;
+                    galeria.mostrarImagenCarrusel(estado);
+                }
+            });
+        }
 
-    // Botón Imagen Siguiente
-    const carouselNext = document.getElementById('carousel-next');
-    if (carouselNext) {
-        carouselNext.addEventListener('click', () => {
-            galeria.mostrarImagenSiguienteCarrusel(estado);
-        });
-    }
-}
+        if (carouselNext) {
+            carouselNext.addEventListener('click', () => {
+                if (estado.imagenesGaleria.length > 0) {
+                    estado.indiceCarruselActual = (estado.indiceCarruselActual + 1) % estado.imagenesGaleria.length;
+                    galeria.mostrarImagenCarrusel(estado);
+                }
+            });
+        }
 
-function configurarEventosPestanas(estado) {
-    const botonesPestaña = document.querySelectorAll('.tab-button');
-    if (botonesPestaña.length > 0) {
-        botonesPestaña.forEach(boton => {
-            boton.addEventListener('click', () => {
-                // Desactivar todas las pestañas
-                botonesPestaña.forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(contenido => {
-                    contenido.classList.remove('active');
-                });
+        if (carouselClose) {
+            carouselClose.addEventListener('click', () => {
+                const modal = document.getElementById('carousel-modal');
+                modal.style.display = 'none';
+            });
+        }
 
-                // Activar la pestaña seleccionada
-                boton.classList.add('active');
-                const idPestaña = boton.getAttribute('data-tab');
-                const tabContent = document.getElementById(`${idPestaña}-tab`);
-                
-                if (tabContent) {
-                    tabContent.classList.add('active');
-                    
-                    // Forzar actualización de UI
-                    ui.actualizarUI(estado);
-                    actualizarEstadoBase(estado);
+        // === CERRAR MODALES ===
+        const closeButtons = document.querySelectorAll('.close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
                 }
             });
         });
+
+        // Cerrar modales al hacer clic fuera
+        window.addEventListener('click', (e) => {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // === SELECTORES DE COLOR POR MATERIAL ===
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('material-color-select')) {
+                const materialId = e.target.getAttribute('data-material');
+                const color = e.target.value;
+                const storageKey = `${estado.claseActual}:${materialId}`;
+                estado.colorPorMaterialSeleccionado[storageKey] = color;
+                estado.cambiosPendientes = true;
+            }
+        });
+
+        // === SELECTOR BASE ===
+        document.addEventListener('change', (e) => {
+            if (e.target.id === 'base-select') {
+                actualizarEstadoBase(estado, e.target.value);
+            }
+        });
+
+        console.log('Event listeners configurados con éxito');
+    } catch (error) {
+        console.error('Error al configurar event listeners:', error);
     }
 }
 
-function configurarEventosModales(estado) {
-    // Botones de cierre
-    const botonesCerrar = document.querySelectorAll('.close, #message-ok');
-    if (botonesCerrar.length > 0) {
-        botonesCerrar.forEach(boton => {
-            boton.addEventListener('click', modales.cerrarModales);
-        });
-    }
-
-    // Botón Volver en modal de materiales
-    const materialsBackBtn = document.getElementById('materials-back-button');
-    if (materialsBackBtn) {
-        materialsBackBtn.addEventListener('click', () => {
-            document.getElementById('materials-modal').style.display = 'none';
-        });
-    }
-
-    // Botón Volver en pestaña ARTE
-    const arteBackBtn = document.getElementById('arte-back-button');
-    if (arteBackBtn) {
-        arteBackBtn.addEventListener('click', () => {
-            // Desactivar pestaña ARTE
-            document.querySelector('.tab-button[data-tab="arte"]').classList.remove('active');
-            document.getElementById('arte-tab').classList.remove('active');
-            
-            // Activar pestaña Materiales
-            document.querySelector('.tab-button[data-tab="materials"]').classList.add('active');
-            document.getElementById('materials-tab').classList.add('active');
-            
-            // Actualizar la interfaz para mostrar el botón USAR
-            ui.actualizarUI(estado);
-        });
-    }
-}
-
-function configurarEventosGlobales(estado) {
-    // Cerrar modales al hacer clic fuera
-    window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            modales.cerrarModales();
-        }
-    });
-
-    // Teclas para el carrusel
-    window.addEventListener('keydown', (e) => {
-        const carruselVisible = document.getElementById('carousel-modal')?.style.display === 'block';
-        if (!carruselVisible) return;
-        
-        switch (e.key) {
-            case 'ArrowLeft':
-                galeria.mostrarImagenAnteriorCarrusel(estado);
-                break;
-            case 'ArrowRight':
-                galeria.mostrarImagenSiguienteCarrusel(estado);
-                break;
-            case 'Escape':
-                document.getElementById('carousel-modal').style.display = 'none';
-                break;
-        }
-    });
-}
+export default configurarEventListeners;
 // ============= FIN DE eventos.js =============
