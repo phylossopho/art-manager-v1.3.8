@@ -95,49 +95,49 @@ td {
 /* === CLASES DE COLUMNAS === */
 .col-imagen {
     width: 8% !important;
-    min-width: 60px !important;
-    max-width: 80px !important;
+    min-width: 45px !important;
+    max-width: 55px !important;
     text-align: center !important;
 }
 
 .col-nombre {
-    width: 20% !important;
-    min-width: 100px !important;
+    width: 22% !important;
+    min-width: 70px !important;
     text-align: left !important;
 }
 
 .col-color {
     width: 12% !important;
-    min-width: 70px !important;
-    max-width: 90px !important;
+    min-width: 55px !important;
+    max-width: 65px !important;
     text-align: center !important;
 }
 
 .col-clase {
     width: 10% !important;
-    min-width: 80px !important;
-    max-width: 100px !important;
+    min-width: 60px !important;
+    max-width: 70px !important;
     text-align: center !important;
 }
 
 .col-nivel {
     width: 6% !important;
-    min-width: 50px !important;
-    max-width: 60px !important;
+    min-width: 40px !important;
+    max-width: 45px !important;
     text-align: center !important;
 }
 
 .col-material {
     width: 9% !important;
-    min-width: 70px !important;
-    max-width: 90px !important;
+    min-width: 55px !important;
+    max-width: 65px !important;
     text-align: center !important;
 }
 
 .col-accion {
     width: 6% !important;
-    min-width: 50px !important;
-    max-width: 60px !important;
+    min-width: 40px !important;
+    max-width: 45px !important;
     text-align: center !important;
 }
 
@@ -292,44 +292,44 @@ td {
     
     /* Ajustar porcentajes para móviles */
     .col-imagen {
-        width: 10% !important;
-        min-width: 50px !important;
-        max-width: 60px !important;
+        width: 8% !important;
+        min-width: 45px !important;
+        max-width: 55px !important;
     }
     
     .col-nombre {
-        width: 25% !important;
-        min-width: 80px !important;
+        width: 22% !important;
+        min-width: 70px !important;
     }
     
     .col-color {
-        width: 13% !important;
+        width: 12% !important;
+        min-width: 55px !important;
+        max-width: 65px !important;
+    }
+    
+    .col-clase {
+        width: 10% !important;
         min-width: 60px !important;
         max-width: 70px !important;
     }
     
-    .col-clase {
-        width: 12% !important;
-        min-width: 70px !important;
-        max-width: 80px !important;
-    }
-    
     .col-nivel {
-        width: 8% !important;
-        min-width: 45px !important;
-        max-width: 50px !important;
+        width: 6% !important;
+        min-width: 40px !important;
+        max-width: 45px !important;
     }
     
     .col-material {
-        width: 11% !important;
-        min-width: 65px !important;
-        max-width: 75px !important;
+        width: 9% !important;
+        min-width: 55px !important;
+        max-width: 65px !important;
     }
     
     .col-accion {
-        width: 8% !important;
-        min-width: 45px !important;
-        max-width: 50px !important;
+        width: 6% !important;
+        min-width: 40px !important;
+        max-width: 45px !important;
     }
     
     .material-cell img {
@@ -389,44 +389,44 @@ td {
     
     /* Ajustar porcentajes para pantallas muy pequeñas */
     .col-imagen {
-        width: 12% !important;
-        min-width: 40px !important;
-        max-width: 50px !important;
+        width: 10% !important;
+        min-width: 35px !important;
+        max-width: 45px !important;
     }
     
     .col-nombre {
-        width: 28% !important;
-        min-width: 60px !important;
+        width: 25% !important;
+        min-width: 50px !important;
     }
     
     .col-color {
+        width: 11% !important;
+        min-width: 45px !important;
+        max-width: 55px !important;
+    }
+    
+    .col-clase {
         width: 12% !important;
         min-width: 50px !important;
         max-width: 60px !important;
     }
     
-    .col-clase {
-        width: 14% !important;
-        min-width: 60px !important;
-        max-width: 70px !important;
-    }
-    
     .col-nivel {
-        width: 10% !important;
-        min-width: 40px !important;
-        max-width: 45px !important;
+        width: 8% !important;
+        min-width: 35px !important;
+        max-width: 40px !important;
     }
     
     .col-material {
-        width: 12% !important;
-        min-width: 55px !important;
-        max-width: 65px !important;
+        width: 10% !important;
+        min-width: 45px !important;
+        max-width: 55px !important;
     }
     
     .col-accion {
-        width: 10% !important;
-        min-width: 40px !important;
-        max-width: 45px !important;
+        width: 8% !important;
+        min-width: 35px !important;
+        max-width: 40px !important;
     }
     
     .material-cell img {
@@ -447,5 +447,122 @@ td {
     #arte-table img {
         width: 18px;
         height: 18px;
+    }
+}
+
+/* === ESTILOS ESPECÍFICOS PARA TABLA ARTE === */
+.arte-table-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.arte-table-table .col-imagen {
+    width: 6% !important;
+    min-width: 40px !important;
+    max-width: 50px !important;
+}
+
+.arte-table-table .col-nombre {
+    width: 12% !important;
+    min-width: 60px !important;
+}
+
+.arte-table-table .col-clase {
+    width: 8% !important;
+    min-width: 50px !important;
+    max-width: 60px !important;
+}
+
+.arte-table-table .col-nivel {
+    width: 5% !important;
+    min-width: 35px !important;
+    max-width: 40px !important;
+}
+
+.arte-table-table .col-material {
+    width: 7% !important;
+    min-width: 45px !important;
+    max-width: 55px !important;
+}
+
+.arte-table-table .col-accion {
+    width: 4% !important;
+    min-width: 30px !important;
+    max-width: 35px !important;
+}
+
+/* === RESPONSIVE PARA TABLA ARTE === */
+@media (max-width: 768px) {
+    .arte-table-table .col-imagen {
+        width: 7% !important;
+        min-width: 35px !important;
+        max-width: 45px !important;
+    }
+    
+    .arte-table-table .col-nombre {
+        width: 15% !important;
+        min-width: 50px !important;
+    }
+    
+    .arte-table-table .col-clase {
+        width: 10% !important;
+        min-width: 45px !important;
+        max-width: 55px !important;
+    }
+    
+    .arte-table-table .col-nivel {
+        width: 6% !important;
+        min-width: 30px !important;
+        max-width: 35px !important;
+    }
+    
+    .arte-table-table .col-material {
+        width: 8% !important;
+        min-width: 40px !important;
+        max-width: 50px !important;
+    }
+    
+    .arte-table-table .col-accion {
+        width: 5% !important;
+        min-width: 25px !important;
+        max-width: 30px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .arte-table-table .col-imagen {
+        width: 8% !important;
+        min-width: 30px !important;
+        max-width: 40px !important;
+    }
+    
+    .arte-table-table .col-nombre {
+        width: 18% !important;
+        min-width: 40px !important;
+    }
+    
+    .arte-table-table .col-clase {
+        width: 12% !important;
+        min-width: 40px !important;
+        max-width: 50px !important;
+    }
+    
+    .arte-table-table .col-nivel {
+        width: 7% !important;
+        min-width: 25px !important;
+        max-width: 30px !important;
+    }
+    
+    .arte-table-table .col-material {
+        width: 9% !important;
+        min-width: 35px !important;
+        max-width: 45px !important;
+    }
+    
+    .arte-table-table .col-accion {
+        width: 6% !important;
+        min-width: 20px !important;
+        max-width: 25px !important;
     }
 }
