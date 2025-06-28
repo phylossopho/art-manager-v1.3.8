@@ -567,6 +567,17 @@
     // Escuchar el evento de scroll
     window.addEventListener('scroll', handleSocialIconsAnimation);
     
+    // Activar la animación inmediatamente al cargar la página
+    window.addEventListener('load', () => {
+        const socialIcons = document.querySelector('.social-icons');
+        if (socialIcons) {
+            // Pequeño delay para que se vea la animación
+            setTimeout(() => {
+                socialIcons.classList.add('reveal');
+            }, 1000);
+        }
+    });
+    
     // También ejecutar al cargar la página por si ya está en la posición correcta
     window.addEventListener('load', handleSocialIconsAnimation);
 </script>
