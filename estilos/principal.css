@@ -1066,3 +1066,226 @@ header h1 {
 .arte-back-container .back-button:hover {
     background-color: #5a6268;
 }
+
+/* === BOTONES PWA === */
+.pwa-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.pwa-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pwa-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.pwa-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pwa-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Responsive para botones PWA */
+@media (max-width: 768px) {
+    .pwa-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    
+    .pwa-button {
+        flex: 1;
+        min-width: 0;
+        font-size: 11px;
+        padding: 6px 8px;
+    }
+    
+    .pwa-icon {
+        font-size: 12px;
+    }
+}
+
+/* === NOTIFICACIONES PWA === */
+.notification-permission {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+}
+
+.notification-permission.show {
+    transform: translateX(0);
+}
+
+.notification-permission h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+}
+
+.notification-permission p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.notification-permission .notification-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.notification-permission button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.notification-permission .allow-btn {
+    background: white;
+    color: #4CAF50;
+}
+
+.notification-permission .allow-btn:hover {
+    background: #f5f5f5;
+}
+
+.notification-permission .deny-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.notification-permission .deny-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* === ESTADOS DE CAPACIDADES PWA === */
+.pwa-status {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+}
+
+.pwa-status.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pwa-status.success {
+    background: rgba(76, 175, 80, 0.9);
+}
+
+.pwa-status.error {
+    background: rgba(244, 67, 54, 0.9);
+}
+
+.pwa-status.info {
+    background: rgba(33, 150, 243, 0.9);
+}
+
+/* === ANIMACIONES PWA === */
+@keyframes pwaPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pwa-button.pulsing {
+    animation: pwaPulse 2s infinite;
+}
+
+/* === LOADING PWA === */
+.pwa-loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: pwaSpin 1s ease-in-out infinite;
+}
+
+@keyframes pwaSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* === SHARE TARGET STYLES === */
+.share-target-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(76, 175, 80, 0.95);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 10001;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    animation: shareTargetFadeIn 0.5s ease;
+}
+
+@keyframes shareTargetFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.share-target-indicator h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.share-target-indicator p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}

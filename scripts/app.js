@@ -15,6 +15,7 @@ import { simularUso } from './simulacion.js';
 import * as modales from './modales.js';
 import { cargarEquiposDesdeLocalStorage } from './arte.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
+import PWACapabilities from './pwa-capabilities.js';
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -30,7 +31,8 @@ const estadoApp = {
     colorBaseSeleccionado: null,
     mapaColores: datos.mapaColores,
     materialesData: datos.datosMateriales,
-    intervaloAutoguardado: null
+    intervaloAutoguardado: null,
+    pwaCapabilities: null
 };
 
 function iniciarApp() {
@@ -53,6 +55,9 @@ function iniciarApp() {
 
         // Inicializar la interfaz de usuario
         ui.actualizarUI(estadoApp);
+
+        // Inicializar capacidades PWA
+        estadoApp.pwaCapabilities = new PWACapabilities(estadoApp);
 
         // Configurar el intervalo de autoguardado
         estadoApp.intervaloAutoguardado = setInterval(() => {

@@ -3,16 +3,125 @@
   "short_name": "Materiales DH",
   "description": "Gestor de materiales y creación de equipos para Deck Heroes",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#4CAF50",
   "orientation": "portrait-primary",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["games", "utilities", "productivity"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista principal del gestor de materiales"
+    },
+    {
+      "src": "images/screenshot-2.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vista móvil del gestor"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "display_override": ["window-controls-overlay", "standalone"],
+  "id": "gestor-materiales-deck-heroes",
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "text/csv": [".csv"],
+        "application/json": [".json"]
+      }
+    }
+  ],
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+materiales",
+      "url": "./index.html?protocol=%s"
+    }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Nuevo Material",
+      "short_name": "Nuevo",
+      "description": "Agregar un nuevo material",
+      "url": "./index.html?action=nuevo",
+      "icons": [
+        {
+          "src": "images/icon-144x144.png",
+          "sizes": "144x144"
+        }
+      ]
+    },
+    {
+      "name": "Galería",
+      "short_name": "Galería",
+      "description": "Ver galería de equipos",
+      "url": "./index.html?action=galeria",
+      "icons": [
+        {
+          "src": "images/icon-144x144.png",
+          "sizes": "144x144"
+        }
+      ]
+    }
+  ],
+  "background_sync": [
+    {
+      "periodicity": 86400,
+      "network_condition": "any"
+    }
+  ],
+  "periodic_sync": {
+    "periodicity": 86400
+  },
+  "gcm_sender_id": "103953800507"
 } 

@@ -30,6 +30,9 @@ export default function configurarEventListeners(estado) {
         // ===== [7] EVENTOS GLOBALES =====
         configurarEventosGlobales(estado);
         
+        // ===== [8] CONFIGURACIÓN DE BOTONES PWA =====
+        configurarBotonesPWA(estado);
+        
         console.log('Event listeners configurados con éxito');
     } catch (error) {
         console.error('Error configurando event listeners:', error);
@@ -302,4 +305,77 @@ function configurarEventosGlobales(estado) {
         }
     });
 }
+
+// ===== [8] CONFIGURACIÓN DE BOTONES PWA =====
+function configurarBotonesPWA(estado) {
+    // Botón Exportar JSON
+    const exportJsonBtn = document.getElementById('export-json');
+    if (exportJsonBtn) {
+        exportJsonBtn.addEventListener('click', () => {
+            if (estado.pwaCapabilities) {
+                estado.pwaCapabilities.exportarDatos();
+                mostrarEstadoPWA('Datos exportados como JSON', 'success');
+            }
+        });
+    }
+
+    // Botón Compartir Datos
+    const shareDataBtn = document.getElementById('share-data');
+    if (shareDataBtn) {
+        shareDataBtn.addEventListener('click', async () => {
+            if (estado.pwaCapabilities) {
+                try {
+                    await estado.pwaCapabilities.compartirDatos();
+                    mostrarEstadoPWA('Datos compartidos', 'success');
+                } catch (error) {
+                    console.error('Error al compartir:', error);
+                    mostrarEstadoPWA('Error al compartir datos', 'error');
+                }
+            }
+        });
+    }
+
+    // Botón Solicitar Notificaciones
+    const requestNotificationsBtn = document.getElementById('request-notifications');
+    if (requestNotificationsBtn) {
+        requestNotificationsBtn.addEventListener('click', async () => {
+            if (estado.pwaCapabilities) {
+                try {
+                    await estado.pwaCapabilities.solicitarPermisosNotificacion();
+                    mostrarEstadoPWA('Permisos de notificación solicitados', 'info');
+                } catch (error) {
+                    console.error('Error al solicitar notificaciones:', error);
+                    mostrarEstadoPWA('Error al solicitar notificaciones', 'error');
+                }
+            }
+        });
+    }
+}
+
+// Función auxiliar para mostrar estados PWA
+function mostrarEstadoPWA(mensaje, tipo = 'info') {
+    // Crear elemento de estado
+    const estadoElement = document.createElement('div');
+    estadoElement.className = `pwa-status ${tipo}`;
+    estadoElement.textContent = mensaje;
+    
+    // Agregar al DOM
+    document.body.appendChild(estadoElement);
+    
+    // Mostrar con animación
+    setTimeout(() => {
+        estadoElement.classList.add('show');
+    }, 100);
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        estadoElement.classList.remove('show');
+        setTimeout(() => {
+            if (estadoElement.parentNode) {
+                estadoElement.parentNode.removeChild(estadoElement);
+            }
+        }, 300);
+    }, 3000);
+}
+
 // ============= FIN DE eventos.js =============

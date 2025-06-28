@@ -1,5 +1,5 @@
 // Service Worker para Gestor de Materiales - Deck Heroes
-const CACHE_NAME = 'materiales-dh-v1';
+const CACHE_NAME = 'materiales-dh-v1.3';
 const urlsToCache = [
   './',
   './index.html',
@@ -20,12 +20,15 @@ const urlsToCache = [
   './scripts/simulacion.js',
   './scripts/arte.js',
   './scripts/baselogic.js',
+  './scripts/pwa-capabilities.js',
   './images/botas.png',
   './images/espada.png',
   './images/pecho.png',
   './images/casco.png',
   './images/guantes.png',
-  './images/cinturon.png'
+  './images/cinturon.png',
+  './images/icon-192.png',
+  './images/icon-144x144.png'
 ];
 
 // Instalación del Service Worker
@@ -93,4 +96,105 @@ self.addEventListener('fetch', event => {
           });
       })
   );
+});
+
+// Background Sync
+self.addEventListener('sync', event => {
+  if (event.tag === 'background-sync') {
+    event.waitUntil(
+      this.performBackgroundSync()
+    );
+  }
+});
+
+// Periodic Sync
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'periodic-sync') {
+    event.waitUntil(
+      this.performPeriodicSync()
+    );
+  }
+});
+
+// Push Notifications
+self.addEventListener('push', event => {
+  const options = {
+    body: event.data ? event.data.text() : 'Nueva actualización disponible',
+    icon: './images/icon-192.png',
+    badge: './images/icon-144x144.png',
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    },
+    actions: [
+      {
+        action: 'explore',
+        title: 'Ver Materiales',
+        icon: './images/icon-144x144.png'
+      },
+      {
+        action: 'close',
+        title: 'Cerrar',
+        icon: './images/icon-144x144.png'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification('Gestor de Materiales DH', options)
+  );
+});
+
+// Notification Click
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  if (event.action === 'explore') {
+    event.waitUntil(
+      clients.openWindow('./index.html')
+    );
+  }
+});
+
+// Funciones de sincronización
+async function performBackgroundSync() {
+  try {
+    console.log('Ejecutando background sync...');
+    
+    // Aquí puedes agregar lógica para sincronizar datos
+    // Por ejemplo, enviar datos al servidor si hay conexión
+    
+    // Simular sincronización
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log('Background sync completado');
+  } catch (error) {
+    console.error('Error en background sync:', error);
+  }
+}
+
+async function performPeriodicSync() {
+  try {
+    console.log('Ejecutando periodic sync...');
+    
+    // Aquí puedes agregar lógica para actualizaciones periódicas
+    // Por ejemplo, verificar nuevas versiones, actualizar datos, etc.
+    
+    // Simular actualización periódica
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log('Periodic sync completado');
+  } catch (error) {
+    console.error('Error en periodic sync:', error);
+  }
+}
+
+// Message handling para comunicación con la app
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  
+  if (event.data && event.data.type === 'GET_VERSION') {
+    event.ports[0].postMessage({ version: CACHE_NAME });
+  }
 }); 
