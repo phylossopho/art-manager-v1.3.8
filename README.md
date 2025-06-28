@@ -121,7 +121,6 @@ Esta aplicación está optimizada para funcionar en cualquier hosting estático:
 - **Módulos ES6**: Organización modular del código
 - **LocalStorage**: Persistencia de datos sin servidor
 - **Responsive Design**: Adaptable a cualquier pantalla
-- **PWA Ready**: Preparado para futuras mejoras PWA
 
 ## 🤝 Contribuir
 
