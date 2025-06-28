@@ -243,8 +243,8 @@ header h1 {
 }
 
 #arte-table img {
-    max-width: 150px;
-    max-height: 150px;
+    width: 25px;
+    height: auto;
     display: block;
     margin: 0 auto;
 }
@@ -727,8 +727,8 @@ header h1 {
 
     /* Estilos específicos para tabla ARTE en móvil */
     #arte-table img {
-        max-width: 80px;
-        max-height: 80px;
+        width: 25px;
+        height: auto;
     }
 
     #arte-table th,
@@ -843,8 +843,8 @@ header h1 {
 
     /* Estilos específicos para tabla ARTE en pantallas muy pequeñas */
     #arte-table img {
-        max-width: 60px;
-        max-height: 60px;
+        width: 25px;
+        height: auto;
     }
 
     #arte-table th,
