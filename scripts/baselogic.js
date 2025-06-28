@@ -9,28 +9,10 @@ export function crearBaseSelector(estado, contenedor) {
         baseSelector.style.backgroundColor = estado.colorNoSeleccionado || '#808080';
         baseSelector.dataset.testid = 'base-selector';
 
-        // Título (depende de la clase y nivel)
+        // Título (vacío por defecto)
         const titulo = document.createElement('div');
         titulo.className = 'base-title';
-        let textoTitulo = '';
-        if (estado.claseActual === "Campeón") {
-            textoTitulo = "Equipo normal de nivel 4";
-        } else if (estado.claseActual === "Planewalker") {
-            textoTitulo = "Equipo normal de nivel 5";
-        } else if (estado.claseActual === "Lord") {
-            textoTitulo = "Equipo de nivel 5 o menor";
-        } else if (estado.claseActual === "Noble Lord") {
-            textoTitulo = "Equipo Lord de nivel 5";
-        } else if (estado.claseActual === "Normal") {
-            if (estado.nivelActual === "1") {
-                textoTitulo = "Equipo de nivel 1";
-            } else {
-                textoTitulo = `Equipo de nivel ${estado.nivelActual} o menor`;
-            }
-        } else {
-            textoTitulo = "Base";
-        }
-        titulo.textContent = textoTitulo;
+        titulo.textContent = ''; // Sin texto inicial
         baseSelector.appendChild(titulo);
 
         // Contenedor para elementos dinámicos
@@ -57,10 +39,10 @@ export function crearBaseSelector(estado, contenedor) {
         }
         // Para clase Normal, no se agrega imagen
 
-        // Agregar texto superpuesto para restricciones
+        // Agregar texto superpuesto para restricciones (vacío por defecto)
         const baseText = document.createElement('div');
         baseText.className = 'base-text';
-        baseText.textContent = textoTitulo;
+        baseText.textContent = ''; // Sin texto inicial
         baseSelector.appendChild(baseText);
 
         // Selector de color
@@ -166,10 +148,11 @@ export function actualizarEstadoBase(estado) {
             return;
         }
 
-        // Para clases especiales, mostrar imagen y texto
+        // Para clases especiales, mostrar imagen y texto superpuesto
         if (["Campeón", "Planewalker", "Lord", "Noble Lord"].includes(estado.claseActual)) {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
+            title.textContent = ''; // Eliminar texto del título
             let texto = '';
             if (estado.claseActual === "Campeón") {
                 texto = "Equipo normal de nivel 4";
@@ -180,7 +163,6 @@ export function actualizarEstadoBase(estado) {
             } else if (estado.claseActual === "Noble Lord") {
                 texto = "Equipo Lord de nivel 5";
             }
-            title.textContent = texto;
             baseText.textContent = texto;
             // Actualizar imagen del equipo si existe
             if (equipoImg) {
@@ -211,7 +193,7 @@ export function actualizarEstadoBase(estado) {
         if (condicionDenied) {
             deniedImage.style.display = 'block';
             selector.style.display = 'none';
-            title.textContent = 'NO DISPONIBLE';
+            title.textContent = ''; // Eliminar texto del título
             baseText.textContent = 'NO DISPONIBLE';
             baseSelector.style.backgroundColor = '#f8d7da'; // Color de error
             estado.colorBaseSeleccionado = null; // Resetear selección
@@ -223,19 +205,9 @@ export function actualizarEstadoBase(estado) {
         } else {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
-            // Para clase Normal, mostrar texto según el nivel
-            if (estado.claseActual === "Normal") {
-                if (estado.nivelActual === "1") {
-                    title.textContent = "Equipo de nivel 1";
-                    baseText.textContent = "Equipo de nivel 1";
-                } else {
-                    title.textContent = `Equipo de nivel ${estado.nivelActual} o menor`;
-                    baseText.textContent = `Equipo de nivel ${estado.nivelActual} o menor`;
-                }
-            } else {
-                title.textContent = "Base";
-                baseText.textContent = "Base";
-            }
+            // Para clase Normal, no mostrar texto
+            title.textContent = ''; // Eliminar texto del título
+            baseText.textContent = ''; // No mostrar texto superpuesto para Normal
             // Ocultar imagen si existe
             if (equipoImg) equipoImg.style.display = 'none';
             // Restaurar color de fondo según selección actual
