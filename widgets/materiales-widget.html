@@ -101,6 +101,7 @@
         <button class="open-app-btn" onclick="openApp()">Abrir App</button>
     </div>
 
+    <script src="widget-manager.js"></script>
     <script>
         // Cargar datos del widget
         async function loadWidgetData() {
@@ -180,6 +181,12 @@
             if (e.key === 'widgetData') {
                 loadWidgetData();
             }
+        });
+        
+        // Escuchar eventos de actualización de widgets
+        window.addEventListener('widgetDataUpdate', (e) => {
+            console.log('Widget actualizado:', e.detail);
+            loadWidgetData();
         });
     </script>
 </body>

@@ -23,6 +23,8 @@ const urlsToCache = [
   './scripts/pwa-capabilities.js',
   './widgets/materiales-widget.html',
   './widgets/materiales-data.json',
+  './widgets/widget-config.json',
+  './widgets/widget-manager.js',
   './images/botas.png',
   './images/espada.png',
   './images/pecho.png',

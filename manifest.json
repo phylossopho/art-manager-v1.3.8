@@ -26,6 +26,16 @@
       "platform": "webapp",
       "url": "https://localhost:3000/manifest.json",
       "id": "gestor-materiales-deck-heroes"
+    },
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.materialesdh.app",
+      "id": "com.materialesdh.app"
+    },
+    {
+      "platform": "windows",
+      "url": "https://www.microsoft.com/store/apps/9NBLGGH4R8Q8",
+      "id": "9NBLGGH4R8Q8"
     }
   ],
   "icons": [
@@ -155,11 +165,12 @@
     {
       "name": "Materiales Rápidos",
       "short_name": "Materiales",
-      "description": "Acceso rápido a tus materiales",
+      "description": "Acceso rápido a tus materiales de Deck Heroes",
       "icons": [
         {
           "src": "images/icon-192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ],
       "screenshots": [
@@ -167,13 +178,39 @@
           "src": "images/widget-screenshot.png",
           "sizes": "540x405",
           "type": "image/png",
-          "form_factor": "wide"
+          "form_factor": "wide",
+          "label": "Widget de Materiales"
         }
       ],
-      "categories": ["utilities"],
+      "categories": ["utilities", "productivity"],
       "ms_ac_template": "widgets/materiales-widget.html",
       "data": "widgets/materiales-data.json",
-      "auth": false
+      "auth": false,
+      "widgets": [
+        {
+          "name": "Materiales DH",
+          "short_name": "Materiales",
+          "description": "Vista rápida de materiales",
+          "icons": [
+            {
+              "src": "images/icon-192.png",
+              "sizes": "192x192"
+            }
+          ],
+          "screenshots": [
+            {
+              "src": "images/widget-screenshot.png",
+              "sizes": "540x405",
+              "type": "image/png",
+              "form_factor": "wide"
+            }
+          ],
+          "categories": ["utilities"],
+          "ms_ac_template": "widgets/materiales-widget.html",
+          "data": "widgets/materiales-data.json",
+          "auth": false
+        }
+      ]
     }
   ]
 } 

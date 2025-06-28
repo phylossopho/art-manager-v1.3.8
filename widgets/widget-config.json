@@ -1,0 +1,55 @@
+{
+  "widgets": [
+    {
+      "name": "Materiales Rápidos",
+      "short_name": "Materiales",
+      "description": "Acceso rápido a tus materiales de Deck Heroes",
+      "version": "1.0.0",
+      "author": "Deck Heroes Team",
+      "homepage_url": "https://localhost:3000",
+      "icons": [
+        {
+          "src": "../images/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "../images/icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ],
+      "screenshots": [
+        {
+          "src": "../images/widget-screenshot.png",
+          "sizes": "540x405",
+          "type": "image/png",
+          "form_factor": "wide",
+          "label": "Widget de Materiales"
+        }
+      ],
+      "categories": ["utilities", "productivity", "games"],
+      "ms_ac_template": "materiales-widget.html",
+      "data": "materiales-data.json",
+      "auth": false,
+      "permissions": ["storage", "notifications"],
+      "capabilities": [
+        "view_materials",
+        "quick_access",
+        "real_time_updates"
+      ],
+      "settings": {
+        "update_interval": 30000,
+        "max_materials_display": 5,
+        "enable_notifications": true,
+        "theme": "auto"
+      }
+    }
+  ],
+  "global_settings": {
+    "api_endpoint": "https://localhost:3000/api",
+    "cache_duration": 3600000,
+    "offline_support": true,
+    "sync_enabled": true
+  }
+} 
