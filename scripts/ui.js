@@ -272,17 +272,18 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
-            // Hacer el selector invisible pero funcional
+            // Hacer el selector invisible pero completamente funcional
             selector.style.opacity = '0';
             selector.style.position = 'absolute';
-            selector.style.pointerEvents = 'none';
+            selector.style.top = '0';
+            selector.style.left = '0';
+            selector.style.width = '100%';
+            selector.style.height = '100%';
+            selector.style.zIndex = '10';
             selector.style.display = 'block';
 
-            // Abrir lista nativa directamente al hacer clic en el material
-            selectorMaterial.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selector.click(); // Abrir directamente la lista de colores nativa
-            });
+            // El selector ahora está sobre todo el material, así que cualquier clic lo activará
+            // No necesitamos evento adicional, el selector nativo se encarga de todo
         }
 
         contenedor.appendChild(selectorMaterial);
