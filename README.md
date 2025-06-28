@@ -137,6 +137,7 @@ Si quieres contribuir al proyecto:
 
 3. Invita a tus amigos a jugar con nosotros o por lo menos que instalen el juego :D
 
+s detalles.
 
 ## 🎯 Roadmap
 
