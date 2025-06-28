@@ -152,10 +152,6 @@
 
     <header>
         <h1>Gestor de Materiales y Creación de Equipos</h1>
-        <!-- Botón de instalación manual para testing -->
-        <button id="manual-install" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px; cursor: pointer; display: none;">
-            📱 Instalar App
-        </button>
     </header>
 
     <div class="top-section">
@@ -446,7 +442,6 @@
     const installBanner = document.getElementById('install-banner');
     const installButton = document.getElementById('install-button');
     const closeInstall = document.getElementById('close-install');
-    const manualInstall = document.getElementById('manual-install');
 
     if (installBanner && installButton && closeInstall) {
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -454,50 +449,39 @@
             e.preventDefault();
             deferredPrompt = e;
             
-            // Mostrar botón manual
-            if (manualInstall) {
-                manualInstall.style.display = 'inline-block';
-            }
-            
             // Mostrar banner automático después de 3 segundos
             setTimeout(() => {
-                if (installBanner) {
-                    installBanner.classList.add('show');
+                if (installBanner && deferredPrompt) {
+                    installBanner.classList.add('visible');
+                    setTimeout(() => {
+                        installBanner.classList.add('show');
+                    }, 100);
                     console.log('PWA: Banner mostrado');
                 }
             }, 3000);
         });
 
-        // Botón manual de instalación
-        if (manualInstall) {
-            manualInstall.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('PWA: Usuario instaló la app');
-                        } else {
-                            console.log('PWA: Usuario rechazó la instalación');
-                        }
-                        deferredPrompt = null;
-                        manualInstall.style.display = 'none';
-                    });
-                } else {
-                    console.log('PWA: No hay prompt de instalación disponible');
-                    alert('La instalación no está disponible en este momento');
-                }
-            });
-        }
-
         installButton.addEventListener('click', () => {
-            if (!deferredPrompt) return;
+            if (!deferredPrompt) {
+                console.log('PWA: No hay prompt de instalación disponible');
+                return;
+            }
+            
             installBanner.classList.remove('show');
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('PWA: Usuario instaló la app');
+                    // Ocultar el banner después de la instalación exitosa
+                    setTimeout(() => {
+                        installBanner.classList.remove('visible');
+                    }, 1000);
                 } else {
                     console.log('PWA: Usuario rechazó la instalación');
+                    // Volver a mostrar el banner si el usuario lo rechazó
+                    setTimeout(() => {
+                        installBanner.classList.add('show');
+                    }, 2000);
                 }
                 deferredPrompt = null;
             });
@@ -505,13 +489,25 @@
 
         closeInstall.addEventListener('click', () => {
             installBanner.classList.remove('show');
+            // Ocultar completamente después de la animación
+            setTimeout(() => {
+                installBanner.classList.remove('visible');
+            }, 300);
         });
     }
 
     // Verificar si la PWA ya está instalada
     window.addEventListener('load', () => {
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        // Verificar si está en modo standalone (instalada)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isInApp = window.navigator.standalone === true;
+        
+        if (isStandalone || isInApp) {
             console.log('PWA: La app ya está instalada');
+            // Ocultar el banner si ya está instalada
+            if (installBanner) {
+                installBanner.classList.remove('visible', 'show');
+            }
         } else {
             console.log('PWA: La app no está instalada');
         }

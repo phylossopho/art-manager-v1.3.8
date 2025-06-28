@@ -862,7 +862,7 @@ header h1 {
     background: #333;
     color: white;
     padding: 15px;
-    display: flex;
+    display: none; /* Oculto por defecto */
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
@@ -875,6 +875,10 @@ header h1 {
     transform: translateY(0);
 }
 
+#install-banner.visible {
+    display: flex;
+}
+
 #install-button {
     background-color: #4CAF50;
     color: white;
@@ -883,6 +887,11 @@ header h1 {
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#install-button:hover {
+    background-color: #45a049;
 }
 
 #close-install {
@@ -894,6 +903,11 @@ header h1 {
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#close-install:hover {
+    background: #f57c4a;
 }
 
 /* === ESTILOS RESPONSIVOS === */
