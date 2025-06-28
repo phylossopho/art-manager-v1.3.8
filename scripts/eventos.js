@@ -120,8 +120,7 @@ function configurarEventListeners(estado) {
 
         if (carouselClose) {
             carouselClose.addEventListener('click', () => {
-                const modal = document.getElementById('carousel-modal');
-                modal.style.display = 'none';
+                modales.cerrarModalConTransicion('carousel-modal');
             });
         }
 
@@ -131,7 +130,7 @@ function configurarEventListeners(estado) {
             button.addEventListener('click', () => {
                 const modal = button.closest('.modal');
                 if (modal) {
-                    modal.style.display = 'none';
+                    modales.cerrarModalConTransicion(modal.id);
                 }
             });
         });
@@ -141,7 +140,7 @@ function configurarEventListeners(estado) {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
                 if (e.target === modal) {
-                    modal.style.display = 'none';
+                    modales.cerrarModalConTransicion(modal.id);
                 }
             });
         });

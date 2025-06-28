@@ -516,6 +516,10 @@ export function actualizarUI(estado) {
 
 export function cambiarPestana(nombrePestana) {
     try {
+        // Obtener la pestaña actualmente activa
+        const pestañaActiva = document.querySelector('.tab-content.active');
+        const botonActivo = document.querySelector('.tab-button.active');
+        
         // Desactivar todas las pestañas
         const botonesPestaña = document.querySelectorAll('.tab-button');
         botonesPestaña.forEach(boton => boton.classList.remove('active'));
@@ -524,14 +528,24 @@ export function cambiarPestana(nombrePestana) {
         contenidosPestaña.forEach(contenido => contenido.classList.remove('active'));
 
         // Activar la pestaña seleccionada
-        const botonActivo = document.querySelector(`[data-tab="${nombrePestana}"]`);
-        if (botonActivo) {
-            botonActivo.classList.add('active');
+        const botonNuevo = document.querySelector(`[data-tab="${nombrePestana}"]`);
+        if (botonNuevo) {
+            botonNuevo.classList.add('active');
         }
         
-        const contenidoActivo = document.getElementById(`${nombrePestana}-tab`);
-        if (contenidoActivo) {
-            contenidoActivo.classList.add('active');
+        const contenidoNuevo = document.getElementById(`${nombrePestana}-tab`);
+        if (contenidoNuevo) {
+            // Agregar transición suave
+            contenidoNuevo.style.opacity = '0';
+            contenidoNuevo.style.transform = 'translateY(10px)';
+            contenidoNuevo.classList.add('active');
+            
+            // Animar la entrada
+            setTimeout(() => {
+                contenidoNuevo.style.transition = 'all 0.3s ease';
+                contenidoNuevo.style.opacity = '1';
+                contenidoNuevo.style.transform = 'translateY(0)';
+            }, 10);
         }
 
         // Actualizar la UI según la pestaña

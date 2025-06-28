@@ -45,14 +45,38 @@ export function ocultarMenuCSVMovil() {
 }
 
 export function cerrarModales() {
-    document.getElementById('materials-modal').style.display = 'none';
-    document.getElementById('gallery-modal').style.display = 'none';
-    document.getElementById('carousel-modal').style.display = 'none';
+    cerrarModalConTransicion('materials-modal');
+    cerrarModalConTransicion('gallery-modal');
+    cerrarModalConTransicion('carousel-modal');
 }
 
 export function cerrarModalMateriales() {
-    const modal = document.getElementById('materials-modal');
+    cerrarModalConTransicion('materials-modal');
+}
+
+// Función para abrir modal con transición
+export function abrirModalConTransicion(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) {
-        modal.style.display = 'none';
+        modal.style.display = 'block';
+        // Forzar reflow para que la animación funcione
+        modal.offsetHeight;
+        modal.style.opacity = '1';
+        modal.style.transform = 'scale(1)';
+    }
+}
+
+// Función para cerrar modal con transición
+export function cerrarModalConTransicion(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.9)';
+        modal.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.transition = '';
+        }, 300);
     }
 }

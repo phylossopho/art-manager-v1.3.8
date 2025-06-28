@@ -1,5 +1,7 @@
 // scripts/galeria.js
 
+import * as modales from './modales.js';
+
 export function eliminarImagen(index, estado) {
     try {
         if (index >= 0 && index < estado.imagenesGaleria.length) {
@@ -74,7 +76,8 @@ export function abrirGaleria(estado) {
         contenedor.appendChild(item);
     });
 
-    modal.style.display = 'block';
+    // Usar la nueva función con transición
+    modales.abrirModalConTransicion('gallery-modal');
 }
 
 export function agregarImagenAGaleria(archivo, estado) {
@@ -133,7 +136,8 @@ export function mostrarImagenCarrusel(estado) {
         };
         
         contador.textContent = `${estado.indiceCarruselActual + 1} / ${estado.imagenesGaleria.length}`;
-        modal.style.display = 'block';
+        // Usar la nueva función con transición
+        modales.abrirModalConTransicion('carousel-modal');
     }
 }
 

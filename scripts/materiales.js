@@ -351,7 +351,9 @@ export function abrirListaMateriales(estado) {
         table.appendChild(tbody);
         tableContainer.appendChild(table);
         tablaContenedor.appendChild(tableContainer);
-        modal.style.display = 'block';
+        
+        // Usar la nueva función con transición
+        modales.abrirModalConTransicion('materials-modal');
     } catch (error) {
         console.error('Error en abrirListaMateriales:', error);
         modales.mostrarMensaje('Error', 'Error al abrir la lista de materiales', 'error');
