@@ -564,9 +564,9 @@ function pastelizarColor(hex, factor = 0.7) {
     const coloresNombres = {
         'white': '#FFFFFF',
         'blanco': '#FFFFFF',
-        'verde': '#90EE90',
-        'azul': '#2196F3',
-        'morado': '#9C27B0',
+        'verde': '#DBFBDB',
+        'azul': '#B2DAFA',
+        'morado': '#E5A3F0',
         'dorado': '#FFD700'
     };
     if (hex in coloresNombres) hex = coloresNombres[hex];
@@ -593,15 +593,15 @@ function colorFondoPorSeleccion(color) {
     }
     // Azul: más fuerte
     if (color === 'azul') {
-        return pastelizarColor('#2196F3', 0.3);
+        return pastelizarColor('#B2DAFA', 0.3);
     }
     // Morado: más fuerte
     if (color === 'morado') {
-        return pastelizarColor('#9C27B0', 0.3);
+        return pastelizarColor('#E5A3F0', 0.3);
     }
     // Verde: un poco más fuerte
     if (color === 'verde') {
-        return pastelizarColor('#90EE90', 0.4);
+        return pastelizarColor('#DBFBDB', 0.4);
     }
     // Por defecto, pastel clásico
     return pastelizarColor('#FFFFFF', 0.7);
