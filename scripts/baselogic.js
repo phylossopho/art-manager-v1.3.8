@@ -10,10 +10,10 @@ export function crearBaseSelector(estado, contenedor) {
         baseSelector.dataset.testid = 'base-selector';
 
         // Título (vacío por defecto)
-        const titulo = document.createElement('div');
-        titulo.className = 'base-title';
-        titulo.textContent = ''; // Sin texto inicial
-        baseSelector.appendChild(titulo);
+        // const titulo = document.createElement('div');
+        // titulo.className = 'base-title';
+        // titulo.textContent = ''; // Sin texto inicial
+        // baseSelector.appendChild(titulo);
 
         // Contenedor para elementos dinámicos
         const dynamicContainer = document.createElement('div');
@@ -119,7 +119,6 @@ export function crearBaseSelector(estado, contenedor) {
             element: baseSelector,
             selector,
             deniedImage,
-            title: titulo,
             equipoImg: baseSelector.querySelector('.base-equipo-img')
         };
     } catch (error) {
@@ -139,11 +138,10 @@ export function actualizarEstadoBase(estado) {
 
         const selector = baseSelector.querySelector('select');
         const deniedImage = baseSelector.querySelector('img[data-testid="base-denied-image"]');
-        const title = baseSelector.querySelector('.base-title');
         const baseText = baseSelector.querySelector('.base-text');
         const equipoImg = baseSelector.querySelector('.base-equipo-img');
 
-        if (!selector || !deniedImage || !title || !baseText) {
+        if (!selector || !deniedImage || !baseText) {
             console.warn('Elementos internos del selector base no encontrados');
             return;
         }
@@ -152,7 +150,6 @@ export function actualizarEstadoBase(estado) {
         if (["Campeón", "Planewalker", "Lord", "Noble Lord"].includes(estado.claseActual)) {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
-            title.textContent = ''; // Eliminar texto del título
             let texto = '';
             if (estado.claseActual === "Campeón") {
                 texto = "Equipo normal de nivel 4";
@@ -193,7 +190,6 @@ export function actualizarEstadoBase(estado) {
         if (condicionDenied) {
             deniedImage.style.display = 'block';
             selector.style.display = 'none';
-            title.textContent = ''; // Eliminar texto del título
             baseText.textContent = 'NO DISPONIBLE';
             baseSelector.style.backgroundColor = '#f8d7da'; // Color de error
             estado.colorBaseSeleccionado = null; // Resetear selección
@@ -206,7 +202,6 @@ export function actualizarEstadoBase(estado) {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
             // Para clase Normal, mostrar texto según el nivel
-            title.textContent = ''; // Eliminar texto del título
             if (estado.claseActual === "Normal") {
                 if (estado.nivelActual === "1") {
                     baseText.textContent = "Equipo de nivel 1";
