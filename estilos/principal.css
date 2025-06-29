@@ -413,7 +413,7 @@ header h1 {
     top: 50%; /* Centrado vertical */
     left: 50%; /* Centrado horizontal */
     transform: translate(-50%, -50%); /* Centrado preciso */
-    background-color: rgba(15, 8, 80, 0.6) !important;
+    background-color: rgba(117, 3, 3, 0.6) !important;
     color: white !important;
     padding: 2px 4px !important; /* Padding reducido */
     border-radius: 2px !important;
@@ -425,7 +425,7 @@ header h1 {
     pointer-events: none !important;
     line-height: 1.2 !important; /* Altura de línea ajustada */
      /* Ancho máximo para evitar desbordamiento */
-    max-height: 12%;
+    max-height: 18%;
     box-sizing: border-box !important;
 }
 
