@@ -284,13 +284,13 @@ header h1 {
 }
 
 .social-icon {
-    width: 60px;
-    height: 60px;
+    width: 66px;
+    height: 66px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.9s ease;
     opacity: 0;
     transform: scale(0.8);
     background: transparent;
@@ -318,14 +318,14 @@ header h1 {
 }
 
 .social-icon img {
-    width: 48px;
-    height: 48px;
+    width: 33px;
+    height: 33px;
 }
 
 /* Columna derecha - Botón USAR */
 .use-button {
     padding: 12px 30px;
-    font-size: 16px;
+    font-size: 24px;
     font-weight: bold;
     background-color: #28a745;
     color: white;
@@ -352,7 +352,7 @@ header h1 {
     width: 120px;
     height: 120px;
     border: 1px solid #808080;
-    border-radius: 15px;
+    border-radius: 15%;
     padding: 5px;
     display: flex;
     flex-direction: column;
@@ -387,9 +387,9 @@ header h1 {
 
 .base-selector {
     width: 120px;
-    min-height: 140px;
-    border: 1px solid #808080;
-    border-radius: 5px;
+    height: 120px;
+    border: 1px solid #e70505;
+    border-radius: 15%;
     padding: 5px;
     display: flex;
     flex-direction: column;
@@ -397,6 +397,7 @@ header h1 {
     transition: background-color 0.3s ease;
     position: relative;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .base-title {
@@ -409,46 +410,43 @@ header h1 {
 .base-selector select {
     width: 100%;
     margin-bottom: 5px;
-    display: none; /* Oculto por defecto */
+    display: none;
 }
 
-.base-selector .base-text {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    background-color: rgba(0, 0, 0, 0.6) !important;
+.base-text {
+    position: absolute;
+    top: 50%; /* Centrado vertical */
+    left: 50%; /* Centrado horizontal */
+    transform: translate(-50%, -50%); /* Centrado preciso */
+    background-color: rgba(161, 211, 23, 0.6) !important;
     color: white !important;
-    padding: 0px 2px !important;
-    border-radius: 1px !important;
+    padding: 2px 4px !important; /* Padding reducido */
+    border-radius: 2px !important;
     font-size: 9px !important;
     font-weight: bold !important;
     text-align: center !important;
     white-space: nowrap !important;
     z-index: 10 !important;
     pointer-events: none !important;
-    line-height: 1 !important;
-    margin: 0 !important;
+    line-height: 1.2 !important; /* Altura de línea ajustada */
+     /* Ancho máximo para evitar desbordamiento */
+    max-height: 12%;
     box-sizing: border-box !important;
 }
 
-.base-selector {
-    width: 120px;
-    min-height: 140px;
-}
 
-.base-title {
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px;
-}
+
+
+
+
 
 .base-dynamic-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
+	max-height: 100%;
+	width: 100%;
 }
 
 .base-equipo-img {
