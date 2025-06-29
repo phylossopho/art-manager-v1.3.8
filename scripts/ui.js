@@ -682,12 +682,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cuando se actualiza el color del equipo, también cambia el fondo de las tablas y selectores
 export function actualizarColorFondoApp(estado) {
     const colorFondo = window.getComputedStyle(document.body).backgroundColor;
-    // Tablas
-    document.querySelectorAll('.materials-table').forEach(el => {
+    // Solo la sección y las tablas
+    document.querySelectorAll('.bottom-section').forEach(el => {
         el.style.backgroundColor = colorFondo;
     });
-    // Selectores
-    document.querySelectorAll('.item-selector').forEach(el => {
+    document.querySelectorAll('.materials-table').forEach(el => {
         el.style.backgroundColor = colorFondo;
     });
 }
