@@ -227,9 +227,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             const deniedImage = document.createElement('img');
             deniedImage.src = 'images/denied.png';
             deniedImage.alt = 'Acción no permitida';
-            deniedImage.style.maxWidth = '100%';
-            deniedImage.style.height = '100px';
-            deniedImage.style.objectFit = 'contain';
             selectorMaterial.appendChild(deniedImage);
         } else {
             const imagen = document.createElement('img');
@@ -505,6 +502,9 @@ export function actualizarUI(estado) {
         } else if (idPestaña !== 'materials' && idPestaña !== 'conversionlegend') {
             conversiones.actualizarTablaConversion(estado, idPestaña);
         }
+
+        // Cuando se actualiza el color del equipo, también cambia el fondo de las tablas y selectores
+        actualizarColorFondoApp(estado);
     } catch (error) {
         console.error('Error en actualización de UI:', error);
         modales.mostrarMensaje('Error', 'Se produjo un error al actualizar la interfaz', 'error');
@@ -678,3 +678,16 @@ document.addEventListener('DOMContentLoaded', () => {
         aplicarFondoPorColorEquipo(); // Inicial
     }
 });
+
+// Cuando se actualiza el color del equipo, también cambia el fondo de las tablas y selectores
+export function actualizarColorFondoApp(estado) {
+    const colorFondo = window.getComputedStyle(document.body).backgroundColor;
+    // Tablas
+    document.querySelectorAll('.materials-table').forEach(el => {
+        el.style.backgroundColor = colorFondo;
+    });
+    // Selectores
+    document.querySelectorAll('.item-selector').forEach(el => {
+        el.style.backgroundColor = colorFondo;
+    });
+}

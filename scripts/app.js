@@ -148,6 +148,7 @@ function iniciarApp() {
 
         // Inicializar la interfaz de usuario
         ui.actualizarUI(estadoApp);
+        ui.actualizarColorFondoApp(estadoApp);
 
         // Asignar la función de simulación al estado
         estadoApp.simularUso = simularUso;

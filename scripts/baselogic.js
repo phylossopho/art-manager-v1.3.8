@@ -89,8 +89,6 @@ export function crearBaseSelector(estado, contenedor) {
         deniedImage.src = './images/denied.png';
         deniedImage.alt = 'Acción no permitida';
         deniedImage.style.display = 'none';
-        deniedImage.style.maxWidth = '100%';
-        deniedImage.style.marginTop = '10px';
         deniedImage.dataset.testid = 'base-denied-image';
 
         // Añadir elementos al contenedor
