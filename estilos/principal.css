@@ -394,10 +394,12 @@ header h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     transition: background-color 0.3s ease;
     position: relative;
     cursor: pointer;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .base-selector select {
@@ -438,8 +440,7 @@ header h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    max-height: 100%;
+    height: 100%;
     width: 100%;
 }
 
@@ -448,6 +449,8 @@ header h1 {
     max-height: 50px;
     object-fit: contain;
     z-index: 1;
+    display: block;
+    margin: auto;
 }
 
 .base-selector select {

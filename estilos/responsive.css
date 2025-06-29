@@ -49,6 +49,26 @@
         width: 24px;
         height: 24px;
     }
+    
+    .base-selector {
+        width: 100px;
+        height: 100px;
+        padding: 5px;
+    }
+    .base-dynamic-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+    .base-equipo-img {
+        max-width: 50px;
+        max-height: 50px;
+        display: block;
+        margin: auto;
+    }
 }
 
 /* Móviles grandes */
@@ -393,6 +413,26 @@
         padding: 12px 15px !important;
         font-size: 13px !important;
     }
+    
+    .base-selector {
+        width: 66px;
+        height: 66px;
+        padding: 2px;
+    }
+    .base-dynamic-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+    .base-equipo-img {
+        max-width: 40px;
+        max-height: 40px;
+        display: block;
+        margin: auto;
+    }
 }
 
 /* Orientación landscape en móviles */
@@ -603,13 +643,24 @@
     /* Ajustes para selector base en móviles */
     .base-selector {
         width: 100px;
-        min-height: 140px;
+        height: 100px;
         padding: 5px;
+    }
+    
+    .base-dynamic-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
     }
     
     .base-equipo-img {
         max-width: 50px;
         max-height: 50px;
+        display: block;
+        margin: auto;
     }
     
     .base-title {
@@ -696,12 +747,24 @@
     /* Ajustes para selector base en móviles pequeños */
     .base-selector {
         width: 66px;
-        min-height: 66px;
+        height: 66px;
+        padding: 2px;
+    }
+    
+    .base-dynamic-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
     }
     
     .base-equipo-img {
         max-width: 40px;
         max-height: 40px;
+        display: block;
+        margin: auto;
     }
     
     .base-selector select {
