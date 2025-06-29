@@ -228,10 +228,13 @@ header h1 {
     font-size: 20px;
     transition: background-color 0.3s ease;
     justify-self: start;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.18), 0 1.5px 6px rgba(0,0,0,0.08);
 }
 
 .gallery-button:hover {
     background-color: #218838;
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.28), 0 2.5px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px) scale(1.04);
 }
 
 .gallery-icon {
@@ -334,10 +337,13 @@ header h1 {
     cursor: pointer;
     transition: background-color 0.3s ease;
     justify-self: end;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.18), 0 1.5px 6px rgba(0,0,0,0.08);
 }
 
 .use-button:hover {
     background-color: #218838;
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.28), 0 2.5px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px) scale(1.04);
 }
 
 .bottom-section, .materials-table {
@@ -931,4 +937,53 @@ header h1 {
 .item-selector.active .item-text,
 .base-selector.active .base-text {
     display: none;
+}
+
+#show-materials {
+    padding: 6px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.18);
+    cursor: pointer;
+    margin: 2px 0 2px 0;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+#show-materials:hover {
+    background: linear-gradient(135deg, #21CBF3 0%, #2196F3 100%);
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.28);
+    transform: translateY(-2px) scale(1.04);
+}
+
+.use-button, .gallery-button {
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.18), 0 1.5px 6px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+.use-button:hover, .gallery-button:hover {
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.28), 0 2.5px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px) scale(1.04);
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.18);
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+.icon-button:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.28);
+    transform: translateY(-2px) scale(1.08);
 }
