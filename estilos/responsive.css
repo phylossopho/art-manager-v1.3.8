@@ -880,3 +880,18 @@
 }
 
 /* Eliminar estilos de color-list que ya no se usan */
+
+@media (max-width: 600px) {
+    .item-selector {
+        width: 48px;
+        height: 48px;
+        padding: 2px;
+        border-radius: 8px;
+    }
+    .item-selector img {
+        width: 32px;
+        height: 32px;
+        max-width: 32px;
+        max-height: 32px;
+    }
+}

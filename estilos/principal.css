@@ -348,7 +348,7 @@ header h1 {
     margin-bottom: 20px;
 }
 
-.material-selector, .base-selector {
+.item-selector {
     width: 100px;
     height: 100px;
     padding: 5px;
@@ -364,7 +364,7 @@ header h1 {
     box-sizing: border-box;
 }
 
-.material-selector img, .base-equipo-img {
+.item-selector img {
     width: 60px;
     height: 60px;
     max-width: 60px;
@@ -705,7 +705,7 @@ header h1 {
         gap: 5px;
     }
     
-    .material-selector, .base-selector {
+    .item-selector {
         width: 66px;
         height: 66px;
         padding: 3px;
@@ -713,7 +713,7 @@ header h1 {
         border-radius: 10px;
     }
     
-    .material-selector img, .base-selector img {
+    .item-selector img {
         width: 66px;
         height: 66px;
     }
@@ -783,13 +783,13 @@ header h1 {
         line-height: 16px;
     }
     
-    .material-selector, .base-selector {
+    .item-selector {
         width: 66px;
         text-align: center;
         border-radius: 10px;
     }
     
-    .material-selector img, .base-selector img {
+    .item-selector img {
         width: 66px;
         height: 66px;
         text-align: center;
@@ -926,12 +926,12 @@ header h1 {
 }
 
 /* Estilos para selectores activos */
-.material-selector.active select,
+.item-selector.active select,
 .base-selector.active select {
     display: none; /* Ya no se muestra inline */
 }
 
-.material-selector.active .material-text,
+.item-selector.active .item-text,
 .base-selector.active .base-text {
     display: none;
 }

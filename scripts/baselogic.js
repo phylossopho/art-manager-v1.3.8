@@ -5,7 +5,7 @@ export function crearBaseSelector(estado, contenedor) {
     try {
         // Crear contenedor principal
         const baseSelector = document.createElement('div');
-        baseSelector.className = 'base-selector';
+        baseSelector.className = 'base-selector item-selector';
         baseSelector.style.backgroundColor = estado.colorNoSeleccionado || '#808080';
         baseSelector.dataset.testid = 'base-selector';
 

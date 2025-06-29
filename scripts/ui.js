@@ -220,7 +220,7 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
         const material4Restringido = indice === 3 && (estado.nivelActual === "1" || estado.nivelActual === "2");
 
         const selectorMaterial = document.createElement('div');
-        selectorMaterial.className = 'material-selector';
+        selectorMaterial.className = 'material-selector item-selector';
         selectorMaterial.style.backgroundColor = colorFondo;
 
         if (material3Restringido || material4Restringido) {
