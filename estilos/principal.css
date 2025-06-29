@@ -414,7 +414,7 @@ header h1 {
     left: 50%; /* Centrado horizontal */
     transform: translate(-50%, -50%); /* Centrado preciso */
     background-color: rgba(117, 3, 3, 0.6) !important;
-    color: rgb(243, 239, 23) !important;
+    color: rgb(255, 255, 255) !important;
     padding: 2px 4px !important; /* Padding reducido */
     border-radius: 2px !important;
     font-size: 9px !important;
@@ -1016,4 +1016,18 @@ header h1 {
 
 #materials-tab {
     transition: background 0.8s ease-in-out, background-color 0.8s ease-in-out;
+}
+
+.material-selector img {
+    width: 90%;
+    height: 90%;
+    background-color: transparent !important;
+    object-fit: contain;
+}
+
+.base-equipo-img {
+    width: 90%;
+    height: 90%;
+    background-color: transparent !important;
+    object-fit: contain;
 }

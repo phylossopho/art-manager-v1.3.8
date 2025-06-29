@@ -254,8 +254,8 @@ td {
 }
 
 .material-selector img {
-    width: 100px;
-    height: 100px;
+    width: 90%;
+    height: 90%;
     background-color: transparent !important;
     object-fit: contain;
 }

@@ -61,10 +61,10 @@
         border-radius: 12px;
     }
     .material-selector img, .base-equipo-img {
-        width: 45px;
-        height: 45px;
-        max-width: 45px;
-        max-height: 45px;
+        width: 90%;
+        height: 90%;
+        max-width: 90%;
+        max-height: 90%;
         display: block;
         margin: auto;
         object-fit: contain;
@@ -283,10 +283,10 @@
         border-radius: 10px;
     }
     .material-selector img, .base-equipo-img {
-        width: 40px;
-        height: 40px;
-        max-width: 40px;
-        max-height: 40px;
+        width: 90%;
+        height: 90%;
+        max-width: 90%;
+        max-height: 90%;
         display: block;
         margin: auto;
         object-fit: contain;
@@ -471,10 +471,10 @@
         border-radius: 8px;
     }
     .material-selector img, .base-equipo-img {
-        width: 32px;
-        height: 32px;
-        max-width: 32px;
-        max-height: 32px;
+        width: 90%;
+        height: 90%;
+        max-width: 90%;
+        max-height: 90%;
         display: block;
         margin: auto;
         object-fit: contain;
@@ -690,8 +690,8 @@
     }
 
     .material-selector img {
-        width: 66px;
-        height: 66px;
+        width: 90%;
+        height: 90%;
     }
 
     .material-selector select {
@@ -718,8 +718,10 @@
     }
     
     .base-equipo-img {
-        max-width: 50px;
-        max-height: 50px;
+        width: 90%;
+        height: 90%;
+        max-width: 90%;
+        max-height: 90%;
         display: block;
         margin: auto;
     }
@@ -800,9 +802,8 @@
     }
 
     .material-selector img {
-        width: 66px;
-        height: 66px;
-        text-align: center;
+        width: 90%;
+        height: 90%;
     }
 
     /* Ajustes para selector base en móviles pequeños */
@@ -822,8 +823,10 @@
     }
     
     .base-equipo-img {
-        max-width: 40px;
-        max-height: 40px;
+        width: 90%;
+        height: 90%;
+        max-width: 90%;
+        max-height: 90%;
         display: block;
         margin: auto;
     }
@@ -911,8 +914,8 @@
 }
 
 .material-selector img, .base-selector img {
-    width: 66px;
-    height: 66px;
+    width: 90%;
+    height: 90%;
     text-align: center;
 }
 
