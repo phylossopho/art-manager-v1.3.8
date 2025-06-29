@@ -402,8 +402,14 @@ header h1 {
 
 .base-selector select {
     width: 100%;
-    margin-bottom: 5px;
-    display: none;
+    margin-top: 5px;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 10;
+    display: block !important;
 }
 
 .base-text {
@@ -431,9 +437,10 @@ header h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 5px;
-	max-height: 100%;
-	width: 100%;
+    max-height: 100%;
+    width: 100%;
 }
 
 .base-equipo-img {

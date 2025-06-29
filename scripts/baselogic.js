@@ -50,6 +50,15 @@ export function crearBaseSelector(estado, contenedor) {
             <option value="dorado">Dorado</option>
         `;
         selector.dataset.testid = 'base-color-selector';
+        // Estilos para hacerlo invisible pero funcional (como material-selector)
+        selector.style.opacity = '0';
+        selector.style.position = 'absolute';
+        selector.style.top = '0';
+        selector.style.left = '0';
+        selector.style.width = '100%';
+        selector.style.height = '100%';
+        selector.style.zIndex = '10';
+        selector.style.display = 'block';
 
         // Establecer selección actual si existe
         if (estado.colorBaseSeleccionado) {
@@ -94,21 +103,6 @@ export function crearBaseSelector(estado, contenedor) {
         baseText.className = 'base-text';
         baseText.textContent = ''; // Sin texto inicial
         baseSelector.appendChild(baseText);
-
-        // Ocultar selector por defecto
-        selector.style.display = 'none';
-
-        // Mostrar selector al hacer clic en el base
-        baseSelector.addEventListener('click', () => {
-            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Cerrar selector al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!baseSelector.contains(e.target)) {
-                selector.style.display = 'none';
-            }
-        });
 
         contenedor.appendChild(baseSelector);
 
