@@ -684,4 +684,10 @@ export function actualizarColorFondoApp(estado) {
     document.querySelectorAll('.materials-table').forEach(el => {
         el.style.backgroundColor = pastel;
     });
+    // También el fondo de #materials-tab
+    const materialsTab = document.getElementById('materials-tab');
+    if (materialsTab) {
+        materialsTab.style.backgroundColor = pastel;
+        materialsTab.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
+    }
 }

@@ -990,3 +990,7 @@ header h1 {
     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.28);
     transform: translateY(-2px) scale(1.08);
 }
+
+#materials-tab {
+    transition: background 0.8s ease-in-out, background-color 0.8s ease-in-out;
+}
