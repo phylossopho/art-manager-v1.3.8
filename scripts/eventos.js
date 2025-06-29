@@ -178,6 +178,14 @@ function configurarEventListeners(estado) {
             }
         });
 
+        // === ICONO CIRCULAR MOSTRAR MATERIALES ===
+        const showMaterialsIcon = document.getElementById('show-materials-icon');
+        if (showMaterialsIcon) {
+            showMaterialsIcon.addEventListener('click', () => {
+                abrirListaMateriales(estado);
+            });
+        }
+
         console.log('Event listeners configurados con éxito');
     } catch (error) {
         console.error('Error al configurar event listeners:', error);
