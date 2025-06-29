@@ -72,10 +72,10 @@
     
     /* Icono mostrar materiales en tablet */
     #show-materials {
-        top: 110px !important;
-        right: 25px !important;
-        width: 55px !important;
-        height: 55px !important;
+        top: 11vh !important;
+        right: 2.5vw !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
     }
 }
 
@@ -261,10 +261,10 @@
     
     /* Icono mostrar materiales en móvil */
     #show-materials {
-        top: 95px !important;
-        right: 20px !important;
-        width: 55px !important;
-        height: 55px !important;
+        top: 10vh !important;
+        right: 2vw !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
     }
     
     .material-selector, .base-selector {
@@ -438,10 +438,10 @@
     
     /* Icono mostrar materiales en móvil pequeño */
     #show-materials {
-        top: 85px !important;
-        right: 15px !important;
-        width: 50px !important;
-        height: 50px !important;
+        top: 9vh !important;
+        right: 1.5vw !important;
+        width: 3rem !important;
+        height: 3rem !important;
     }
     
     /* Menú FAB en móvil pequeño */
@@ -545,10 +545,10 @@
     
     /* Icono mostrar materiales en pantalla grande */
     #show-materials {
-        top: 130px !important;
-        right: 35px !important;
-        width: 60px !important;
-        height: 60px !important;
+        top: 13vh !important;
+        right: 3vw !important;
+        width: 4rem !important;
+        height: 4rem !important;
     }
 }
 

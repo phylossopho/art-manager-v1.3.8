@@ -946,21 +946,21 @@ header h1 {
 
 #show-materials {
     position: fixed !important;
-    top: 115px !important;
-    right: 32px !important;
+    top: 12vh !important;
+    right: 2.5vw !important;
     z-index: 1001 !important;
     background: #fff !important;
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    width: 55px !important;
-    height: 55px !important;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 22px !important;
+    font-size: 1.4rem !important;
     font-weight: normal !important;
     border: none !important;
     transition: all 0.3s ease !important;
