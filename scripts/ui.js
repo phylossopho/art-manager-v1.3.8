@@ -681,12 +681,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Cuando se actualiza el color del equipo, también cambia el fondo de las tablas y selectores
 export function actualizarColorFondoApp(estado) {
-    const colorFondo = window.getComputedStyle(document.body).backgroundColor;
+    const colorSelect = document.getElementById('color-select');
+    let color = 'blanco';
+    if (colorSelect) color = colorSelect.value;
+    const colorBase = mapaColores[color] || '#FFFFFF';
+    const pastel = pastelizarColor(colorBase, 0.7);
     // Solo la sección y las tablas
     document.querySelectorAll('.bottom-section').forEach(el => {
-        el.style.backgroundColor = colorFondo;
+        el.style.backgroundColor = pastel;
     });
     document.querySelectorAll('.materials-table').forEach(el => {
-        el.style.backgroundColor = colorFondo;
+        el.style.backgroundColor = pastel;
     });
 }
