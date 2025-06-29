@@ -205,9 +205,17 @@ export function actualizarEstadoBase(estado) {
         } else {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
-            // Para clase Normal, no mostrar texto
+            // Para clase Normal, mostrar texto según el nivel
             title.textContent = ''; // Eliminar texto del título
-            baseText.textContent = ''; // No mostrar texto superpuesto para Normal
+            if (estado.claseActual === "Normal") {
+                if (estado.nivelActual === "1") {
+                    baseText.textContent = "Equipo de nivel 1";
+                } else {
+                    baseText.textContent = `Equipo de nivel ${estado.nivelActual} o menor`;
+                }
+            } else {
+                baseText.textContent = ''; // No mostrar texto superpuesto para otras clases
+            }
             // Ocultar imagen si existe
             if (equipoImg) equipoImg.style.display = 'none';
             // Restaurar color de fondo según selección actual
