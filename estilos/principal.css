@@ -946,7 +946,7 @@ header h1 {
 
 #show-materials {
     position: fixed !important;
-    bottom: 100px !important;
+    bottom: 160px !important;
     right: 32px !important;
     z-index: 1001 !important;
     background: #fff !important;
