@@ -183,7 +183,7 @@ export function actualizarEstadoBase(estado) {
             deniedImage.style.display = 'block';
             selector.style.display = 'none';
             baseText.textContent = 'NO DISPONIBLE';
-            baseSelector.style.backgroundColor = '#f8d7da'; // Color de error
+            baseSelector.style.backgroundColor = estado.colorNoSeleccionado || '#808080'; // Usar el mismo gris onix
             estado.colorBaseSeleccionado = null; // Resetear selección
             // Resetear el selector
             if (selector.value) {
