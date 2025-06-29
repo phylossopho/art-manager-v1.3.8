@@ -414,7 +414,7 @@ header h1 {
     left: 50%; /* Centrado horizontal */
     transform: translate(-50%, -50%); /* Centrado preciso */
     background-color: rgba(117, 3, 3, 0.6) !important;
-    color: white !important;
+    color: rgb(243, 239, 23) !important;
     padding: 2px 4px !important; /* Padding reducido */
     border-radius: 2px !important;
     font-size: 9px !important;
@@ -425,7 +425,7 @@ header h1 {
     pointer-events: none !important;
     line-height: 1.2 !important; /* Altura de línea ajustada */
      /* Ancho máximo para evitar desbordamiento */
-    max-height: 18%;
+    max-height: 21%;
     box-sizing: border-box !important;
 }
 
@@ -944,12 +944,11 @@ header h1 {
     display: none;
 }
 
-#show-materials {
+/* === CLASE COMÚN PARA ICONOS FLOTANTES === */
+.floating-icon {
     position: fixed !important;
-    top: 12vh !important;
     right: 2.5vw !important;
     z-index: 1001 !important;
-    background: #fff !important;
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
     width: 3.5rem !important;
@@ -966,10 +965,23 @@ header h1 {
     transition: all 0.3s ease !important;
 }
 
-#show-materials:hover {
+.floating-icon:hover {
     transform: translateY(-2px) scale(1.08) !important;
     box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-    background: #f8f9fa !important;
+}
+
+/* FAB de backup - posición inferior */
+#fab-save {
+    bottom: 2vh !important;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    color: #fff !important;
+}
+
+/* Icono mostrar materiales - posición superior */
+#show-materials {
+    top: 12vh !important;
+    background: #fff !important;
+    color: #333 !important;
 }
 
 .use-button, .gallery-button {

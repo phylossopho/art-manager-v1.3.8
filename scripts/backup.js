@@ -42,7 +42,7 @@ window.inicializarAlmacenamientoMateriales = window.inicializarAlmacenamientoMat
 function crearFABBackup() {
     // Crear el FAB directamente en el body para que esté fijo
     const fabHTML = `
-        <button id="fab-save" title="Opciones de datos" style="position: fixed; top: 30px; right: 30px; z-index: 1000; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+        <button id="fab-save" class="floating-icon" title="Opciones de datos">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                 <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
             </svg>
