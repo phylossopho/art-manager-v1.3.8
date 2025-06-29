@@ -405,7 +405,7 @@ header h1 {
     top: 50%; /* Centrado vertical */
     left: 50%; /* Centrado horizontal */
     transform: translate(-50%, -50%); /* Centrado preciso */
-    background-color: rgba(161, 211, 23, 0.6) !important;
+    background-color: rgba(15, 8, 80, 0.6) !important;
     color: white !important;
     padding: 2px 4px !important; /* Padding reducido */
     border-radius: 2px !important;
