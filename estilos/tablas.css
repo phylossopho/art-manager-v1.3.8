@@ -265,6 +265,33 @@ td {
     margin-top: 5px;
 }
 
+/* === ESTILOS PARA BASE SELECTOR === */
+.base-selector {
+    width: 120px;
+    height: 120px;
+    border: 1px solid #808080;
+    border-radius: 15px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.base-selector img {
+    width: 100px;
+    height: 100px;
+    background-color: transparent !important;
+    object-fit: contain;
+}
+
+.base-selector select {
+    width: 100%;
+    margin-top: 5px;
+}
+
 /* === NUEVOS ESTILOS PARA TABLA ARTE === */
 #arte-table table {
     width: 100%;

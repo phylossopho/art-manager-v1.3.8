@@ -959,8 +959,8 @@ header h1 {
 .floating-icon {
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    width: 3.5rem !important;
-    height: 3.5rem !important;
+    width: 33px !important;
+    height: 33px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
