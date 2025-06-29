@@ -340,12 +340,8 @@ header h1 {
     background-color: #218838;
 }
 
-.bottom-section {
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
+.bottom-section, .materials-table {
+    transition: background 0.8s ease-in-out, background-color 0.8s ease-in-out;
 }
 
 .item-selector {
