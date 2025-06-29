@@ -296,22 +296,22 @@
             </div>
         </div>
         
-        <!-- Layout igual que materiales pero ocultando galería y USAR -->
-        <div class="bottom-section" id="bottom-section-leyenda">
-            <!-- Espacio para mantener el layout -->
-        </div>
-
-        <div class="bottom-buttons centered-icons">
-            <button id="gallery-button-leyenda" class="gallery-button icon-button" title="Galería" style="display: none;">
-                <span style="font-size: 22px;">📷</span>
-            </button>
-            
-            <button id="use-materials-leyenda" class="use-button" style="display: none;">USAR</button>
-        </div>
-        
         <!-- Botón Volver a Materiales -->
         <div class="leyenda-back-container">
             <button id="leyenda-back-button" class="back-button">← Volver a Materiales</button>
+        </div>
+        
+        <!-- Iconos de redes sociales centrados -->
+        <div class="social-icons-leyenda">
+            <a href="https://chat.whatsapp.com/DN5X1L7BqiJAMk4llRkLrN" target="_blank" class="social-icon" title="Grupo de WhatsApp - ⚔ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔">
+                <img src="images/whatsapp.png" alt="WhatsApp" onerror="this.style.display='none'">
+            </a>
+            <a href="https://t.me/+MJ8GLGcdPX9iMTcx" target="_blank" class="social-icon" title="Grupo de Telegram - ⚔️ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔️">
+                <img src="images/telegram.png" alt="Telegram" onerror="this.style.display='none'">
+            </a>
+            <a href="https://www.youtube.com/@DecodificandoDH" target="_blank" class="social-icon" title="Canal de YouTube - Decodificando DH">
+                <img src="images/decodificando.png" alt="YouTube" onerror="this.style.display='none'">
+            </a>
         </div>
     </div>
 
@@ -448,22 +448,22 @@
             </div>
         </div>
         
-        <!-- Layout igual que materiales pero ocultando galería y USAR -->
-        <div class="bottom-section" id="bottom-section-ayuda">
-            <!-- Espacio para mantener el layout -->
-        </div>
-
-        <div class="bottom-buttons centered-icons">
-            <button id="gallery-button-ayuda" class="gallery-button icon-button" title="Galería" style="display: none;">
-                <span style="font-size: 22px;">📷</span>
-            </button>
-            
-            <button id="use-materials-ayuda" class="use-button" style="display: none;">USAR</button>
-        </div>
-        
         <!-- Botón Volver a Materiales -->
         <div class="ayuda-back-container">
             <button id="ayuda-back-button" class="back-button">← Volver a Materiales</button>
+        </div>
+        
+        <!-- Iconos de redes sociales centrados -->
+        <div class="social-icons-ayuda">
+            <a href="https://chat.whatsapp.com/DN5X1L7BqiJAMk4llRkLrN" target="_blank" class="social-icon" title="Grupo de WhatsApp - ⚔ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔">
+                <img src="images/whatsapp.png" alt="WhatsApp" onerror="this.style.display='none'">
+            </a>
+            <a href="https://t.me/+MJ8GLGcdPX9iMTcx" target="_blank" class="social-icon" title="Grupo de Telegram - ⚔️ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔️">
+                <img src="images/telegram.png" alt="Telegram" onerror="this.style.display='none'">
+            </a>
+            <a href="https://www.youtube.com/@DecodificandoDH" target="_blank" class="social-icon" title="Canal de YouTube - Decodificando DH">
+                <img src="images/decodificando.png" alt="YouTube" onerror="this.style.display='none'">
+            </a>
         </div>
     </div>
 
@@ -569,7 +569,7 @@
 <script>
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
-        const socialIconsList = document.querySelectorAll('.social-icons');
+        const socialIconsList = document.querySelectorAll('.social-icons, .social-icons-leyenda, .social-icons-ayuda');
         
         socialIconsList.forEach(socialIcons => {
             if (!socialIcons) return;
@@ -591,7 +591,7 @@
     
     // Activar la animación inmediatamente al cargar la página
     window.addEventListener('load', () => {
-        const socialIconsList = document.querySelectorAll('.social-icons');
+        const socialIconsList = document.querySelectorAll('.social-icons, .social-icons-leyenda, .social-icons-ayuda');
         
         socialIconsList.forEach(socialIcons => {
             if (socialIcons) {
