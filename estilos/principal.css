@@ -947,7 +947,7 @@ header h1 {
 /* === CLASE COMÚN PARA ICONOS FLOTANTES === */
 .floating-icon {
     position: fixed !important;
-    right: 2.5vw !important;
+    right: 7% !important;
     z-index: 1001 !important;
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
@@ -979,7 +979,7 @@ header h1 {
 
 /* Icono mostrar materiales - posición superior */
 #show-materials {
-    top: 12vh !important;
+    top: 16vh !important;
     background: #fff !important;
     color: #333 !important;
 }

@@ -72,8 +72,8 @@
     
     /* Icono mostrar materiales en tablet */
     #show-materials {
-        top: 11vh !important;
-        right: 2.5vw !important;
+        top: 15vh !important;
+        right: 7% !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
     }
@@ -81,7 +81,7 @@
     /* FAB de backup en tablet */
     #fab-save {
         top: 9vh !important;
-        right: 2.5vw !important;
+        right: 7% !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
     }
@@ -257,7 +257,7 @@
     /* FAB de backup en móvil */
     #fab-save {
         top: 7vh !important;
-        right: 2vw !important;
+        right: 7% !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
     }
@@ -269,8 +269,8 @@
     
     /* Icono mostrar materiales en móvil */
     #show-materials {
-        top: 10vh !important;
-        right: 2vw !important;
+        top: 14vh !important;
+        right: 7% !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
     }
@@ -434,7 +434,7 @@
     /* FAB de backup en móvil pequeño */
     #fab-save {
         top: 6vh !important;
-        right: 1.5vw !important;
+        right: 7% !important;
         width: 3rem !important;
         height: 3rem !important;
     }
@@ -446,10 +446,10 @@
     
     /* Icono mostrar materiales en móvil pequeño */
     #show-materials {
-        top: 9vh !important;
-        right: 1.5vw !important;
-        width: 3rem !important;
-        height: 3rem !important;
+        top: 14vh !important;
+        right: 7% !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
     }
     
     /* Menú FAB en móvil pequeño */
@@ -553,8 +553,8 @@
     
     /* Icono mostrar materiales en pantalla grande */
     #show-materials {
-        top: 13vh !important;
-        right: 3vw !important;
+        top: 18vh !important;
+        right: 7% !important;
         width: 4rem !important;
         height: 4rem !important;
     }
@@ -562,7 +562,7 @@
     /* FAB de backup en pantalla grande */
     #fab-save {
         top: 11vh !important;
-        right: 3vw !important;
+        right: 7% !important;
         width: 4rem !important;
         height: 4rem !important;
     }
