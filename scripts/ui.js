@@ -664,7 +664,16 @@ document.addEventListener('DOMContentLoaded', () => {
             titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
         }
         
-        aplicarFondoPorColorEquipo(); // Inicial
+        // Timer de 6 segundos para cambiar de gris ónix a blanco si no se ha seleccionado color
+        setTimeout(() => {
+            // Solo cambiar si el color actual es blanco (por defecto)
+            if (colorSelect.value === 'blanco') {
+                aplicarFondoPorColorEquipo();
+            }
+        }, 6000); // 6 segundos
+        
+        // No aplicar fondo inmediatamente, mantener gris ónix inicial
+        // aplicarFondoPorColorEquipo(); // Comentado para mantener gris ónix inicial
     }
 });
 
