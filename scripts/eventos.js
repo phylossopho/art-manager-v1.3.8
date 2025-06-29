@@ -85,6 +85,14 @@ function configurarEventListeners(estado) {
             });
         }
 
+        // === BOTÓN VOLVER A MATERIALES (LEYENDA) ===
+        const leyendaBackButton = document.getElementById('leyenda-back-button');
+        if (leyendaBackButton) {
+            leyendaBackButton.addEventListener('click', () => {
+                ui.cambiarPestana('materials');
+            });
+        }
+
         // === BOTÓN VOLVER (MODAL MATERIALES) ===
         const materialsBackButton = document.getElementById('materials-back-button');
         if (materialsBackButton) {

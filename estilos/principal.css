@@ -1109,3 +1109,36 @@ header h1 {
         padding: 8px 5px;
     }
 }
+
+/* Botón volver para pestaña de leyenda */
+.leyenda-back-container {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+}
+
+.leyenda-back-container .back-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.leyenda-back-container .back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Centrar iconos de redes sociales en pestañas especiales */
+#conversionlegend-tab .social-icons,
+#ayuda-tab .social-icons {
+    justify-content: center !important;
+    margin: 0 auto !important;
+}
