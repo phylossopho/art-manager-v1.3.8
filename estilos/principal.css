@@ -973,6 +973,7 @@ header h1 {
 /* FAB de backup - posición superior */
 #fab-save {
     top: 8vh !important;
+    right: 7% !important;
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
     color: #fff !important;
 }
@@ -980,6 +981,7 @@ header h1 {
 /* Icono mostrar materiales - posición superior */
 #show-materials {
     top: 16vh !important;
+    right: 7% !important;
     background: #fff !important;
     color: #333 !important;
 }

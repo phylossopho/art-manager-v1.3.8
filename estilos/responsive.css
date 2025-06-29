@@ -948,3 +948,50 @@
         max-height: 100%;
     }
 }
+
+/* === ICONOS FLOTANTES RESPONSIVE === */
+.floating-icon {
+    position: fixed !important;
+    right: 7% !important;
+    z-index: 1001 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 1.4rem !important;
+    font-weight: normal !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.floating-icon:hover {
+    transform: translateY(-2px) scale(1.08) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+}
+
+/* FAB de backup - posición superior */
+#fab-save {
+    top: 8vh !important;
+    right: 7% !important;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    color: #fff !important;
+}
+
+#fab-save svg {
+    width: 1.4rem !important;
+    height: 1.4rem !important;
+}
+
+/* Icono mostrar materiales - posición superior */
+#show-materials {
+    top: 16vh !important;
+    right: 7% !important;
+    background: #fff !important;
+    color: #333 !important;
+}
