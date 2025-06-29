@@ -77,6 +77,14 @@
         width: 3.5rem !important;
         height: 3.5rem !important;
     }
+    
+    /* FAB de backup en tablet */
+    #fab-save {
+        top: 9vh !important;
+        right: 2.5vw !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+    }
 }
 
 /* Móviles grandes */
@@ -248,7 +256,7 @@
     
     /* FAB de backup en móvil */
     #fab-save {
-        bottom: 2.5vh !important;
+        top: 7vh !important;
         right: 2vw !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
@@ -425,7 +433,7 @@
     
     /* FAB de backup en móvil pequeño */
     #fab-save {
-        bottom: 2vh !important;
+        top: 6vh !important;
         right: 1.5vw !important;
         width: 3rem !important;
         height: 3rem !important;
@@ -546,6 +554,14 @@
     /* Icono mostrar materiales en pantalla grande */
     #show-materials {
         top: 13vh !important;
+        right: 3vw !important;
+        width: 4rem !important;
+        height: 4rem !important;
+    }
+    
+    /* FAB de backup en pantalla grande */
+    #fab-save {
+        top: 11vh !important;
         right: 3vw !important;
         width: 4rem !important;
         height: 4rem !important;

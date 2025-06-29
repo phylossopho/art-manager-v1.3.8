@@ -970,9 +970,9 @@ header h1 {
     box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
 }
 
-/* FAB de backup - posición inferior */
+/* FAB de backup - posición superior */
 #fab-save {
-    bottom: 2vh !important;
+    top: 8vh !important;
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
     color: #fff !important;
 }
