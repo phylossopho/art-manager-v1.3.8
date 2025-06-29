@@ -1037,3 +1037,70 @@ header h1 {
     background-color: transparent !important;
     object-fit: contain;
 }
+
+/* === ESTILOS PARA BANDERAS DE IDIOMA === */
+.language-flags-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.language-flags-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    border: none;
+}
+
+.language-flags-table td {
+    border: none;
+    padding: 10px;
+    text-align: center;
+    width: 25%;
+}
+
+.language-flags-table tr {
+    border: none;
+}
+
+.language-flags-table th {
+    border: none;
+}
+
+.flag-icon {
+    width: 40px;
+    height: 30px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    object-fit: cover;
+}
+
+.flag-icon:hover {
+    border-color: #1e3a8a;
+    transform: scale(1.1);
+}
+
+.flag-icon.active {
+    border-color: #1e3a8a;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+}
+
+/* Responsive para banderas */
+@media (max-width: 768px) {
+    .flag-icon {
+        width: 35px;
+        height: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flag-icon {
+        width: 30px;
+        height: 22px;
+    }
+    
+    .language-flags-table td {
+        padding: 8px 5px;
+    }
+}

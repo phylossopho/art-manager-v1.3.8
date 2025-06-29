@@ -6,6 +6,7 @@ import * as modales from './modales.js';
 import { usarMateriales } from './materiales.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
 import { abrirListaMateriales } from './materiales.js';
+import { initLanguageSystem } from './translations.js';
 
 function configurarEventListeners(estado) {
     try {
@@ -193,6 +194,9 @@ function configurarEventListeners(estado) {
                 actualizarEstadoBase(estado, e.target.value);
             }
         });
+
+        // === SISTEMA DE IDIOMAS ===
+        initLanguageSystem();
 
         console.log('Event listeners configurados con éxito');
     } catch (error) {

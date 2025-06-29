@@ -311,9 +311,29 @@
     <!-- NUEVA PESTAÑA AYUDA -->
     <div class="tab-content" id="ayuda-tab">
         <div class="ayuda-container">
+            <!-- Tabla de banderas para selección de idioma -->
+            <div class="language-flags-container">
+                <table class="language-flags-table">
+                    <tr>
+                        <td class="flag-cell">
+                            <img src="images/mexico-flag.png" alt="Español" class="flag-icon" data-lang="es" title="Español">
+                        </td>
+                        <td class="flag-cell">
+                            <img src="images/usa-flag.png" alt="English" class="flag-icon" data-lang="en" title="English">
+                        </td>
+                        <td class="flag-cell">
+                            <img src="images/russia-flag.png" alt="Русский" class="flag-icon" data-lang="ru" title="Русский">
+                        </td>
+                        <td class="flag-cell">
+                            <img src="images/germany-flag.png" alt="Deutsch" class="flag-icon" data-lang="de" title="Deutsch">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
             <h2>📖 Guía de Uso - Gestor de Materiales</h2>
             
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="whatIsApp">
                 <h3>🎯 ¿Qué es esta aplicación?</h3>
                 <p>Esta aplicación te ayuda a gestionar materiales y equipos para el juego Deck Heroes. Puedes:</p>
                 <ul>
@@ -324,7 +344,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="howToUse">
                 <h3>⚙️ Cómo usar los selectores</h3>
                 <ol>
                     <li><strong>Equipo:</strong> Selecciona el tipo de equipo (Espada, Pecho, Botas, etc.)</li>
@@ -335,7 +355,7 @@
                 <p><em>💡 Nota: Algunas clases especiales tienen restricciones en niveles y colores permitidos.</em></p>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="tabs">
                 <h3>📊 Pestañas disponibles</h3>
                 <ul>
                     <li><strong>Materiales:</strong> Muestra los materiales necesarios para el equipo seleccionado</li>
@@ -345,7 +365,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="gallery">
                 <h3>🖼️ Galería de imágenes</h3>
                 <p>Puedes guardar imágenes de referencia para ayudarte a recordar:</p>
                 <ul>
@@ -356,7 +376,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="saveLoad">
                 <h3>💾 Guardar y cargar datos</h3>
                 <p>Para mantener tus datos seguros:</p>
                 <ul>
@@ -368,7 +388,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="floatingButtons">
                 <h3>📋 Botones flotantes</h3>
                 <p>En la esquina superior derecha encontrarás dos botones flotantes:</p>
                 <ul>
@@ -378,7 +398,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="arte">
                 <h3>🎨 Pestaña ARTE</h3>
                 <p>En la pestaña ARTE puedes:</p>
                 <ul>
@@ -388,7 +408,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="responsive">
                 <h3>📱 Diseño responsive</h3>
                 <p>La aplicación se adapta automáticamente a diferentes dispositivos:</p>
                 <ul>
@@ -399,7 +419,7 @@
                 </ul>
             </div>
 
-            <div class="ayuda-seccion">
+            <div class="ayuda-seccion" data-section="links">
                 <h3>🔗 Enlaces útiles</h3>
                 <p>Únete a nuestra comunidad:</p>
                 <ul>
