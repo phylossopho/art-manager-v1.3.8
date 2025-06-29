@@ -34,7 +34,8 @@ header h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    gap: 0;
 }
 
 .left-panel {
@@ -78,7 +79,7 @@ header h1 {
 .right-panel {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
     align-items: flex-end;
 }
 
@@ -305,18 +306,19 @@ header h1 {
 .social-icons.reveal .social-icon {
     opacity: 1;
     transform: scale(1);
+    transition-delay: 0.5s;
 }
 
 .social-icons.reveal .social-icon:nth-child(1) {
-    transition-delay: 0.1s;
+    transition-delay: 0.5s;
 }
 
 .social-icons.reveal .social-icon:nth-child(2) {
-    transition-delay: 0.2s;
+    transition-delay: 1.2s;
 }
 
 .social-icons.reveal .social-icon:nth-child(3) {
-    transition-delay: 0.3s;
+    transition-delay: 2s;
 }
 
 .social-icon:hover {
@@ -943,6 +945,7 @@ header h1 {
 }
 
 #show-materials {
+    margin: 0;
     padding: 6px 14px;
     font-size: 15px;
     font-weight: 600;
@@ -952,7 +955,6 @@ header h1 {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.18);
     cursor: pointer;
-    margin: 2px 0 2px 0;
     transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
 }
 #show-materials:hover {
