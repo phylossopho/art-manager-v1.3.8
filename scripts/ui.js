@@ -494,7 +494,7 @@ export function actualizarUI(estado) {
         if (galleryButton) galleryButton.style.display = (esLeyenda || esAyuda) ? 'none' : 'flex';
 
         // Ocultar contenedor de iconos flotantes en ciertas pestañas y modales
-        const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+        const floatingIconsContainer = document.getElementById('floating-icons-container');
         if (floatingIconsContainer) {
             const shouldHide = esLeyenda || esAyuda || 
                               document.getElementById('materials-modal')?.style.display === 'block' ||
@@ -556,7 +556,7 @@ export function cambiarPestana(nombrePestana) {
         }
         
         // Ocultar/mostrar iconos flotantes según la pestaña
-        const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+        const floatingIconsContainer = document.getElementById('floating-icons-container');
         if (floatingIconsContainer) {
             const shouldHide = nombrePestana === 'conversionlegend' || nombrePestana === 'ayuda';
             floatingIconsContainer.style.display = shouldHide ? 'none' : 'block';

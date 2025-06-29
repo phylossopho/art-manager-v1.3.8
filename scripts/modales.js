@@ -56,7 +56,7 @@ export function cerrarModalMateriales() {
 
 // Función para ocultar iconos flotantes
 export function ocultarIconosFlotantes() {
-    const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+    const floatingIconsContainer = document.getElementById('floating-icons-container');
     if (floatingIconsContainer) {
         floatingIconsContainer.style.display = 'none';
     }
@@ -64,7 +64,7 @@ export function ocultarIconosFlotantes() {
 
 // Función para mostrar iconos flotantes
 export function mostrarIconosFlotantes() {
-    const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+    const floatingIconsContainer = document.getElementById('floating-icons-container');
     if (floatingIconsContainer) {
         // Solo mostrar si no estamos en pestañas especiales
         const esLeyenda = document.querySelector('[data-tab="conversionlegend"]')?.classList.contains('active');
