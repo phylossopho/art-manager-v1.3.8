@@ -4,12 +4,13 @@
 @media (max-width: 1024px) {
     .container {
         padding: 15px;
+        max-width: 95%;
     }
     
     .top-section {
         flex-direction: column;
-        gap: 25px;
-        padding: 25px;
+        gap: 20px;
+        padding: 20px;
     }
     
     .selectors-grid {
@@ -18,22 +19,24 @@
     }
     
     .equipment-image img {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 80px;
+        max-height: 80px;
     }
     
     .tab-buttons {
         justify-content: center;
         flex-wrap: wrap;
+        gap: 8px;
     }
     
     .tab-button {
-        padding: 10px 16px;
+        padding: 8px 12px;
         font-size: 13px;
     }
     
     .bottom-buttons {
         padding: 15px 25px;
+        gap: 15px;
     }
     
     .social-icons {
@@ -41,30 +44,38 @@
     }
     
     .social-icon {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
     }
     
     .social-icon img {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
     }
     
     .material-selector, .base-selector {
-        width: 100px;
-        height: 100px;
-        padding: 5px;
+        width: 70px;
+        height: 70px;
+        padding: 3px;
         text-align: center;
-        border-radius: 10px;
+        border-radius: 12px;
     }
     .material-selector img, .base-equipo-img {
-        width: 50px;
-        height: 50px;
-        max-width: 50px;
-        max-height: 50px;
+        width: 45px;
+        height: 45px;
+        max-width: 45px;
+        max-height: 45px;
         display: block;
         margin: auto;
         object-fit: contain;
+    }
+    
+    /* Icono mostrar materiales en tablet */
+    #show-materials {
+        top: 100px !important;
+        right: 25px !important;
+        width: 55px !important;
+        height: 55px !important;
     }
 }
 
@@ -248,6 +259,14 @@
         height: 24px !important;
     }
     
+    /* Icono mostrar materiales en móvil */
+    #show-materials {
+        top: 85px !important;
+        right: 20px !important;
+        width: 55px !important;
+        height: 55px !important;
+    }
+    
     .material-selector, .base-selector {
         width: 66px;
         height: 66px;
@@ -417,6 +436,14 @@
         height: 22px !important;
     }
     
+    /* Icono mostrar materiales en móvil pequeño */
+    #show-materials {
+        top: 75px !important;
+        right: 15px !important;
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
     /* Menú FAB en móvil pequeño */
     #fab-menu {
         min-width: 280px !important;
@@ -495,26 +522,33 @@
     
     .gallery-container {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 30px;
     }
     
     .equipment-image img {
-        max-width: 140px;
-        max-height: 140px;
+        max-width: 120px;
+        max-height: 120px;
     }
     
     header h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
     .tab-button {
-        padding: 15px 25px;
+        padding: 12px 20px;
         font-size: 16px;
     }
     
     .use-button {
-        padding: 18px 35px;
+        padding: 15px 30px;
         font-size: 18px;
+    }
+    
+    /* Icono mostrar materiales en pantalla grande */
+    #show-materials {
+        top: 120px !important;
+        right: 35px !important;
+        width: 60px !important;
+        height: 60px !important;
     }
 }
 
