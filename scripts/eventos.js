@@ -16,43 +16,57 @@ function configurarEventListeners(estado) {
         const colorSelect = document.getElementById('color-select');
 
         // Event listeners para selectores
-        equipmentSelect.addEventListener('change', () => {
-            estado.equipoActual = equipmentSelect.value;
-            ui.actualizarUI(estado);
-        });
+        if (equipmentSelect) {
+            equipmentSelect.addEventListener('change', () => {
+                estado.equipoActual = equipmentSelect.value;
+                ui.actualizarUI(estado);
+            });
+        }
 
-        classSelect.addEventListener('change', () => {
-            estado.claseActual = classSelect.value;
-            ui.actualizarUI(estado);
-        });
+        if (classSelect) {
+            classSelect.addEventListener('change', () => {
+                estado.claseActual = classSelect.value;
+                ui.actualizarUI(estado);
+            });
+        }
 
-        levelSelect.addEventListener('change', () => {
-            estado.nivelActual = levelSelect.value;
-            ui.actualizarUI(estado);
-        });
+        if (levelSelect) {
+            levelSelect.addEventListener('change', () => {
+                estado.nivelActual = levelSelect.value;
+                ui.actualizarUI(estado);
+            });
+        }
 
-        colorSelect.addEventListener('change', () => {
-            estado.colorActual = colorSelect.value;
-            ui.actualizarUI(estado);
-        });
+        if (colorSelect) {
+            colorSelect.addEventListener('change', () => {
+                estado.colorActual = colorSelect.value;
+                ui.actualizarUI(estado);
+            });
+        }
 
         // === BOTÓN MOSTRAR MATERIALES ===
         const showMaterialsButton = document.getElementById('show-materials');
-        showMaterialsButton.addEventListener('click', () => {
-            abrirListaMateriales(estado);
-        });
+        if (showMaterialsButton) {
+            showMaterialsButton.addEventListener('click', () => {
+                abrirListaMateriales(estado);
+            });
+        }
 
         // === BOTÓN GALERÍA ===
         const galleryButton = document.getElementById('gallery-button');
-        galleryButton.addEventListener('click', () => {
-            galeria.abrirGaleria(estado);
-        });
+        if (galleryButton) {
+            galleryButton.addEventListener('click', () => {
+                galeria.abrirGaleria(estado);
+            });
+        }
 
         // === BOTÓN USAR MATERIALES ===
         const useMaterialsButton = document.getElementById('use-materials');
-        useMaterialsButton.addEventListener('click', () => {
-            usarMateriales(estado);
-        });
+        if (useMaterialsButton) {
+            useMaterialsButton.addEventListener('click', () => {
+                usarMateriales(estado);
+            });
+        }
 
         // === BOTÓN VOLVER A MATERIALES (ARTE) ===
         const arteBackButton = document.getElementById('arte-back-button');
@@ -99,16 +113,18 @@ function configurarEventListeners(estado) {
         const addImageButton = document.getElementById('add-image-button');
         const galleryFileInput = document.getElementById('gallery-file-input');
 
-        addImageButton.addEventListener('click', () => {
-            galleryFileInput.click();
-        });
+        if (addImageButton && galleryFileInput) {
+            addImageButton.addEventListener('click', () => {
+                galleryFileInput.click();
+            });
 
-        galleryFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                galeria.agregarImagenAGaleria(file, estado);
-            }
-        });
+            galleryFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    galeria.agregarImagenAGaleria(file, estado);
+                }
+            });
+        }
 
         // === CARRUSEL ===
         const carouselPrev = document.getElementById('carousel-prev');
