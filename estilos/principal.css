@@ -955,6 +955,11 @@ header h1 {
     gap: 1rem !important;
 }
 
+/* Clase para ocultar el contenedor de iconos flotantes */
+#floating-icons-container.hidden {
+    display: none !important;
+}
+
 /* === CLASE COMÚN PARA ICONOS FLOTANTES === */
 .floating-icon {
     border-radius: 50% !important;

@@ -493,13 +493,17 @@ export function actualizarUI(estado) {
         const galleryButton = document.getElementById('gallery-button');
         if (galleryButton) galleryButton.style.display = (esLeyenda || esAyuda) ? 'none' : 'flex';
 
-        // Ocultar contenedor de iconos flotantes en ciertas pestañas y modales
+        // Ocultar/mostrar iconos flotantes según la pestaña
         const floatingIconsContainer = document.getElementById('floating-icons-container');
         if (floatingIconsContainer) {
             const shouldHide = esLeyenda || esAyuda || 
                               document.getElementById('materials-modal')?.style.display === 'block' ||
                               document.getElementById('gallery-modal')?.style.display === 'block';
-            floatingIconsContainer.style.display = shouldHide ? 'none' : 'block';
+            if (shouldHide) {
+                floatingIconsContainer.classList.add('hidden');
+            } else {
+                floatingIconsContainer.classList.remove('hidden');
+            }
         }
 
         if (idPestaña === 'arte') {
@@ -559,7 +563,11 @@ export function cambiarPestana(nombrePestana) {
         const floatingIconsContainer = document.getElementById('floating-icons-container');
         if (floatingIconsContainer) {
             const shouldHide = nombrePestana === 'conversionlegend' || nombrePestana === 'ayuda';
-            floatingIconsContainer.style.display = shouldHide ? 'none' : 'block';
+            if (shouldHide) {
+                floatingIconsContainer.classList.add('hidden');
+            } else {
+                floatingIconsContainer.classList.remove('hidden');
+            }
         }
     } catch (error) {
         console.error('Error al cambiar pestaña:', error);

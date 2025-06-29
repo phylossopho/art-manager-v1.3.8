@@ -58,7 +58,7 @@ export function cerrarModalMateriales() {
 export function ocultarIconosFlotantes() {
     const floatingIconsContainer = document.getElementById('floating-icons-container');
     if (floatingIconsContainer) {
-        floatingIconsContainer.style.display = 'none';
+        floatingIconsContainer.classList.add('hidden');
     }
 }
 
@@ -71,7 +71,7 @@ export function mostrarIconosFlotantes() {
         const esAyuda = document.querySelector('[data-tab="ayuda"]')?.classList.contains('active');
         
         if (!esLeyenda && !esAyuda) {
-            floatingIconsContainer.style.display = 'block';
+            floatingIconsContainer.classList.remove('hidden');
         }
     }
 }
