@@ -946,14 +946,14 @@ header h1 {
 
 #show-materials {
     position: fixed !important;
-    bottom: 160px !important;
+    bottom: 460px !important;
     right: 32px !important;
     z-index: 1001 !important;
     background: #fff !important;
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    width: 48px !important;
-    height: 48px !important;
+    width: 55px !important;
+    height: 55px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
