@@ -695,8 +695,8 @@
 
     /* Ajustes para selector base en móviles pequeños */
     .base-selector {
-        width: 90px;
-        min-height: 130px;
+        width: 66px;
+        min-height: 66px;
     }
     
     .base-equipo-img {
