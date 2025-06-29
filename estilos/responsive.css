@@ -239,9 +239,9 @@
     }
     
     .material-selector, .base-selector {
-        width: 60px;
-        height: 60px;
-        padding: 3px;
+        width: 66px;
+        height: 66px;
+        padding: 2px;
         text-align: center;
         border-radius: 10px;
     }
@@ -613,27 +613,12 @@
         gap: 5px;
     }
 
-    .material-selector {
-        width: 66px;
-        text-align: center;
-    }
-
-    .material-selector img {
-        width: 90%;
-        height: 90%;
-    }
-
-    .material-selector select {
-        font-size: 11px;
-        padding: 3px;
-        width: 100%;
-    }
-
     /* Ajustes para selector base en móviles pequeños */
     .base-selector {
         width: 66px;
         height: 66px;
         padding: 2px;
+        border-radius: 10px;
     }
     
     .base-dynamic-content {
