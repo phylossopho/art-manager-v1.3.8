@@ -565,8 +565,8 @@ function pastelizarColor(hex, factor = 0.7) {
         'white': '#FFFFFF',
         'blanco': '#FFFFFF',
         'verde': '#90EE90',
-        'azul': '#ADD8E6',
-        'morado': '#DDA0DD',
+        'azul': '#2196F3',
+        'morado': '#9C27B0',
         'dorado': '#FFD700'
     };
     if (hex in coloresNombres) hex = coloresNombres[hex];
@@ -582,46 +582,39 @@ function pastelizarColor(hex, factor = 0.7) {
     return `rgb(${r},${g},${b})`;
 }
 
-let fondoInicialAplicado = false;
+function colorFondoPorSeleccion(color) {
+    // Blanco: color arena con gris
+    if (color === 'blanco' || color === 'white') {
+        return '#e5e0d2'; // Arena con gris
+    }
+    // Dorado: pastel clásico
+    if (color === 'dorado') {
+        return pastelizarColor('#FFD700', 0.7);
+    }
+    // Azul: más fuerte
+    if (color === 'azul') {
+        return pastelizarColor('#2196F3', 0.3);
+    }
+    // Morado: más fuerte
+    if (color === 'morado') {
+        return pastelizarColor('#9C27B0', 0.3);
+    }
+    // Verde: un poco más fuerte
+    if (color === 'verde') {
+        return pastelizarColor('#90EE90', 0.4);
+    }
+    // Por defecto, pastel clásico
+    return pastelizarColor('#FFFFFF', 0.7);
+}
 
+// Modifica aplicarFondoPorColorEquipo y actualizarColorFondoApp para usar colorFondoPorSeleccion
 function aplicarFondoPorColorEquipo() {
     const colorSelect = document.getElementById('color-select');
     if (!colorSelect) return;
-    
-    // Agregar transición suave al body
     document.body.style.transition = 'background 0.8s ease-in-out';
-    
-    // Si es la primera vez, mantener gris ónix por 9 segundos
-    if (!fondoInicialAplicado) {
-        document.body.style.background = '#2F2F2F'; // Gris ónix
-        // Asegurar contraste del título con fondo oscuro
-        const titulo = document.querySelector('header h1');
-        if (titulo) {
-            titulo.style.color = '#ffffff';
-            titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
-        }
-        fondoInicialAplicado = true;
-        
-        // Después de 9 segundos, aplicar el color del selector
-        setTimeout(() => {
-            const color = colorSelect.value;
-            const colorBase = mapaColores[color] || '#FFFFFF';
-            const pastel = pastelizarColor(colorBase, 0.7);
-            document.body.style.background = pastel;
-            
-            // Ajustar contraste del título según el nuevo fondo
-            ajustarContrasteTitulo(pastel);
-        }, 9000);
-        return;
-    }
-    
-    // Para cambios posteriores, aplicar inmediatamente con transición
     const color = colorSelect.value;
-    const colorBase = mapaColores[color] || '#FFFFFF';
-    const pastel = pastelizarColor(colorBase, 0.7);
+    const pastel = colorFondoPorSeleccion(color);
     document.body.style.background = pastel;
-    
-    // Ajustar contraste del título según el nuevo fondo
     ajustarContrasteTitulo(pastel);
 }
 
@@ -684,9 +677,7 @@ export function actualizarColorFondoApp(estado) {
     const colorSelect = document.getElementById('color-select');
     let color = 'blanco';
     if (colorSelect) color = colorSelect.value;
-    const colorBase = mapaColores[color] || '#FFFFFF';
-    const pastel = pastelizarColor(colorBase, 0.7);
-    // Solo la sección y las tablas
+    const pastel = colorFondoPorSeleccion(color);
     document.querySelectorAll('.bottom-section').forEach(el => {
         el.style.backgroundColor = pastel;
     });
