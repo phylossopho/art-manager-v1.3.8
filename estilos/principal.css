@@ -33,7 +33,7 @@ header h1 {
 .top-section {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -78,13 +78,16 @@ header h1 {
 .right-panel {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 2px;
+    align-items: flex-end;
 }
 
 .right-panel button {
-    padding: 5px;
+    width: auto;
+    min-width: 0;
+    padding: 6px 14px;
+    margin: 0;
     cursor: pointer;
-    width: 150px;
 }
 
 /* Pestañas */

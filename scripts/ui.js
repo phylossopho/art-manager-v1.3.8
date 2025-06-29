@@ -564,7 +564,7 @@ function pastelizarColor(hex, factor = 0.7) {
     const coloresNombres = {
         'white': '#FFFFFF',
         'blanco': '#FFFFFF',
-        'verde': '#DBFBDB',
+        'verde': '#A4FDEB',
         'azul': '#B2DAFA',
         'morado': '#E5A3F0',
         'dorado': '#FFD700'
@@ -601,7 +601,7 @@ function colorFondoPorSeleccion(color) {
     }
     // Verde: un poco más fuerte
     if (color === 'verde') {
-        return pastelizarColor('#DBFBDB', 0.4);
+        return pastelizarColor('#A4FDEB', 0.4);
     }
     // Por defecto, pastel clásico
     return pastelizarColor('#FFFFFF', 0.7);
