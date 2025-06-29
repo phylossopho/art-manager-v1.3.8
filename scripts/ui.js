@@ -355,8 +355,6 @@ function aplicarRestriccionesClase(estado) {
                     equipoImg.className = 'base-equipo-img';
                     equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
                     equipoImg.alt = estado.equipoActual;
-                    equipoImg.style.maxWidth = '50px';
-                    equipoImg.style.maxHeight = '50px';
                     equipoImg.style.marginBottom = '10px';
                     equipoImg.onerror = () => {
                         equipoImg.style.display = 'none';
@@ -410,8 +408,6 @@ function aplicarRestriccionesClase(estado) {
                     equipoImg.className = 'base-equipo-img';
                     equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
                     equipoImg.alt = estado.equipoActual;
-                    equipoImg.style.maxWidth = '50px';
-                    equipoImg.style.maxHeight = '50px';
                     equipoImg.style.marginBottom = '10px';
                     equipoImg.onerror = () => {
                         equipoImg.style.display = 'none';

@@ -25,8 +25,6 @@ export function crearBaseSelector(estado, contenedor) {
             imgEquipo.className = 'base-equipo-img';
             imgEquipo.src = `images/${estado.equipoActual.toLowerCase()}.png`;
             imgEquipo.alt = estado.equipoActual;
-            imgEquipo.style.maxWidth = '50px';
-            imgEquipo.style.maxHeight = '50px';
             imgEquipo.style.marginBottom = '10px';
             imgEquipo.style.display = 'block';
             imgEquipo.onerror = function() {
