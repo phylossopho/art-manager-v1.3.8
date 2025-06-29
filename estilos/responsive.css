@@ -69,22 +69,6 @@
         margin: auto;
         object-fit: contain;
     }
-    
-    /* Icono mostrar materiales en tablet */
-    #show-materials {
-        top: 15vh !important;
-        right: 7% !important;
-        width: 3.5rem !important;
-        height: 3.5rem !important;
-    }
-    
-    /* FAB de backup en tablet */
-    #fab-save {
-        top: 9vh !important;
-        right: 7% !important;
-        width: 3.5rem !important;
-        height: 3.5rem !important;
-    }
 }
 
 /* Móviles grandes */
@@ -254,34 +238,14 @@
         right: 15px;
     }
     
-    /* FAB de backup en móvil */
-    #fab-save {
-        top: 7vh !important;
-        right: 7% !important;
-        width: 3.5rem !important;
-        height: 3.5rem !important;
-    }
-    
-    #fab-save svg {
-        width: 1.5rem !important;
-        height: 1.5rem !important;
-    }
-    
-    /* Icono mostrar materiales en móvil */
-    #show-materials {
-        top: 14vh !important;
-        right: 7% !important;
-        width: 3.5rem !important;
-        height: 3.5rem !important;
-    }
-    
     .material-selector, .base-selector {
-        width: 66px;
-        height: 66px;
-        padding: 2px;
+        width: 60px;
+        height: 60px;
+        padding: 3px;
         text-align: center;
         border-radius: 10px;
     }
+    
     .material-selector img, .base-equipo-img {
         width: 90%;
         height: 90%;
@@ -296,7 +260,7 @@
 /* Móviles pequeños */
 @media (max-width: 480px) {
     .container {
-        padding: 8px;
+        padding: 5px;
     }
     
     header {
@@ -313,34 +277,36 @@
     }
     
     .equipment-image {
-        padding: 12px;
+        padding: 10px;
     }
     
     .equipment-image img {
-        max-width: 70px;
-        max-height: 70px;
+        max-width: 60px;
+        max-height: 60px;
     }
     
     .tabs-container {
-        padding: 12px;
+        padding: 10px;
+        margin-bottom: 15px;
     }
     
     .tab-buttons {
-        gap: 6px;
+        gap: 5px;
     }
     
     .tab-button {
-        padding: 6px 10px;
+        padding: 6px 8px;
         font-size: 11px;
     }
     
     .tab-content {
         padding: 15px;
+        margin-top: 10px;
     }
     
     .materials-table th,
     .materials-table td {
-        padding: 8px 6px;
+        padding: 8px 5px;
         font-size: 11px;
     }
     
@@ -352,36 +318,41 @@
     
     .bottom-section {
         padding: 15px;
+        margin-bottom: 15px;
     }
     
     .bottom-buttons {
-        padding: 12px 15px;
-        gap: 12px;
+        gap: 8px;
+        padding: 8px;
     }
     
     .gallery-button {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .gallery-icon {
+        width: 12px;
+        height: 12px;
     }
     
     .social-icons {
-        gap: 8px;
+        gap: 6px;
     }
     
     .social-icon {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
     }
     
     .social-icon img {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
     }
     
     .use-button {
-        padding: 10px 20px;
-        font-size: 13px;
+        padding: 5px 12px;
+        font-size: 11px;
     }
     
     /* Modales en móvil pequeño */
@@ -411,8 +382,8 @@
     /* Galería en móvil pequeño */
     .gallery-container {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 12px;
-        padding: 12px;
+        gap: 10px;
+        padding: 10px;
     }
     
     .gallery-item .delete-btn {
@@ -427,40 +398,8 @@
         width: 45px;
         height: 45px;
         font-size: 18px;
-        bottom: 12px;
+        bottom: 10px;
         right: 12px;
-    }
-    
-    /* FAB de backup en móvil pequeño */
-    #fab-save {
-        top: 6vh !important;
-        right: 7% !important;
-        width: 3rem !important;
-        height: 3rem !important;
-    }
-    
-    #fab-save svg {
-        width: 1.4rem !important;
-        height: 1.4rem !important;
-    }
-    
-    /* Icono mostrar materiales en móvil pequeño */
-    #show-materials {
-        top: 14vh !important;
-        right: 7% !important;
-        width: 3.5rem !important;
-        height: 3.5rem !important;
-    }
-    
-    /* Menú FAB en móvil pequeño */
-    #fab-menu {
-        min-width: 280px !important;
-        padding: 20px !important;
-    }
-    
-    #fab-menu button {
-        padding: 12px 15px !important;
-        font-size: 13px !important;
     }
     
     .material-selector, .base-selector {
@@ -478,6 +417,17 @@
         display: block;
         margin: auto;
         object-fit: contain;
+    }
+    
+    /* Menú FAB en móvil pequeño */
+    #fab-menu {
+        min-width: 280px !important;
+        padding: 20px !important;
+    }
+    
+    #fab-menu button {
+        padding: 12px 15px !important;
+        font-size: 13px !important;
     }
 }
 
@@ -549,22 +499,6 @@
     .use-button {
         padding: 15px 30px;
         font-size: 18px;
-    }
-    
-    /* Icono mostrar materiales en pantalla grande */
-    #show-materials {
-        top: 18vh !important;
-        right: 7% !important;
-        width: 4rem !important;
-        height: 4rem !important;
-    }
-    
-    /* FAB de backup en pantalla grande */
-    #fab-save {
-        top: 11vh !important;
-        right: 7% !important;
-        width: 4rem !important;
-        height: 4rem !important;
     }
 }
 
@@ -643,18 +577,16 @@
         display: none;
     }
 
-    /* Pestañas en móvil */
     .tab-buttons {
         flex-wrap: wrap;
     }
 
     .tab-button {
-        padding: 5px 6px;
-        font-size: 10px;
+        padding: 8px 10px;
+        font-size: 12px;
         flex-grow: 1;
         text-align: center;
         white-space: nowrap;
-        min-width: 40px;
     }
 
     th, td {
@@ -667,7 +599,6 @@
         height: 20px;
     }
 
-    /* Ajuste para móvil: line-height y font-size del texto del material */
     .material-cell span {
         font-size: 13px;
         line-height: 20px;
@@ -684,9 +615,7 @@
 
     .material-selector {
         width: 66px;
-        height: 66px;
         text-align: center;
-        border-radius: 10px;
     }
 
     .material-selector img {
@@ -695,115 +624,9 @@
     }
 
     .material-selector select {
-        width: 66px;
-        font-size: 12px;
-        padding: 2px;
-        text-align: center;
-    }
-
-    /* Ajustes para selector base en móviles */
-    .base-selector {
-        width: 100px;
-        height: 100px;
-        padding: 5px;
-    }
-    
-    .base-dynamic-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-    }
-    
-    .base-equipo-img {
-        width: 90%;
-        height: 90%;
-        max-width: 90%;
-        max-height: 90%;
-        display: block;
-        margin: auto;
-    }
-    
-    .base-title {
-        font-size: 12px;
-    }
-
-    .use-button {
-        padding: 8px 20px;
-        font-size: 14px;
-    }
-
-    .modal-content {
-        width: 90%;
-        margin: 5% auto;
-    }
-
-    .modal-header h2, .modal-header h3 {
-        font-size: 16px;
-    }
-
-    .close {
-        font-size: 22px;
-    }
-}
-
-/* Para dispositivos muy pequeños */
-@media (max-width: 480px) {
-    .container {
-        padding: 5px;
-    }
-
-    header h1 {
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-
-    .equipment-image {
-        width: 66px;
-        height: 66px;
-        margin-right: 15px;
-    }
-
-    .selectors select {
-        width: 120px;
-        font-size: 12px;
-    }
-
-    .right-panel button {
-        width: 120px;
-        font-size: 12px;
-        padding: 4px;
-    }
-
-    .materials-table {
-        padding: 5px;
-    }
-
-    th, td {
-        padding: 2px;
-        font-size: 12px;
-    }
-
-    .material-cell img {
-        width: 16px;
-        height: 16px;
-    }
-
-    .material-cell span {
         font-size: 11px;
-        line-height: 16px;
-    }
-
-    .material-selector {
-        width: 66px;
-        text-align: center;
-    }
-
-    .material-selector img {
-        width: 90%;
-        height: 90%;
+        padding: 3px;
+        width: 100%;
     }
 
     /* Ajustes para selector base en móviles pequeños */
@@ -947,51 +770,4 @@
         max-width: 100%;
         max-height: 100%;
     }
-}
-
-/* === ICONOS FLOTANTES RESPONSIVE === */
-.floating-icon {
-    position: fixed !important;
-    right: 7% !important;
-    z-index: 1001 !important;
-    border-radius: 50% !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    width: 3.5rem !important;
-    height: 3.5rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 1.4rem !important;
-    font-weight: normal !important;
-    border: none !important;
-    transition: all 0.3s ease !important;
-}
-
-.floating-icon:hover {
-    transform: translateY(-2px) scale(1.08) !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-}
-
-/* FAB de backup - posición superior */
-#fab-save {
-    top: 8vh !important;
-    right: 7% !important;
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
-    color: #fff !important;
-}
-
-#fab-save svg {
-    width: 1.4rem !important;
-    height: 1.4rem !important;
-}
-
-/* Icono mostrar materiales - posición superior */
-#show-materials {
-    top: 22vh !important;
-    right: 7% !important;
-    background: #fff !important;
-    color: #333 !important;
 }

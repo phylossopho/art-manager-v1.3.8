@@ -42,11 +42,17 @@ window.inicializarAlmacenamientoMateriales = window.inicializarAlmacenamientoMat
 function crearFABBackup() {
     // Crear el FAB directamente en el body para que esté fijo
     const fabHTML = `
-        <button id="fab-save" class="floating-icon" title="Opciones de datos">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
-            </svg>
-        </button>
+        <div id="floating-icons-container" style="position: fixed; top: 8vh; right: 2rem; z-index: 1001; display: flex; flex-direction: column; gap: 1rem;">
+            <button id="fab-save" class="floating-icon" title="Opciones de datos">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                </svg>
+            </button>
+            
+            <div id="show-materials" class="floating-icon" title="Mostrar materiales">
+                <span style="font-size: 22px;">📋</span>
+            </div>
+        </div>
         
         <div id="fab-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 30px; display: none; min-width: 350px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
             <div style="text-align: center; margin-bottom: 25px;">

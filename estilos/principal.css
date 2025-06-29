@@ -944,11 +944,19 @@ header h1 {
     display: none;
 }
 
+/* === CONTENEDOR DE ICONOS FLOTANTES === */
+#floating-icons-container {
+    position: fixed !important;
+    top: 8vh !important;
+    right: 2rem !important;
+    z-index: 1001 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+}
+
 /* === CLASE COMÚN PARA ICONOS FLOTANTES === */
 .floating-icon {
-    position: fixed !important;
-    right: 7% !important;
-    z-index: 1001 !important;
     border-radius: 50% !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
     width: 3.5rem !important;
@@ -970,18 +978,14 @@ header h1 {
     box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
 }
 
-/* FAB de backup - posición superior */
+/* FAB de backup */
 #fab-save {
-    top: 8vh !important;
-    right: 7% !important;
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
     color: #fff !important;
 }
 
-/* Icono mostrar materiales - posición superior */
+/* Icono mostrar materiales */
 #show-materials {
-    top: 22vh !important;
-    right: 7% !important;
     background: #fff !important;
     color: #333 !important;
 }
