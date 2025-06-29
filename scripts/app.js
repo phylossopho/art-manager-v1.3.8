@@ -5,7 +5,8 @@ import * as ui from './ui.js';
 import configurarEventListeners from './eventos.js';
 import {
     construirMapaMaterialAEquipo,
-    inicializarAlmacenamientoMateriales
+    inicializarAlmacenamientoMateriales,
+    abrirListaMateriales
 } from './materiales.js';
 import * as galeria from './galeria.js';
 import * as conversiones from './conversiones.js';
@@ -166,6 +167,7 @@ function iniciarApp() {
         window.cambiarPestana = ui.cambiarPestana;
         window.construirMapaMaterialAEquipo = construirMapaMaterialAEquipo;
         window.inicializarAlmacenamientoMateriales = inicializarAlmacenamientoMateriales;
+        window.abrirListaMateriales = abrirListaMateriales;
         
         console.log('✅ Aplicación iniciada (almacenamiento manual)');
         console.log('💡 Usa el botón flotante para guardar/cargar tus datos');

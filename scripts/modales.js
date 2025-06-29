@@ -54,6 +54,28 @@ export function cerrarModalMateriales() {
     cerrarModalConTransicion('materials-modal');
 }
 
+// Función para ocultar iconos flotantes
+export function ocultarIconosFlotantes() {
+    const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+    if (floatingIconsContainer) {
+        floatingIconsContainer.style.display = 'none';
+    }
+}
+
+// Función para mostrar iconos flotantes
+export function mostrarIconosFlotantes() {
+    const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+    if (floatingIconsContainer) {
+        // Solo mostrar si no estamos en pestañas especiales
+        const esLeyenda = document.querySelector('[data-tab="conversionlegend"]')?.classList.contains('active');
+        const esAyuda = document.querySelector('[data-tab="ayuda"]')?.classList.contains('active');
+        
+        if (!esLeyenda && !esAyuda) {
+            floatingIconsContainer.style.display = 'block';
+        }
+    }
+}
+
 // Función para abrir modal con transición
 export function abrirModalConTransicion(modalId) {
     const modal = document.getElementById(modalId);
@@ -63,6 +85,9 @@ export function abrirModalConTransicion(modalId) {
         modal.offsetHeight;
         modal.style.opacity = '1';
         modal.style.transform = 'scale(1)';
+        
+        // Ocultar iconos flotantes cuando se abre un modal
+        ocultarIconosFlotantes();
     }
 }
 
@@ -77,6 +102,9 @@ export function cerrarModalConTransicion(modalId) {
         setTimeout(() => {
             modal.style.display = 'none';
             modal.style.transition = '';
+            
+            // Mostrar iconos flotantes cuando se cierra un modal
+            mostrarIconosFlotantes();
         }, 300);
     }
 }

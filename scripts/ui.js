@@ -493,6 +493,15 @@ export function actualizarUI(estado) {
         const galleryButton = document.getElementById('gallery-button');
         if (galleryButton) galleryButton.style.display = (esLeyenda || esAyuda) ? 'none' : 'flex';
 
+        // Ocultar contenedor de iconos flotantes en ciertas pestañas y modales
+        const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+        if (floatingIconsContainer) {
+            const shouldHide = esLeyenda || esAyuda || 
+                              document.getElementById('materials-modal')?.style.display === 'block' ||
+                              document.getElementById('gallery-modal')?.style.display === 'block';
+            floatingIconsContainer.style.display = shouldHide ? 'none' : 'block';
+        }
+
         if (idPestaña === 'arte') {
             generarTablaArte();
         } else if (idPestaña !== 'materials' && idPestaña !== 'conversionlegend') {
@@ -544,6 +553,13 @@ export function cambiarPestana(nombrePestana) {
         // Actualizar la UI según la pestaña
         if (window.estadoApp) {
             actualizarUI(window.estadoApp);
+        }
+        
+        // Ocultar/mostrar iconos flotantes según la pestaña
+        const floatingIconsContainer = document.getElementById('fab-save-menu-container');
+        if (floatingIconsContainer) {
+            const shouldHide = nombrePestana === 'conversionlegend' || nombrePestana === 'ayuda';
+            floatingIconsContainer.style.display = shouldHide ? 'none' : 'block';
         }
     } catch (error) {
         console.error('Error al cambiar pestaña:', error);

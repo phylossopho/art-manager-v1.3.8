@@ -84,6 +84,7 @@ function crearFABBackup() {
     const fabUpload = document.getElementById('fab-upload');
     const fabClear = document.getElementById('fab-clear');
     const fabClose = document.getElementById('fab-close');
+    const showMaterialsButton = document.getElementById('show-materials');
 
     // Efectos hover para el FAB
     fabButton.addEventListener('mouseenter', function() {
@@ -260,6 +261,30 @@ function crearFABBackup() {
             fabMenu.style.display = 'none';
         }
     });
+
+    // Event listener para el botón "Mostrar materiales"
+    if (showMaterialsButton) {
+        showMaterialsButton.addEventListener('click', function() {
+            // Importar la función desde materiales.js
+            if (window.abrirListaMateriales) {
+                window.abrirListaMateriales(window.estadoApp);
+            } else {
+                console.error('Función abrirListaMateriales no encontrada');
+                alert('Error: Función de mostrar materiales no disponible');
+            }
+        });
+
+        // Efectos hover para el botón de mostrar materiales
+        showMaterialsButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+            this.style.boxShadow = '0 12px 32px rgba(102, 126, 234, 0.5)';
+        });
+
+        showMaterialsButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.4)';
+        });
+    }
 }
 
 // Inicializar cuando el DOM esté listo
