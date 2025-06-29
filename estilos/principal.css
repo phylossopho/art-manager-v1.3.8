@@ -283,6 +283,7 @@ header h1 {
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.6s ease;
+    justify-self: center;
 }
 
 .social-icons.reveal {
@@ -1141,4 +1142,56 @@ header h1 {
 #ayuda-tab .social-icons {
     justify-content: center !important;
     margin: 0 auto !important;
+    display: flex !important;
+    width: 100% !important;
+}
+
+/* Cambiar el layout del grid en pestañas especiales */
+#conversionlegend-tab .bottom-buttons,
+#ayuda-tab .bottom-buttons {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    justify-items: center !important;
+}
+
+#conversionlegend-tab .gallery-button,
+#ayuda-tab .gallery-button {
+    justify-self: center !important;
+}
+
+#conversionlegend-tab .use-button,
+#ayuda-tab .use-button {
+    justify-self: center !important;
+}
+
+/* Asegurar que los iconos se centren en todas las resoluciones */
+@media (max-width: 768px) {
+    #conversionlegend-tab .social-icons,
+    #ayuda-tab .social-icons {
+        justify-content: center !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        width: 100% !important;
+    }
+    
+    #conversionlegend-tab .bottom-buttons,
+    #ayuda-tab .bottom-buttons {
+        grid-template-columns: 1fr 1fr 1fr !important;
+        justify-items: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #conversionlegend-tab .social-icons,
+    #ayuda-tab .social-icons {
+        justify-content: center !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        width: 100% !important;
+    }
+    
+    #conversionlegend-tab .bottom-buttons,
+    #ayuda-tab .bottom-buttons {
+        grid-template-columns: 1fr 1fr 1fr !important;
+        justify-items: center !important;
+    }
 }

@@ -294,11 +294,27 @@
                     <li>256 Blancos = 1 Dorado</li>
                 </ul>
             </div>
+        </div>
+        
+        <!-- Layout igual que materiales pero ocultando galería y USAR -->
+        <div class="bottom-section" id="bottom-section-leyenda">
+            <!-- Espacio para mantener el layout -->
+        </div>
+
+        <div class="bottom-buttons">
+            <button id="gallery-button-leyenda" class="gallery-button icon-button" title="Galería" style="visibility: hidden;">
+                <span style="font-size: 22px;">📷</span>
+            </button>
             
-            <!-- Botón Volver a Materiales -->
-            <div class="leyenda-back-container">
-                <button id="leyenda-back-button" class="back-button">← Volver a Materiales</button>
-            </div>
+            <!-- Espacio para iconos sociales (se usarán los originales) -->
+            <div class="social-icons-placeholder"></div>
+            
+            <button id="use-materials-leyenda" class="use-button" style="visibility: hidden;">USAR</button>
+        </div>
+        
+        <!-- Botón Volver a Materiales -->
+        <div class="leyenda-back-container">
+            <button id="leyenda-back-button" class="back-button">← Volver a Materiales</button>
         </div>
     </div>
 
@@ -433,11 +449,27 @@
                     <li><strong>YouTube:</strong> Tutoriales y contenido educativo</li>
                 </ul>
             </div>
+        </div>
+        
+        <!-- Layout igual que materiales pero ocultando galería y USAR -->
+        <div class="bottom-section" id="bottom-section-ayuda">
+            <!-- Espacio para mantener el layout -->
+        </div>
 
-            <!-- Botón Volver a Materiales -->
-            <div class="ayuda-back-container">
-                <button id="ayuda-back-button" class="back-button">← Volver a Materiales</button>
-            </div>
+        <div class="bottom-buttons">
+            <button id="gallery-button-ayuda" class="gallery-button icon-button" title="Galería" style="visibility: hidden;">
+                <span style="font-size: 22px;">📷</span>
+            </button>
+            
+            <!-- Espacio para iconos sociales (se usarán los originales) -->
+            <div class="social-icons-placeholder"></div>
+            
+            <button id="use-materials-ayuda" class="use-button" style="visibility: hidden;">USAR</button>
+        </div>
+        
+        <!-- Botón Volver a Materiales -->
+        <div class="ayuda-back-container">
+            <button id="ayuda-back-button" class="back-button">← Volver a Materiales</button>
         </div>
     </div>
 
@@ -543,18 +575,21 @@
 <script>
     // Animación de iconos sociales con scroll
     function handleSocialIconsAnimation() {
-        const socialIcons = document.querySelector('.social-icons');
-        if (!socialIcons) return;
+        const socialIconsList = document.querySelectorAll('.social-icons');
+        
+        socialIconsList.forEach(socialIcons => {
+            if (!socialIcons) return;
 
-        const rect = socialIcons.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        // Calcular cuándo debe aparecer (cuando el elemento está a 200px de entrar en pantalla)
-        const triggerPoint = windowHeight - 200;
-        
-        if (rect.top <= triggerPoint) {
-            socialIcons.classList.add('reveal');
-        }
+            const rect = socialIcons.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Calcular cuándo debe aparecer (cuando el elemento está a 200px de entrar en pantalla)
+            const triggerPoint = windowHeight - 200;
+            
+            if (rect.top <= triggerPoint) {
+                socialIcons.classList.add('reveal');
+            }
+        });
     }
 
     // Escuchar el evento de scroll
@@ -562,13 +597,16 @@
     
     // Activar la animación inmediatamente al cargar la página
     window.addEventListener('load', () => {
-        const socialIcons = document.querySelector('.social-icons');
-        if (socialIcons) {
-            // Pequeño delay para que se vea la animación
-            setTimeout(() => {
-                socialIcons.classList.add('reveal');
-            }, 1000);
-        }
+        const socialIconsList = document.querySelectorAll('.social-icons');
+        
+        socialIconsList.forEach(socialIcons => {
+            if (socialIcons) {
+                // Pequeño delay para que se vea la animación
+                setTimeout(() => {
+                    socialIcons.classList.add('reveal');
+                }, 1000);
+            }
+        });
     });
     
     // También ejecutar al cargar la página por si ya está en la posición correcta
