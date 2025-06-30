@@ -66,11 +66,13 @@ export const translations = {
         },
         arte: {
             title: "🎨 Pestaña ARTE",
-            description: "En la pestaña ARTE puedes:",
+            description: "En la pestaña ARTE puedes simular la creación de un equipo y guardar la información para futuras consultas:",
             features: [
-                "Ver una tabla completa de todos los equipos posibles",
-                "Ver los materiales necesarios para cada configuración",
-                "Usar esta información para planificar tu progreso"
+                "Primero, selecciona el tipo de equipo, la clase, el nivel y el color en los selectores superiores.",
+                "Elige también la base adecuada según el requisito previo que se muestra en la propia base (aparecerá un texto explicativo si hay alguna restricción).",
+                "Después de seleccionar todos los datos, haz clic en el botón USAR para simular la creación del equipo.",
+                "Una vez simulado, podrás ver la información del equipo en la tabla de ARTE y almacenarla para futuras consultas.",
+                "Puedes repetir el proceso con diferentes combinaciones para planificar tu progreso y comparar materiales necesarios."
             ]
         },
         responsive: {
@@ -158,11 +160,13 @@ export const translations = {
         },
         arte: {
             title: "🎨 ARTE tab",
-            description: "In the ARTE tab you can:",
+            description: "In the ARTE tab you can simulate the creation of equipment and save the information for future reference:",
             features: [
-                "View a complete table of all possible equipment",
-                "See materials needed for each configuration",
-                "Use this information to plan your progress"
+                "First, select the type of equipment, class, level, and color using the top selectors.",
+                "Also choose the correct base according to the prerequisite shown in the base itself (an explanatory text will appear if there is any restriction).",
+                "After selecting all the data, click the USE button to simulate the creation of the equipment.",
+                "Once simulated, you will see the equipment information in the ARTE table and can store it for future reference.",
+                "You can repeat the process with different combinations to plan your progress and compare required materials."
             ]
         },
         responsive: {
@@ -433,11 +437,13 @@ export const translations = {
         },
         arte: {
             title: "🎨 Aba ARTE",
-            description: "Na aba ARTE você pode:",
+            description: "Na aba ARTE você pode simular a criação de um equipamento e salvar as informações para consultas futuras:",
             features: [
-                "Ver uma tabela completa de todos os equipamentos possíveis",
-                "Ver os materiais necessários para cada configuração",
-                "Usar essas informações para planejar seu progresso"
+                "Primeiro, selecione o tipo de equipamento, classe, nível e cor nos seletores superiores.",
+                "Escolha também a base correta de acordo com o pré-requisito exibido na própria base (um texto explicativo aparecerá se houver alguma restrição).",
+                "Depois de selecionar todos os dados, clique no botão USAR para simular a criação do equipamento.",
+                "Após a simulação, você verá as informações do equipamento na tabela ARTE e poderá armazená-las para consultas futuras.",
+                "Você pode repetir o processo com diferentes combinações para planejar seu progresso e comparar os materiais necessários."
             ]
         },
         responsive: {
@@ -524,11 +530,13 @@ export const translations = {
         },
         arte: {
             title: "🎨 Scheda ARTE",
-            description: "Nella scheda ARTE puoi:",
+            description: "Nella scheda ARTE puoi simulare la creazione di un equipaggiamento e salvarle le informazioni per consultazioni future:",
             features: [
-                "Vedere una tabella completa di tutti gli equipaggiamenti possibili",
-                "Vedere i materiali necessari per ogni configurazione",
-                "Usare queste informazioni per pianificare i tuoi progressi"
+                "Per prima cosa, seleziona il tipo di equipaggiamento, la classe, il livello e il colore nei selettori superiori.",
+                "Scegli anche la base corretta in base al requisito mostrato nella própria base (apparirà un testo esplicativo se ci sono restrizioni).",
+                "Dopo aver selezionato tutti i dati, clicca sul pulsante USAR per simulare la creazione dell'equipaggiamento.",
+                "Una volta simulato, potrai vedere le informazioni dell'equipaggiamento nella tabella ARTE e salvarle per consultazioni future.",
+                "Puoi ripetere il processo con diverse combinazioni per pianificare i tuoi progressi e confrontare i materiali necessari."
             ]
         },
         responsive: {
@@ -615,11 +623,13 @@ export const translations = {
         },
         arte: {
             title: "🎨 Onglet ARTE",
-            description: "Dans l'onglet ARTE, vous pouvez :",
+            description: "Dans l'onglet ARTE, vous pouvez simuler la création d'un équipement et enregistrer les informations pour de futures consultations :",
             features: [
-                "Voir un tableau complet de tous les équipements possibles",
-                "Voir les matériaux nécessaires pour chaque configuration",
-                "Utiliser ces informations pour planifier votre progression"
+                "Tout d'abord, sélectionnez le type d'équipement, la classe, le niveau et la couleur dans les sélecteurs en haut.",
+                "Choisissez également la base appropriée selon la condition préalable affichée dans la base elle-même (un texte explicatif apparaîtra en cas de restriction).",
+                "Après avoir sélectionné toutes les données, cliquez sur le bouton USAR pour simuler la création de l'équipement.",
+                "Une fois la simulation effectuée, vous verrez les informations de l'équipement dans le tableau ARTE et pourrez les enregistrer pour de futures consultations.",
+                "Vous pouvez répéter le processus avec différentes combinaisons pour planifier votre progression et comparer les matériaux nécessaires."
             ]
         },
         responsive: {
