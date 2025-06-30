@@ -1286,16 +1286,18 @@ body.hide-bottom-buttons .bottom-buttons {
 
 /* Imagen denied específica para la base */
 .base-denied-img {
-    width: 95%;
-    height: 95%;
-    object-fit: contain;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
     display: block;
-    margin: 0 auto;
+    margin: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
 }
 
 @media (max-width: 768px) {
     .base-denied-img {
-        width: 95%;
-        height: 95%;
+        width: 100% !important;
+        height: 100% !important;
     }
 }
