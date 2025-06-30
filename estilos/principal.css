@@ -424,20 +424,16 @@ header h1 {
     z-index: 10 !important;
     pointer-events: none !important;
     box-sizing: border-box !important;
-    
-    /* Propiedades clave para forzar 2 líneas */
     line-height: 1.2 !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
-    white-space: pre-line !important; /* Respeta saltos manuales */
+    max-width: 85% !important;
+    width: 85% !important;
+    white-space: normal !important;
     word-break: break-word !important;
-    max-width: 150px !important; /* Ajustar según necesidad */
-    
-    /* Altura fija para exactamente 2 líneas */
-    height: calc(2 * 1.2em) !important;
-    max-height: calc(2 * 1.2em) !important;
+    overflow-wrap: break-word !important;
     overflow: hidden !important;
 }
 .base-dynamic-content {
