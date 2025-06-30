@@ -184,6 +184,13 @@ export function actualizarEstadoBase(estado) {
 
         if (condicionDenied) {
             deniedImage.style.display = 'block';
+            deniedImage.style.zIndex = '30';
+            deniedImage.style.position = 'absolute';
+            deniedImage.style.left = '50%';
+            deniedImage.style.top = '50%';
+            deniedImage.style.transform = 'translate(-50%, -50%)';
+            deniedImage.style.maxWidth = '60%';
+            deniedImage.style.maxHeight = '60%';
             selector.style.display = 'none';
             baseText.textContent = 'NO DISPONIBLE';
             baseSelector.style.backgroundColor = estado.colorNoSeleccionado || '#808080'; // Usar el mismo gris onix

@@ -20,8 +20,15 @@ export function actualizarImagenEquipo(estado) {
             elementoImagen.onclick = () => {
                 const equipmentSelect = document.getElementById('equipment-select');
                 if (equipmentSelect) {
-                    equipmentSelect.focus();
-                    equipmentSelect.click();
+                    // Para móvil, forzar el despliegue nativo
+                    if (typeof equipmentSelect.showPicker === 'function') {
+                        equipmentSelect.showPicker();
+                    } else {
+                        equipmentSelect.focus();
+                        // Simular un evento de teclado para abrir el menú
+                        const event = new MouseEvent('mousedown', { bubbles: true });
+                        equipmentSelect.dispatchEvent(event);
+                    }
                 }
             };
         } catch (error) {
@@ -253,6 +260,24 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             };
             selectorMaterial.appendChild(imagen);
 
+            // Botón de color visible para abrir el selector
+            const colorBtn = document.createElement('button');
+            colorBtn.type = 'button';
+            colorBtn.className = 'color-btn';
+            colorBtn.style.background = colorActual ? estado.mapaColores[colorActual] : colorFondo;
+            colorBtn.style.border = '2px solid #888';
+            colorBtn.style.borderRadius = '50%';
+            colorBtn.style.width = '22px';
+            colorBtn.style.height = '22px';
+            colorBtn.style.position = 'absolute';
+            colorBtn.style.bottom = '8px';
+            colorBtn.style.left = '50%';
+            colorBtn.style.transform = 'translateX(-50%)';
+            colorBtn.style.cursor = 'pointer';
+            colorBtn.title = 'Cambiar color';
+            colorBtn.tabIndex = 0;
+
+            // <select> invisible, de 1px y centrado
             const selector = document.createElement('select');
             selector.innerHTML = `
                 <option value="">-</option>
@@ -262,15 +287,6 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
                 <option value="morado" ${colorActual === 'morado' ? 'selected' : ''}>Morado</option>
                 <option value="dorado" ${colorActual === 'dorado' ? 'selected' : ''}>Dorado</option>
             `;
-
-            selector.addEventListener('change', (e) => {
-                e.stopPropagation(); // Evitar que se propague
-                previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
-            });
-
-            selectorMaterial.appendChild(selector);
-
-            // Hacer el selector invisible, de 1px y centrado
             selector.style.opacity = '0';
             selector.style.position = 'absolute';
             selector.style.top = '50%';
@@ -281,8 +297,26 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             selector.style.zIndex = '10';
             selector.style.display = 'block';
 
-            // El selector ahora está sobre todo el material, así que cualquier clic lo activará
-            // No necesitamos evento adicional, el selector nativo se encarga de todo
+            // Al hacer clic en el botón, abrir el <select>
+            colorBtn.onclick = () => {
+                if (typeof selector.showPicker === 'function') {
+                    selector.showPicker();
+                } else {
+                    selector.focus();
+                    const event = new MouseEvent('mousedown', { bubbles: true });
+                    selector.dispatchEvent(event);
+                }
+            };
+
+            selector.addEventListener('change', (e) => {
+                e.stopPropagation();
+                previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
+                // Actualizar color del botón
+                colorBtn.style.background = e.target.value ? estado.mapaColores[e.target.value] : colorFondo;
+            });
+
+            selectorMaterial.appendChild(colorBtn);
+            selectorMaterial.appendChild(selector);
         }
 
         contenedor.appendChild(selectorMaterial);
