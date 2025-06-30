@@ -1008,8 +1008,14 @@ export function mostrarGestorRecetas() {
     }
 }
 
-// Conectar el botón 📖 al gestor de recetas
-setTimeout(() => {
+// Conectar el botón 📖 al gestor de recetas de forma robusta
+function conectarBotonGestorRecetas() {
     const btn = document.getElementById('gestor-recetas-btn');
     if (btn) btn.onclick = mostrarGestorRecetas;
-}, 500);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', conectarBotonGestorRecetas);
+} else {
+    conectarBotonGestorRecetas();
+}
