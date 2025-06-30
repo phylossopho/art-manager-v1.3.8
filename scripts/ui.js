@@ -804,3 +804,18 @@ export function actualizarColorFondoApp(estado) {
         tabActiva.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const body = document.body;
+    // Asegura transición suave
+    body.style.transition = 'background-color 1.2s cubic-bezier(0.4,0,0.2,1)';
+    // Espera 6 segundos antes de cambiar el fondo si el usuario no ha elegido color
+    setTimeout(() => {
+        // Verifica si el usuario ya eligió un color personalizado
+        const colorElegido = window.localStorage.getItem('colorFondoApp');
+        if (!colorElegido) {
+            // Cambia a un color alternativo (elige uno, por ejemplo, #1e3a8a)
+            body.style.backgroundColor = '#1e3a8a';
+        }
+    }, 6000);
+});
