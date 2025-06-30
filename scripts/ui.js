@@ -261,13 +261,13 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
-            // Hacer el selector invisible, de 1px y centrado
+            // Hacer el selector invisible, de 10px y centrado
             selector.style.opacity = '0';
             selector.style.position = 'absolute';
             selector.style.top = '50%';
             selector.style.left = '50%';
-            selector.style.width = '1px';
-            selector.style.height = '1px';
+            selector.style.width = '10px';
+            selector.style.height = '10px';
             selector.style.transform = 'translate(-50%, -50%)';
             selector.style.zIndex = '10';
             selector.style.display = 'block';
@@ -580,6 +580,21 @@ export function cambiarPestana(nombrePestana) {
                 floatingIconsContainer.classList.add('hidden');
             } else {
                 floatingIconsContainer.classList.remove('hidden');
+            }
+        }
+
+        // Cambiar la pestaña activa
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === nombrePestana);
+        });
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.toggle('active', tab.id === `${nombrePestana}-tab`);
+        });
+
+        // Refrescar la UI si salimos de Leyenda o Ayuda
+        if (nombrePestana !== 'conversionlegend' && nombrePestana !== 'ayuda') {
+            if (window.estadoApp) {
+                actualizarUI(window.estadoApp);
             }
         }
     } catch (error) {

@@ -369,6 +369,279 @@ export const translations = {
             ]
         },
         backButton: "← Zurück zu Materialien"
+    },
+    pt: {
+        title: "📖 Guia de Uso - Gerenciador de Materiais",
+        whatIsApp: {
+            title: "🎯 O que é este aplicativo?",
+            description: "Este aplicativo te ajuda a gerenciar materiais e equipamentos para o jogo Deck Heroes. Você pode:",
+            features: [
+                "Ver materiais necessários para equipamentos específicos",
+                "Calcular conversões entre diferentes qualidades de materiais",
+                "Simular equipamentos na aba ARTE",
+                "Salvar imagens de referência na galeria"
+            ]
+        },
+        howToUse: {
+            title: "⚙️ Como usar os seletores",
+            steps: [
+                "Equipamento: Selecione o tipo de equipamento (Espada, Peito, Botas, etc.)",
+                "Classe: Escolha a classe do equipamento (Normal, Campeão, Planewalker, etc.)",
+                "Nível: Selecione o nível do equipamento (1-5)",
+                "Cor: Escolha a qualidade do material (Branco, Verde, Azul, Roxo, Dourado)"
+            ],
+            note: "💡 Nota: Algumas classes especiais têm restrições de níveis e cores permitidas."
+        },
+        tabs: {
+            title: "📊 Abas disponíveis",
+            tabs: [
+                "Materiais: Mostra os materiais necessários para o equipamento selecionado",
+                ">> Verde/Azul/Roxo/Dourado: Calcula conversões para essa qualidade",
+                "Lenda: Mostra a tabela de equivalências entre qualidades",
+                "ARTE: Simula equipamentos com diferentes configurações"
+            ]
+        },
+        gallery: {
+            title: "🖼️ Galeria de imagens",
+            description: "Você pode salvar imagens de referência para te ajudar a lembrar:",
+            features: [
+                "Clique no botão de galeria (📷) na parte inferior",
+                "Use o botão "+" para adicionar novas imagens",
+                "Clique em uma imagem para vê-la em tela cheia",
+                "Use o botão \"×\" para excluir imagens"
+            ]
+        },
+        saveLoad: {
+            title: "💾 Salvar e carregar dados",
+            description: "Para manter seus dados seguros:",
+            features: [
+                "Use o botão flutuante de salvar (💾) no canto superior direito",
+                "Selecione \"Salvar dados\" para baixar um arquivo JSON",
+                "Use \"Carregar dados\" para restaurar de um arquivo salvo",
+                "Use \"Limpar dados\" para apagar todos os dados locais",
+                "⚠️ Importante: Os dados são salvos localmente, não na nuvem"
+            ]
+        },
+        floatingButtons: {
+            title: "📋 Botões flutuantes",
+            description: "No canto superior direito você encontrará dois botões flutuantes:",
+            features: [
+                "Botão superior (💾): Opções de gestão de dados (salvar, carregar, limpar)",
+                "Botão inferior (📋): Mostra a lista completa de materiais",
+                "💡 Os botões se adaptam automaticamente a diferentes tamanhos de tela"
+            ]
+        },
+        arte: {
+            title: "🎨 Aba ARTE",
+            description: "Na aba ARTE você pode:",
+            features: [
+                "Ver uma tabela completa de todos os equipamentos possíveis",
+                "Ver os materiais necessários para cada configuração",
+                "Usar essas informações para planejar seu progresso"
+            ]
+        },
+        responsive: {
+            title: "📱 Design responsivo",
+            description: "O aplicativo se adapta automaticamente a diferentes dispositivos:",
+            features: [
+                "Desktop: Interface completa com todos os elementos visíveis",
+                "Tablet: Elementos reorganizados para telas médias",
+                "Móvel: Interface otimizada para telas pequenas",
+                "💡 Os seletores de materiais mantêm sua forma quadrada em todas as resoluções"
+            ]
+        },
+        links: {
+            title: "🔗 Links úteis",
+            description: "Junte-se à nossa comunidade:",
+            features: [
+                "WhatsApp: Grupo de jogadores para dúvidas e estratégias",
+                "Telegram: Canal oficial com notícias e atualizações",
+                "YouTube: Tutoriais e conteúdo educativo"
+            ]
+        },
+        backButton: "← Voltar para Materiais"
+    },
+    it: {
+        title: "📖 Guida all'Uso - Gestore Materiali",
+        whatIsApp: {
+            title: "🎯 Cos'è questa applicazione?",
+            description: "Questa applicazione ti aiuta a gestire materiali ed equipaggiamenti per il gioco Deck Heroes. Puoi:",
+            features: [
+                "Vedere i materiali necessari per equipaggiamenti specifici",
+                "Calcolare conversioni tra diverse qualità di materiali",
+                "Simulare equipaggiamenti nella scheda ARTE",
+                "Salvare immagini di riferimento nella galleria"
+            ]
+        },
+        howToUse: {
+            title: "⚙️ Come usare i selettori",
+            steps: [
+                "Equipaggiamento: Seleziona il tipo di equipaggiamento (Spada, Petto, Stivali, ecc.)",
+                "Classe: Scegli la classe dell'equipaggiamento (Normale, Campione, Planewalker, ecc.)",
+                "Livello: Seleziona il livello dell'equipaggiamento (1-5)",
+                "Colore: Scegli la qualità del materiale (Bianco, Verde, Blu, Viola, Dorato)"
+            ],
+            note: "💡 Nota: Alcune classi speciali hanno restrizioni su livelli e colori consentiti."
+        },
+        tabs: {
+            title: "📊 Schede disponibili",
+            tabs: [
+                "Materiali: Mostra i materiali necessari per l'equipaggiamento selezionato",
+                ">> Verde/Blu/Viola/Dorato: Calcola conversioni verso quella qualità",
+                "Legenda: Mostra la tabella di equivalenze tra qualità",
+                "ARTE: Simula equipaggiamenti con diverse configurazioni"
+            ]
+        },
+        gallery: {
+            title: "🖼️ Galleria di immagini",
+            description: "Puoi salvare immagini di riferimento per aiutarti a ricordare:",
+            features: [
+                "Clicca sul pulsante galleria (📷) in basso",
+                "Usa il pulsante \"+\" per aggiungere nuove immagini",
+                "Clicca su un'immagine per vederla a schermo intero",
+                "Usa il pulsante \"×\" per eliminare immagini"
+            ]
+        },
+        saveLoad: {
+            title: "💾 Salva e carica dati",
+            description: "Per mantenere i tuoi dati al sicuro:",
+            features: [
+                "Usa il pulsante flottante di salvataggio (💾) nell'angolo in alto a destra",
+                "Seleziona \"Salva dati\" per scaricare un file JSON",
+                "Usa \"Carica dati\" per ripristinare da un file salvato",
+                "Usa \"Pulisci dati\" per cancellare tutti i dati locali",
+                "⚠️ Importante: I dati vengono salvati localmente, non nel cloud"
+            ]
+        },
+        floatingButtons: {
+            title: "📋 Pulsanti flottanti",
+            description: "Nell'angolo in alto a destra troverai due pulsanti flottanti:",
+            features: [
+                "Pulsante superiore (💾): Opzioni di gestione dati (salva, carica, pulisci)",
+                "Pulsante inferiore (📋): Mostra l'elenco completo dei materiali",
+                "💡 I pulsanti si adattano automaticamente a diverse dimensioni dello schermo"
+            ]
+        },
+        arte: {
+            title: "🎨 Scheda ARTE",
+            description: "Nella scheda ARTE puoi:",
+            features: [
+                "Vedere una tabella completa di tutti gli equipaggiamenti possibili",
+                "Vedere i materiali necessari per ogni configurazione",
+                "Usare queste informazioni per pianificare i tuoi progressi"
+            ]
+        },
+        responsive: {
+            title: "📱 Design responsivo",
+            description: "L'applicazione si adatta automaticamente a diversi dispositivi:",
+            features: [
+                "Desktop: Interfaccia completa con tutti gli elementi visibili",
+                "Tablet: Elementi riorganizzati per schermi medi",
+                "Mobile: Interfaccia ottimizzata per schermi piccoli",
+                "💡 I selettori di materiali mantengono la loro forma quadrata a tutte le risoluzioni"
+            ]
+        },
+        links: {
+            title: "🔗 Link utili",
+            description: "Unisciti alla nostra community:",
+            features: [
+                "WhatsApp: Gruppo di giocatori per domande e strategie",
+                "Telegram: Canale ufficiale con notizie e aggiornamenti",
+                "YouTube: Tutorial e contenuti educativi"
+            ]
+        },
+        backButton: "← Torna ai Materiali"
+    },
+    fr: {
+        title: "📖 Guide d'utilisation - Gestionnaire de Matériaux",
+        whatIsApp: {
+            title: "🎯 Qu'est-ce que cette application ?",
+            description: "Cette application vous aide à gérer les matériaux et équipements pour le jeu Deck Heroes. Vous pouvez :",
+            features: [
+                "Voir les matériaux nécessaires pour des équipements spécifiques",
+                "Calculer les conversions entre différentes qualités de matériaux",
+                "Simuler des équipements dans l'onglet ARTE",
+                "Enregistrer des images de référence dans la galerie"
+            ]
+        },
+        howToUse: {
+            title: "⚙️ Comment utiliser les sélecteurs",
+            steps: [
+                "Équipement : Sélectionnez le type d'équipement (Épée, Plastron, Bottes, etc.)",
+                "Classe : Choisissez la classe de l'équipement (Normal, Champion, Planewalker, etc.)",
+                "Niveau : Sélectionnez le niveau de l'équipement (1-5)",
+                "Couleur : Choisissez la qualité du matériau (Blanc, Vert, Bleu, Violet, Doré)"
+            ],
+            note: "💡 Remarque : Certaines classes spéciales ont des restrictions sur les niveaux et les couleurs autorisés."
+        },
+        tabs: {
+            title: "📊 Onglets disponibles",
+            tabs: [
+                "Matériaux : Affiche les matériaux nécessaires pour l'équipement sélectionné",
+                ">> Vert/Bleu/Violet/Doré : Calcule les conversions vers cette qualité",
+                "Légende : Affiche le tableau d'équivalence entre les qualités",
+                "ARTE : Simule des équipements avec différentes configurations"
+            ]
+        },
+        gallery: {
+            title: "🖼️ Galerie d'images",
+            description: "Vous pouvez enregistrer des images de référence pour vous aider à vous souvenir :",
+            features: [
+                "Cliquez sur le bouton galerie (📷) en bas",
+                "Utilisez le bouton \"+\" pour ajouter de nouvelles images",
+                "Cliquez sur une image pour la voir en plein écran",
+                "Utilisez le bouton \"×\" pour supprimer des images"
+            ]
+        },
+        saveLoad: {
+            title: "💾 Sauvegarder et charger des données",
+            description: "Pour garder vos données en sécurité :",
+            features: [
+                "Utilisez le bouton flottant de sauvegarde (💾) en haut à droite",
+                "Sélectionnez \"Sauvegarder les données\" pour télécharger un fichier JSON",
+                "Utilisez \"Charger les données\" pour restaurer à partir d'un fichier sauvegardé",
+                "Utilisez \"Effacer les données\" pour supprimer toutes les données locales",
+                "⚠️ Important : Les données sont enregistrées localement, pas dans le cloud"
+            ]
+        },
+        floatingButtons: {
+            title: "📋 Boutons flottants",
+            description: "En haut à droite, vous trouverez deux boutons flottants :",
+            features: [
+                "Bouton supérieur (💾) : Options de gestion des données (sauvegarder, charger, effacer)",
+                "Bouton inférieur (📋) : Affiche la liste complète des matériaux",
+                "💡 Les boutons s'adaptent automatiquement à différentes tailles d'écran"
+            ]
+        },
+        arte: {
+            title: "🎨 Onglet ARTE",
+            description: "Dans l'onglet ARTE, vous pouvez :",
+            features: [
+                "Voir un tableau complet de tous les équipements possibles",
+                "Voir les matériaux nécessaires pour chaque configuration",
+                "Utiliser ces informations pour planifier votre progression"
+            ]
+        },
+        responsive: {
+            title: "📱 Design réactif",
+            description: "L'application s'adapte automatiquement à différents appareils :",
+            features: [
+                "Bureau : Interface complète avec tous les éléments visibles",
+                "Tablette : Éléments réorganisés pour les écrans moyens",
+                "Mobile : Interface optimisée pour les petits écrans",
+                "💡 Les sélecteurs de matériaux gardent leur forme carrée à toutes les résolutions"
+            ]
+        },
+        links: {
+            title: "🔗 Liens utiles",
+            description: "Rejoignez notre communauté :",
+            features: [
+                "WhatsApp : Groupe de joueurs pour questions et stratégies",
+                "Telegram : Canal officiel avec des nouvelles et des mises à jour",
+                "YouTube : Tutoriels et contenu éducatif"
+            ]
+        },
+        backButton: "← Retour aux Matériaux"
     }
 };
 
