@@ -421,18 +421,24 @@ header h1 {
     font-size: 11px !important;
     font-weight: bold !important;
     text-align: center !important;
-    
-    /* Cambios clave para permitir múltiples líneas */
-    white-space: normal !important;  /* Cambiar de nowrap a normal */
-    word-wrap: break-word !important; /* Permitir que las palabras largas se dividan */
-    width: max-content !important; /* Ancho basado en el contenido */
-    max-width: 150px !important; /* Ancho máximo para forzar saltos de línea */
-    
     z-index: 10 !important;
     pointer-events: none !important;
-    line-height: 1.2 !important;
-    max-height: 21%;
     box-sizing: border-box !important;
+    
+    /* Propiedades clave para forzar 2 líneas */
+    line-height: 1.2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: pre-line !important; /* Respeta saltos manuales */
+    word-break: break-word !important;
+    max-width: 150px !important; /* Ajustar según necesidad */
+    
+    /* Altura fija para exactamente 2 líneas */
+    height: calc(2 * 1.2em) !important;
+    max-height: calc(2 * 1.2em) !important;
+    overflow: hidden !important;
 }
 .base-dynamic-content {
     display: flex;
