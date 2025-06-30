@@ -1224,3 +1224,9 @@ header h1 {
     width: 33px;
     height: 33px;
 }
+
+/* Ocultar bottom-buttons cuando las pestañas especiales están activas */
+body.hide-bottom-buttons .bottom-section,
+body.hide-bottom-buttons .bottom-buttons {
+    display: none !important;
+}

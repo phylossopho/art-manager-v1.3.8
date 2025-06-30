@@ -586,6 +586,18 @@
         });
     }
 
+    // Función simple para manejar bottom-buttons
+    function handleBottomButtons() {
+        const activeTab = document.querySelector('.tab-content.active');
+        const body = document.body;
+        
+        if (activeTab && (activeTab.id === 'conversionlegend-tab' || activeTab.id === 'ayuda-tab')) {
+            body.classList.add('hide-bottom-buttons');
+        } else {
+            body.classList.remove('hide-bottom-buttons');
+        }
+    }
+
     // Escuchar el evento de scroll
     window.addEventListener('scroll', handleSocialIconsAnimation);
     
@@ -601,10 +613,20 @@
                 }, 1000);
             }
         });
+        
+        // Ejecutar handleBottomButtons al cargar
+        handleBottomButtons();
     });
     
     // También ejecutar al cargar la página por si ya está en la posición correcta
     window.addEventListener('load', handleSocialIconsAnimation);
+    
+    // Escuchar cambios de pestañas
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tab-button')) {
+            setTimeout(handleBottomButtons, 100);
+        }
+    });
 </script>
 
 </body>
