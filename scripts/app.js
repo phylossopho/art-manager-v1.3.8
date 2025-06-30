@@ -13,6 +13,7 @@ import * as conversiones from './conversiones.js';
 import { simularUso } from './simulacion.js';
 import * as modales from './modales.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
+import { changeLanguage } from './translations.js';
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -168,7 +169,10 @@ function iniciarApp() {
         window.construirMapaMaterialAEquipo = construirMapaMaterialAEquipo;
         window.inicializarAlmacenamientoMateriales = inicializarAlmacenamientoMateriales;
         window.abrirListaMateriales = abrirListaMateriales;
-        
+
+        // === ACTUALIZAR AYUDA DINÁMICAMENTE AL INICIAR ===
+        changeLanguage('es');
+
         console.log('✅ Aplicación iniciada (almacenamiento manual)');
         console.log('💡 Usa el botón flotante para guardar/cargar tus datos');
     } catch (error) {
