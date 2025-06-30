@@ -25,7 +25,7 @@ export const translations = {
             ],
             note: "💡 Nota: Algunas clases especiales tienen restricciones en niveles y colores permitidos."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Pestañas disponibles",
             tabs: [
                 "Materiales: Muestra los materiales necesarios para el equipo seleccionado",
@@ -117,7 +117,7 @@ export const translations = {
             ],
             note: "💡 Note: Some special classes have restrictions on allowed levels and colors."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Available tabs",
             tabs: [
                 "Materials: Shows materials needed for the selected equipment",
@@ -209,7 +209,7 @@ export const translations = {
             ],
             note: "💡 Примечание: Некоторые специальные классы имеют ограничения на разрешенные уровни и цвета."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Доступные вкладки",
             tabs: [
                 "Материалы: Показывает материалы, необходимые для выбранного снаряжения",
@@ -301,7 +301,7 @@ export const translations = {
             ],
             note: "💡 Hinweis: Einige spezielle Klassen haben Einschränkungen bei erlaubten Levels und Farben."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Verfügbare Tabs",
             tabs: [
                 "Materialien: Zeigt Materialien an, die für die ausgewählte Ausrüstung benötigt werden",
@@ -392,7 +392,7 @@ export const translations = {
             ],
             note: "💡 Nota: Algumas classes especiais têm restrições de níveis e cores permitidas."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Abas disponíveis",
             tabs: [
                 "Materiais: Mostra os materiais necessários para o equipamento selecionado",
@@ -483,7 +483,7 @@ export const translations = {
             ],
             note: "💡 Nota: Alcune classi speciali hanno restrizioni su livelli e colori consentiti."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Schede disponibili",
             tabs: [
                 "Materiali: Mostra i materiali necessari per l'equipaggiamento selezionato",
@@ -574,7 +574,7 @@ export const translations = {
             ],
             note: "💡 Remarque : Certaines classes spéciales ont des restrictions sur les niveaux et les couleurs autorisés."
         },
-        tabs: {
+        pestañasDisponibles: {
             title: "📊 Onglets disponibles",
             tabs: [
                 "Matériaux : Affiche les matériaux nécessaires pour l'équipement sélectionné",
@@ -665,7 +665,7 @@ export function changeLanguage(lang) {
     updateSection('howToUse', t.howToUse);
     
     // Actualizar sección "Pestañas disponibles"
-    updateSection('tabs', t.tabs);
+    updateSection('pestañasDisponibles', t.pestañasDisponibles);
     
     // Actualizar sección "Galería de imágenes"
     updateSection('gallery', t.gallery);
