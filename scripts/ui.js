@@ -345,7 +345,8 @@ function aplicarRestriccionesClase(estado) {
         if (baseSelector) {
             const title = baseSelector.querySelector('.base-title');
             if (title) {
-                title.textContent = "Equipo normal de nivel 4";
+                const nombreEquipo = estado.equipoActual || 'Equipo';
+                title.textContent = `${nombreEquipo} normal de nivel 4`;
             }
             let equipoImg = baseSelector.querySelector('.base-equipo-img');
             if (!equipoImg) {
@@ -361,6 +362,8 @@ function aplicarRestriccionesClase(estado) {
                     };
                     dynamicContainer.insertBefore(equipoImg, dynamicContainer.firstChild);
                 }
+            } else {
+                equipoImg.style.display = 'block';
             }
         }
     } else if (clasesNivel5.includes(estado.claseActual)) {
@@ -390,29 +393,36 @@ function aplicarRestriccionesClase(estado) {
         if (baseSelector) {
             const title = baseSelector.querySelector('.base-title');
             let texto = '';
+            const nombreEquipo = estado.equipoActual || 'Equipo';
             if (estado.claseActual === "Planewalker") {
-                texto = "Equipo normal de nivel 5";
+                texto = `${nombreEquipo} normal de nivel 5`;
             } else if (estado.claseActual === "Lord") {
                 texto = "Equipo de nivel 5 o menor";
             } else if (estado.claseActual === "Noble Lord") {
-                texto = "Equipo Lord de nivel 5";
+                texto = `${nombreEquipo} Lord de nivel 5`;
             }
             if (title) {
                 title.textContent = texto;
             }
             let equipoImg = baseSelector.querySelector('.base-equipo-img');
-            if (!equipoImg) {
-                const dynamicContainer = baseSelector.querySelector('.base-dynamic-content');
-                if (dynamicContainer) {
-                    equipoImg = document.createElement('img');
-                    equipoImg.className = 'base-equipo-img';
-                    equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
-                    equipoImg.alt = estado.equipoActual;
-                    equipoImg.style.marginBottom = '10px';
-                    equipoImg.onerror = () => {
-                        equipoImg.style.display = 'none';
-                    };
-                    dynamicContainer.insertBefore(equipoImg, dynamicContainer.firstChild);
+            if (estado.claseActual === "Lord") {
+                if (equipoImg) equipoImg.style.display = 'none';
+            } else {
+                if (!equipoImg) {
+                    const dynamicContainer = baseSelector.querySelector('.base-dynamic-content');
+                    if (dynamicContainer) {
+                        equipoImg = document.createElement('img');
+                        equipoImg.className = 'base-equipo-img';
+                        equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
+                        equipoImg.alt = estado.equipoActual;
+                        equipoImg.style.marginBottom = '10px';
+                        equipoImg.onerror = () => {
+                            equipoImg.style.display = 'none';
+                        };
+                        dynamicContainer.insertBefore(equipoImg, dynamicContainer.firstChild);
+                    }
+                } else {
+                    equipoImg.style.display = 'block';
                 }
             }
         }

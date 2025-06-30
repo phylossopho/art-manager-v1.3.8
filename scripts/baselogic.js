@@ -141,26 +141,31 @@ export function actualizarEstadoBase(estado) {
             deniedImage.style.display = 'none';
             selector.style.display = 'none'; // Oculto por defecto
             let texto = '';
+            let nombreEquipo = estado.equipoActual || 'Equipo';
             if (estado.claseActual === "Campeón") {
-                texto = "Equipo normal de nivel 4";
+                texto = `${nombreEquipo} normal de nivel 4`;
             } else if (estado.claseActual === "Planewalker") {
-                texto = "Equipo normal de nivel 5";
+                texto = `${nombreEquipo} normal de nivel 5`;
             } else if (estado.claseActual === "Lord") {
                 texto = "Equipo de nivel 5 o menor";
             } else if (estado.claseActual === "Noble Lord") {
-                texto = "Equipo Lord de nivel 5";
+                texto = `${nombreEquipo} Lord de nivel 5`;
             }
             baseText.textContent = texto;
-            // Actualizar imagen del equipo si existe
+            // Mostrar imagen solo si NO es Lord
             if (equipoImg) {
-                equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
-                equipoImg.alt = estado.equipoActual;
-                equipoImg.onerror = () => {
+                if (estado.claseActual === "Lord") {
                     equipoImg.style.display = 'none';
-                    const span = baseSelector.querySelector('span');
-                    if (span) span.textContent = estado.equipoActual;
-                };
-                equipoImg.style.display = 'block';
+                } else {
+                    equipoImg.src = `images/${estado.equipoActual.toLowerCase()}.png`;
+                    equipoImg.alt = estado.equipoActual;
+                    equipoImg.onerror = () => {
+                        equipoImg.style.display = 'none';
+                        const span = baseSelector.querySelector('span');
+                        if (span) span.textContent = estado.equipoActual;
+                    };
+                    equipoImg.style.display = 'block';
+                }
             }
             // Restaurar color de fondo según selección actual
             if (estado.colorBaseSeleccionado && estado.mapaColores[estado.colorBaseSeleccionado]) {
