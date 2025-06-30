@@ -65,7 +65,7 @@ export const translations = {
             ]
         },
         arte: {
-            title: "ARTE",
+            title: "🎨 ARTE",
             description: "En la pestaña de Materiales y en la de Conversiones puedes simular la creación de un equipo y guardar la información para futuras consultas.",
             features: [
                 "Primero, selecciona el tipo de equipo, la clase, el nivel y el color en los selectores superiores.",
