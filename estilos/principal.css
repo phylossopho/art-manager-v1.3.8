@@ -74,6 +74,7 @@ header h1 {
     padding: 5px;
     width: 200px;
     margin-bottom: 5px;
+    border-radius: 8px;
 }
 
 .right-panel {
@@ -1238,4 +1239,25 @@ header h1 {
 body.hide-bottom-buttons .bottom-section,
 body.hide-bottom-buttons .bottom-buttons {
     display: none !important;
+}
+
+.materials-table-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.materials-table-table th,
+.materials-table-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+}
+.materials-table-table td {
+    vertical-align: middle;
+}
+.materials-table-table img {
+    width: 33px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }

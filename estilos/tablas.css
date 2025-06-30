@@ -188,15 +188,15 @@ td {
 /* Tabla de leyenda de conversión */
 .conversion-legend-table th:nth-child(1),
 .conversion-legend-table td:nth-child(1) {
-    width: 120px;
-    min-width: 120px;
+    width: 15%;
+    min-width: 80px;
     text-align: left;
 }
 
 .conversion-legend-table th:nth-child(n+2),
 .conversion-legend-table td:nth-child(n+2) {
-    width: 80px;
-    min-width: 80px;
+    width: 7%;
+    min-width: 40px;
     text-align: center;
 }
 

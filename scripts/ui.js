@@ -15,6 +15,15 @@ export function actualizarImagenEquipo(estado) {
                 console.warn(`Imagen no encontrada para equipo: ${estado.equipoActual}`);
             };
             elementoImagen.style.display = 'block';
+            // Hacer la imagen clickeable para abrir el selector de equipo
+            elementoImagen.style.cursor = 'pointer';
+            elementoImagen.onclick = () => {
+                const equipmentSelect = document.getElementById('equipment-select');
+                if (equipmentSelect) {
+                    equipmentSelect.focus();
+                    equipmentSelect.click();
+                }
+            };
         } catch (error) {
             console.error('Error actualizando imagen de equipo:', error);
         }
@@ -261,13 +270,13 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
-            // Hacer el selector invisible, de 10px y centrado
+            // Hacer el selector invisible, de 1px y centrado
             selector.style.opacity = '0';
             selector.style.position = 'absolute';
             selector.style.top = '50%';
             selector.style.left = '50%';
-            selector.style.width = '10px';
-            selector.style.height = '10px';
+            selector.style.width = '1px';
+            selector.style.height = '1px';
             selector.style.transform = 'translate(-50%, -50%)';
             selector.style.zIndex = '10';
             selector.style.display = 'block';
@@ -735,6 +744,7 @@ export function actualizarColorFondoApp(estado) {
     let color = 'blanco';
     if (colorSelect) color = colorSelect.value;
     const pastel = colorFondoPorSeleccion(color);
+    document.body.style.background = pastel;
     document.querySelectorAll('.bottom-section').forEach(el => {
         el.style.backgroundColor = pastel;
     });
@@ -746,5 +756,11 @@ export function actualizarColorFondoApp(estado) {
     if (materialsTab) {
         materialsTab.style.backgroundColor = pastel;
         materialsTab.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
+    }
+    // Fondo para la pestaña activa
+    const tabActiva = document.querySelector('.tab-content.active');
+    if (tabActiva) {
+        tabActiva.style.backgroundColor = pastel;
+        tabActiva.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
     }
 }
