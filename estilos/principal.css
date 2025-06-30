@@ -399,15 +399,16 @@ header h1 {
 }
 
 .base-selector select {
-    width: 100%;
-    margin-top: 5px;
-    opacity: 0;
+    width: 1px;
+    height: 1px;
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
     z-index: 10;
     display: block !important;
+    margin: 0;
 }
 
 .base-text {
@@ -1280,4 +1281,20 @@ body.hide-bottom-buttons .bottom-buttons {
 .color-btn:active, .color-btn:focus {
     box-shadow: 0 2px 8px rgba(40, 167, 69, 0.18);
     border-color: #28a745;
+}
+
+/* Imagen denied específica para la base */
+.base-denied-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .base-denied-img {
+        width: 90%;
+        height: 90%;
+    }
 }

@@ -38,6 +38,24 @@ export function crearBaseSelector(estado, contenedor) {
         // Para clase Normal, no se agrega imagen
 
         // Selector de color
+        // Botón de color visible para abrir el selector
+        const colorBtn = document.createElement('button');
+        colorBtn.type = 'button';
+        colorBtn.className = 'color-btn';
+        colorBtn.style.background = estado.colorBaseSeleccionado ? estado.mapaColores[estado.colorBaseSeleccionado] : (estado.colorNoSeleccionado || '#808080');
+        colorBtn.style.border = '2px solid #888';
+        colorBtn.style.borderRadius = '50%';
+        colorBtn.style.width = '22px';
+        colorBtn.style.height = '22px';
+        colorBtn.style.position = 'absolute';
+        colorBtn.style.bottom = '8px';
+        colorBtn.style.left = '50%';
+        colorBtn.style.transform = 'translateX(-50%)';
+        colorBtn.style.cursor = 'pointer';
+        colorBtn.title = 'Cambiar color';
+        colorBtn.tabIndex = 0;
+
+        // <select> invisible, de 1px y centrado
         const selector = document.createElement('select');
         selector.innerHTML = `
             <option value="">-</option>
@@ -48,13 +66,13 @@ export function crearBaseSelector(estado, contenedor) {
             <option value="dorado">Dorado</option>
         `;
         selector.dataset.testid = 'base-color-selector';
-        // Estilos para hacerlo invisible pero funcional (como material-selector)
         selector.style.opacity = '0';
         selector.style.position = 'absolute';
-        selector.style.top = '0';
-        selector.style.left = '0';
-        selector.style.width = '100%';
-        selector.style.height = '100%';
+        selector.style.top = '50%';
+        selector.style.left = '50%';
+        selector.style.width = '1px';
+        selector.style.height = '1px';
+        selector.style.transform = 'translate(-50%, -50%)';
         selector.style.zIndex = '10';
         selector.style.display = 'block';
 
@@ -65,12 +83,22 @@ export function crearBaseSelector(estado, contenedor) {
             selector.value = ""; // Asegurar que esté en "-"
         }
 
-        // Evento de cambio
+        // Al hacer clic en el botón, abrir el <select>
+        colorBtn.onclick = () => {
+            if (typeof selector.showPicker === 'function') {
+                selector.showPicker();
+            } else {
+                selector.focus();
+                const event = new MouseEvent('mousedown', { bubbles: true });
+                selector.dispatchEvent(event);
+            }
+        };
+
         selector.addEventListener('change', (e) => {
             try {
                 const colorSeleccionado = e.target.value;
                 estado.colorBaseSeleccionado = colorSeleccionado;
-
+                colorBtn.style.background = colorSeleccionado && estado.mapaColores[colorSeleccionado] ? estado.mapaColores[colorSeleccionado] : (estado.colorNoSeleccionado || '#808080');
                 if (colorSeleccionado && estado.mapaColores[colorSeleccionado]) {
                     baseSelector.style.backgroundColor = estado.mapaColores[colorSeleccionado];
                 } else {
@@ -88,8 +116,10 @@ export function crearBaseSelector(estado, contenedor) {
         deniedImage.alt = 'Acción no permitida';
         deniedImage.style.display = 'none';
         deniedImage.dataset.testid = 'base-denied-image';
+        deniedImage.className = 'base-denied-img';
 
         // Añadir elementos al contenedor
+        dynamicContainer.appendChild(colorBtn);
         dynamicContainer.appendChild(selector);
         dynamicContainer.appendChild(deniedImage);
         baseSelector.appendChild(dynamicContainer);

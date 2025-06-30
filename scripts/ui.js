@@ -238,6 +238,7 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
         const selectorMaterial = document.createElement('div');
         selectorMaterial.className = 'material-selector item-selector';
         selectorMaterial.style.backgroundColor = colorFondo;
+        selectorMaterial.dataset.materialKey = claveAlmacen; // Refuerza unicidad
 
         if (material3Restringido || material4Restringido) {
             const deniedImage = document.createElement('img');
@@ -296,6 +297,7 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
             selector.style.transform = 'translate(-50%, -50%)';
             selector.style.zIndex = '10';
             selector.style.display = 'block';
+            selector.dataset.materialKey = claveAlmacen; // Refuerza unicidad
 
             // Al hacer clic en el botón, abrir el <select>
             colorBtn.onclick = () => {
@@ -310,9 +312,13 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selector.addEventListener('change', (e) => {
                 e.stopPropagation();
-                previsualizarUso(estado, claveAlmacen, e.target.value, selectorMaterial);
-                // Actualizar color del botón
-                colorBtn.style.background = e.target.value ? estado.mapaColores[e.target.value] : colorFondo;
+                // Solo afecta a su propio material
+                const key = e.target.dataset.materialKey;
+                if (key && key === claveAlmacen) {
+                    previsualizarUso(estado, key, e.target.value, selectorMaterial);
+                    // Actualizar color del botón
+                    colorBtn.style.background = e.target.value ? estado.mapaColores[e.target.value] : colorFondo;
+                }
             });
 
             selectorMaterial.appendChild(colorBtn);
