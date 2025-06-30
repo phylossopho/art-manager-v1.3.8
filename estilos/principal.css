@@ -7,7 +7,6 @@
 }
 
 body {
-    background-color: #2f2f2f; /* Gris ónix */
     color: #ffffff; /* Texto blanco para contraste */
 }
 
@@ -27,7 +26,6 @@ header h1 {
     color: #ffffff; /* Blanco para contraste con fondo oscuro */
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Sombra sutil para mejor legibilidad */
     font-weight: 600;
-    transition: color 0.8s cubic-bezier(0.4,0,0.2,1), text-shadow 0.8s cubic-bezier(0.4,0,0.2,1);
 }
 
 /* Sección superior */
