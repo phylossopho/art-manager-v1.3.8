@@ -4,6 +4,7 @@ import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
 import { generarTablaArte } from './arte.js';
 import * as modales from './modales.js';
 import { restriccionesClase, mapaColores } from './datos.js'; // Importamos las restricciones
+import { consultaRapidaMateriales } from './materiales.js';
 
 export function actualizarImagenEquipo(estado) {
     const elementoImagen = document.getElementById('equipment-img');
@@ -792,5 +793,32 @@ export function actualizarColorFondoApp(estado) {
     if (tabActiva) {
         tabActiva.style.backgroundColor = pastel;
         tabActiva.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
+    }
+}
+
+export function mostrarModalConsultaRapida(estado) {
+    const resultado = consultaRapidaMateriales(estado);
+    let html = '';
+    if (resultado.error) {
+        html = `<p style='color: #c00; font-weight: bold;'>${resultado.error}</p>`;
+    } else {
+        html = `<h2 style='color: #FFD600; text-align:center; font-size:2rem;'>⚡ Consulta rápida</h2>`;
+        html += `<p style='font-size:1.2rem; text-align:center;'><strong>Puedes fabricar <span style="color:#FFD600; font-size:1.5rem;">${resultado.maxEquipos}</span> equipo(s) completos</strong> con los materiales actuales.</p>`;
+        html += `<hr/><h3>Desglose de materiales:</h3><ul style='font-size:1rem;'>`;
+        for (const mat in resultado.desglose) {
+            const d = resultado.desglose[mat];
+            html += `<li><strong>${mat}:</strong> usados: ${d.usados}, restantes: ${d.restantes} (`;
+            html += Object.entries(d.porColor).map(([color, cant]) => `${cant} ${color}`).join(', ');
+            html += ")</li>";
+        }
+        html += '</ul>';
+    }
+    // Usar el sistema de modales
+    if (window.modales && window.modales.mostrarMensajeHTML) {
+        window.modales.mostrarMensajeHTML('Consulta rápida', html, 'info');
+    } else if (window.modales && window.modales.mostrarMensaje) {
+        window.modales.mostrarMensaje('Consulta rápida', html, 'info');
+    } else {
+        alert('Consulta rápida:\n' + (resultado.error || `Puedes fabricar ${resultado.maxEquipos} equipos completos.`));
     }
 }

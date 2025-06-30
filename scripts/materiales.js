@@ -359,3 +359,93 @@ export function abrirListaMateriales(estado) {
         modales.mostrarMensaje('Error', 'Error al abrir la lista de materiales', 'error');
     }
 }
+
+/**
+ * Calcula el máximo de equipos completos que se pueden fabricar con los materiales actuales,
+ * considerando conversiones automáticas (4 blancos = 1 verde, etc.) para el equipo seleccionado.
+ * Devuelve un objeto: { maxEquipos, desglose: {material: {usados, restantes, porColor}} }
+ */
+export function consultaRapidaMateriales(estado) {
+    // Obtener la receta del equipo seleccionado
+    const clase = estado.claseActual;
+    const equipo = estado.equipoActual;
+    const nivel = estado.nivelActual;
+    // Determinar la clase de almacenamiento
+    const claseAlmacen =
+        (clase === "Campeón" || clase === "Planewalker") ? "Campeón y Planewalker" :
+        (clase === "Lord" || clase === "Noble Lord") ? "Lord y Noble Lord" :
+        clase;
+    let materiales = [];
+    if (claseAlmacen === "Lord y Noble Lord") {
+        if (estado.materialesData[claseAlmacen]?.common) {
+            materiales = estado.materialesData[claseAlmacen].common;
+        }
+    } else {
+        if (estado.materialesData[claseAlmacen]?.[equipo]) {
+            materiales = estado.materialesData[claseAlmacen][equipo];
+        }
+    }
+    if (!materiales || materiales.length < 4) {
+        return { maxEquipos: 0, desglose: {}, error: 'No hay suficientes materiales para este equipo.' };
+    }
+    // Para cada material, obtener el storageKey
+    const storageKeys = materiales.map(mat => `${claseAlmacen}:${mat}`);
+    // Cantidades requeridas por material (por defecto 1 de cada uno, pero se puede adaptar si la receta cambia)
+    const requeridos = [1, 1, 1, 1];
+    // Colores en orden de mayor a menor
+    const colores = ['dorado', 'morado', 'azul', 'verde', 'blanco'];
+    // Equivalencias: cuántos de cada color hacen uno del superior
+    const equivalencias = { blanco: 4, verde: 4, azul: 4, morado: 4 };
+    // Paso 1: obtener el stock total de cada material, convertido a "unidades equivalentes de blanco"
+    function aBlancos(cant, color) {
+        switch (color) {
+            case 'dorado': return cant * 256;
+            case 'morado': return cant * 64;
+            case 'azul': return cant * 16;
+            case 'verde': return cant * 4;
+            case 'blanco': return cant;
+            default: return 0;
+        }
+    }
+    // Paso 2: para cada material, calcular el total en blancos
+    const stockBlancos = storageKeys.map((key) => {
+        let total = 0;
+        for (const color of colores) {
+            const cant = parseInt(estado.almacenMateriales[key]?.[color] || '0');
+            total += aBlancos(cant, color);
+        }
+        return total;
+    });
+    // Paso 3: ¿cuántos equipos completos se pueden hacer?
+    // Para cada material, se necesita 1 dorado (256 blancos) para un equipo completo
+    // El máximo de equipos es el mínimo entre los materiales
+    const maxPorMaterial = stockBlancos.map(total => Math.floor(total / 256));
+    const maxEquipos = Math.max(0, Math.min(...maxPorMaterial));
+    // Paso 4: calcular desglose de usados/restantes
+    const desglose = {};
+    for (let i = 0; i < materiales.length; i++) {
+        const usados = maxEquipos * 256;
+        const restantes = stockBlancos[i] - usados;
+        // Convertir los restantes a cada color
+        let resto = restantes;
+        const porColor = {};
+        for (const color of colores) {
+            let factor = 1;
+            switch (color) {
+                case 'dorado': factor = 256; break;
+                case 'morado': factor = 64; break;
+                case 'azul': factor = 16; break;
+                case 'verde': factor = 4; break;
+                case 'blanco': factor = 1; break;
+            }
+            porColor[color] = Math.floor(resto / factor);
+            resto = resto % factor;
+        }
+        desglose[materiales[i]] = {
+            usados: usados,
+            restantes: restantes,
+            porColor: porColor
+        };
+    }
+    return { maxEquipos, desglose };
+}

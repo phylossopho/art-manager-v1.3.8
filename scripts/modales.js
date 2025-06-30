@@ -34,6 +34,35 @@ export function mostrarMensaje(titulo, mensaje, tipo = "info") {
     }, 1890);
 }
 
+export function mostrarMensajeHTML(titulo, mensajeHTML, tipo = "info") {
+    const container = document.getElementById('toast-container');
+    const template = document.getElementById('toast-template');
+    // Clonar la plantilla
+    const toast = template.cloneNode(true);
+    toast.id = '';
+    toast.classList.add('show', `toast-${tipo}`);
+    // Configurar título y cuerpo
+    toast.querySelector('.toast-title').textContent = titulo;
+    toast.querySelector('.toast-body').innerHTML = mensajeHTML;
+    // Configurar el botón de cerrar
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.remove();
+    });
+    // Agregar al contenedor
+    container.appendChild(toast);
+    // Mostrar el toast
+    setTimeout(() => {
+        toast.style.display = 'block';
+    }, 10);
+    // Eliminar después de 3 segundos (3000ms) + 300ms de animación
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
 export function alternarMenuCSVMovil() {
     const menu = document.getElementById('mobile-csv-menu');
     menu.classList.toggle('visible');

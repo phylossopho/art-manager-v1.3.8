@@ -1308,3 +1308,18 @@ body.hide-bottom-buttons .bottom-buttons {
         height: 90% !important;
     }
 }
+
+#consulta-rapida-btn {
+    background: linear-gradient(135deg, #FFD600 0%, #FFEA00 100%);
+    color: #333;
+    font-weight: bold;
+    border: 2px solid #FFD600;
+    box-shadow: 0 2px 8px rgba(255, 214, 0, 0.18);
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+#consulta-rapida-btn:hover {
+    background: linear-gradient(135deg, #FFEA00 0%, #FFD600 100%);
+    color: #000;
+    box-shadow: 0 4px 16px rgba(255, 214, 0, 0.28);
+    transform: translateY(-2px) scale(1.08);
+}
