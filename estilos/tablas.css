@@ -696,9 +696,9 @@ td {
     }
     
     .arte-table-table .col-accion {
-        width: 5% !important;
-        min-width: 25px !important;
-        max-width: 30px !important;
+        width: 9% !important;
+        min-width: 50px !important;
+        max-width: 60px !important;
     }
 }
 
@@ -733,8 +733,8 @@ td {
     }
     
     .arte-table-table .col-accion {
-        width: 6% !important;
-        min-width: 20px !important;
-        max-width: 25px !important;
+        width: 9% !important;
+        min-width: 40px !important;
+        max-width: 50px !important;
     }
 }
