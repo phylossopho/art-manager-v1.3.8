@@ -659,9 +659,9 @@ td {
 }
 
 .arte-table-table .col-accion {
-    width: 5% !important;
-    min-width: 35px !important;
-    max-width: 45px !important;
+    width: 9% !important;
+    min-width: 50px !important;
+    max-width: 60px !important;
 }
 
 /* === RESPONSIVE PARA TABLA ARTE === */
