@@ -283,6 +283,8 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
 function previsualizarUso(estado, claveAlmacen, colorObjetivo, selectorMaterial) {
     try {
+        // DEPURACIÓN: Mostrar en consola la clave y el color seleccionado
+        console.log('[DEBUG cambio color material]', { claveAlmacen, colorObjetivo });
         // MANEJO DE SELECTOR VACÍO: REINICIO VISUAL
         if (!colorObjetivo) {
             selectorMaterial.style.backgroundColor = estado.colorNoSeleccionado;
