@@ -261,13 +261,14 @@ function crearMaterialSelector(estado, contenedor, material, indice, claseAlmace
 
             selectorMaterial.appendChild(selector);
 
-            // Hacer el selector invisible pero completamente funcional
+            // Hacer el selector invisible, de 1px y centrado
             selector.style.opacity = '0';
             selector.style.position = 'absolute';
-            selector.style.top = '0';
-            selector.style.left = '0';
-            selector.style.width = '100%';
-            selector.style.height = '100%';
+            selector.style.top = '50%';
+            selector.style.left = '50%';
+            selector.style.width = '1px';
+            selector.style.height = '1px';
+            selector.style.transform = 'translate(-50%, -50%)';
             selector.style.zIndex = '10';
             selector.style.display = 'block';
 
