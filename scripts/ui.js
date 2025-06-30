@@ -940,12 +940,19 @@ export function importarRecetas() {
 }
 
 export function mostrarGestorRecetas() {
-    const recetas = cargarRecetasPersonalizadas();
+    var modal = document.getElementById('gestor-recetas-modal');
+    var contenido = document.getElementById('contenido-gestor-recetas');
+    if (!modal || !contenido) return alert('No se encontró el modal de recetas');
+
+    // Botones de exportar/importar
     let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
     html += `<div style='text-align:center;margin-bottom:10px;'>
         <button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>📤 Exportar</button>
         <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>📥 Importar</button>
     </div>`;
+
+    // Listado de recetas
+    const recetas = cargarRecetasPersonalizadas();
     const claves = Object.keys(recetas);
     if (claves.length === 0) {
         html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
@@ -967,45 +974,103 @@ export function mostrarGestorRecetas() {
         }
         html += `</tbody></table>`;
     }
-    if (window.modales && window.modales.mostrarMensajeHTML) {
-        window.modales.mostrarMensajeHTML('Gestor de Recetas', html, 'info');
-        setTimeout(() => {
-            // Botones exportar/importar
-            const btnExportar = document.getElementById('exportar-recetas-btn');
-            if (btnExportar) btnExportar.onclick = exportarRecetas;
-            const btnImportar = document.getElementById('importar-recetas-btn');
-            if (btnImportar) btnImportar.onclick = importarRecetas;
-            // Editar receta
-            document.querySelectorAll('.editar-receta-lista').forEach(btn => {
-                btn.onclick = () => {
-                    const clave = btn.getAttribute('data-clave');
-                    const [equipo, clase, nivel, color, base] = clave.split('|');
-                    window.modales.cerrarModales && window.modales.cerrarModales();
-                    setTimeout(()=>{
-                        window.mostrarModalEdicionReceta && window.mostrarModalEdicionReceta({
-                            equipoActual: equipo,
-                            claseActual: clase,
-                            nivelActual: nivel,
-                            colorActual: color,
-                            colorBaseSeleccionado: base
-                        });
-                    }, 200);
-                };
-            });
-            // Eliminar receta
-            document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
-                btn.onclick = () => {
-                    const clave = btn.getAttribute('data-clave');
-                    if (confirm('¿Seguro que deseas eliminar esta receta?')) {
-                        const [equipo, clase, nivel, color, base] = clave.split('|');
-                        eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
-                        window.modales.cerrarModales && window.modales.cerrarModales();
-                        setTimeout(mostrarGestorRecetas, 300);
+    contenido.innerHTML = html;
+    modal.style.display = 'flex';
+    document.getElementById('cerrar-gestor-recetas').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Botones exportar/importar
+    document.getElementById('exportar-recetas-btn').onclick = function() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute('href', dataStr);
+        dlAnchor.setAttribute('download', 'recetas_art_manager.json');
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        document.body.removeChild(dlAnchor);
+    };
+    document.getElementById('importar-recetas-btn').onclick = function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json,application/json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const nuevas = JSON.parse(evt.target.result);
+                    const actuales = cargarRecetasPersonalizadas();
+                    let agregadas = 0;
+                    for (const clave in nuevas) {
+                        if (!actuales[clave]) {
+                            actuales[clave] = nuevas[clave];
+                            agregadas++;
+                        }
                     }
+                    localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
+                    alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
+                    window.mostrarGestorRecetas();
+                } catch {
+                    alert('El archivo no es válido.');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    };
+
+    // Editar receta
+    document.querySelectorAll('.editar-receta-lista').forEach(btn => {
+        btn.onclick = function() {
+            const clave = btn.getAttribute('data-clave');
+            const [equipo, clase, nivel, color, base] = clave.split('|');
+            const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
+            if (!receta) return alert('No se encontró la receta');
+            // Mostrar formulario de edición
+            contenido.innerHTML = `<h2 style='color:#FFD600;text-align:center;'>Editar Receta</h2>` +
+                `<form id='form-receta'>` +
+                `<div><label>Material 1: <input type='number' name='mat1' min='1' value='${receta.materiales[0]}' required></label></div>` +
+                `<div><label>Material 2: <input type='number' name='mat2' min='1' value='${receta.materiales[1]}' required></label></div>` +
+                `<div><label>Material 3: <input type='number' name='mat3' min='1' value='${receta.materiales[2]}' required></label></div>` +
+                `<div><label>Material 4: <input type='number' name='mat4' min='1' value='${receta.materiales[3]}' required></label></div>` +
+                `<div><label>Base: <input type='text' name='base' value='${receta.base}' required></label></div>` +
+                `<div><label>Tasa de éxito (%): <input type='number' name='tasaExito' min='1' max='100' value='${receta.tasaExito}' required></label></div>` +
+                `<div style='margin-top:10px;'><button type='submit' style='background:#FFD600;color:#333;font-weight:bold;'>Guardar receta</button></div>` +
+                `</form>` +
+                `<div style='margin-top:10px;'><button id='volver-gestor-recetas' style='background:#2196F3;color:#fff;font-weight:bold;border-radius:6px;padding:4px 10px;'>← Volver</button></div>`;
+            document.getElementById('volver-gestor-recetas').onclick = window.mostrarGestorRecetas;
+            document.getElementById('form-receta').onsubmit = function(e) {
+                e.preventDefault();
+                const nuevaReceta = {
+                    equipo, clase, nivel, color,
+                    base: this.base.value,
+                    materiales: [
+                        parseInt(this.mat1.value),
+                        parseInt(this.mat2.value),
+                        parseInt(this.mat3.value),
+                        parseInt(this.mat4.value)
+                    ],
+                    tasaExito: parseInt(this.tasaExito.value)
                 };
-            });
-        }, 200);
-    }
+                guardarRecetaPersonalizada(nuevaReceta);
+                alert('Receta guardada');
+                window.mostrarGestorRecetas();
+            };
+        };
+    });
+    // Eliminar receta
+    document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
+        btn.onclick = function() {
+            const clave = btn.getAttribute('data-clave');
+            const [equipo, clase, nivel, color, base] = clave.split('|');
+            if (confirm('¿Seguro que deseas eliminar esta receta?')) {
+                eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
+                window.mostrarGestorRecetas();
+            }
+        };
+    });
 }
 
 // Conectar el botón 📖 al gestor de recetas de forma robusta
@@ -1041,3 +1106,138 @@ const observer = new MutationObserver(() => {
     asignarEventoGestorRecetas();
 });
 observer.observe(document.body, { childList: true, subtree: true });
+
+// Modal gestor de recetas básico
+window.mostrarGestorRecetas = function() {
+    var modal = document.getElementById('gestor-recetas-modal');
+    var contenido = document.getElementById('contenido-gestor-recetas');
+    if (!modal || !contenido) return alert('No se encontró el modal de recetas');
+
+    // Botones de exportar/importar
+    let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
+    html += `<div style='text-align:center;margin-bottom:10px;'>
+        <button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>📤 Exportar</button>
+        <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>📥 Importar</button>
+    </div>`;
+
+    // Listado de recetas
+    const recetas = cargarRecetasPersonalizadas();
+    const claves = Object.keys(recetas);
+    if (claves.length === 0) {
+        html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
+    } else {
+        html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th>Base</th><th>Materiales</th><th>Éxito (%)</th><th>Acciones</th></tr></thead><tbody>`;
+        for (const clave of claves) {
+            const r = recetas[clave];
+            html += `<tr>`;
+            html += `<td>${r.equipo}</td>`;
+            html += `<td>${r.clase}</td>`;
+            html += `<td>${r.nivel}</td>`;
+            html += `<td>${r.color}</td>`;
+            html += `<td>${r.base}</td>`;
+            html += `<td>${r.materiales.join(', ')}</td>`;
+            html += `<td>${r.tasaExito || 100}</td>`;
+            html += `<td><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
+            html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
+            html += `</tr>`;
+        }
+        html += `</tbody></table>`;
+    }
+    contenido.innerHTML = html;
+    modal.style.display = 'flex';
+    document.getElementById('cerrar-gestor-recetas').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Botones exportar/importar
+    document.getElementById('exportar-recetas-btn').onclick = function() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute('href', dataStr);
+        dlAnchor.setAttribute('download', 'recetas_art_manager.json');
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        document.body.removeChild(dlAnchor);
+    };
+    document.getElementById('importar-recetas-btn').onclick = function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json,application/json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const nuevas = JSON.parse(evt.target.result);
+                    const actuales = cargarRecetasPersonalizadas();
+                    let agregadas = 0;
+                    for (const clave in nuevas) {
+                        if (!actuales[clave]) {
+                            actuales[clave] = nuevas[clave];
+                            agregadas++;
+                        }
+                    }
+                    localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
+                    alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
+                    window.mostrarGestorRecetas();
+                } catch {
+                    alert('El archivo no es válido.');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    };
+
+    // Editar receta
+    document.querySelectorAll('.editar-receta-lista').forEach(btn => {
+        btn.onclick = function() {
+            const clave = btn.getAttribute('data-clave');
+            const [equipo, clase, nivel, color, base] = clave.split('|');
+            const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
+            if (!receta) return alert('No se encontró la receta');
+            // Mostrar formulario de edición
+            contenido.innerHTML = `<h2 style='color:#FFD600;text-align:center;'>Editar Receta</h2>` +
+                `<form id='form-receta'>` +
+                `<div><label>Material 1: <input type='number' name='mat1' min='1' value='${receta.materiales[0]}' required></label></div>` +
+                `<div><label>Material 2: <input type='number' name='mat2' min='1' value='${receta.materiales[1]}' required></label></div>` +
+                `<div><label>Material 3: <input type='number' name='mat3' min='1' value='${receta.materiales[2]}' required></label></div>` +
+                `<div><label>Material 4: <input type='number' name='mat4' min='1' value='${receta.materiales[3]}' required></label></div>` +
+                `<div><label>Base: <input type='text' name='base' value='${receta.base}' required></label></div>` +
+                `<div><label>Tasa de éxito (%): <input type='number' name='tasaExito' min='1' max='100' value='${receta.tasaExito}' required></label></div>` +
+                `<div style='margin-top:10px;'><button type='submit' style='background:#FFD600;color:#333;font-weight:bold;'>Guardar receta</button></div>` +
+                `</form>` +
+                `<div style='margin-top:10px;'><button id='volver-gestor-recetas' style='background:#2196F3;color:#fff;font-weight:bold;border-radius:6px;padding:4px 10px;'>← Volver</button></div>`;
+            document.getElementById('volver-gestor-recetas').onclick = window.mostrarGestorRecetas;
+            document.getElementById('form-receta').onsubmit = function(e) {
+                e.preventDefault();
+                const nuevaReceta = {
+                    equipo, clase, nivel, color,
+                    base: this.base.value,
+                    materiales: [
+                        parseInt(this.mat1.value),
+                        parseInt(this.mat2.value),
+                        parseInt(this.mat3.value),
+                        parseInt(this.mat4.value)
+                    ],
+                    tasaExito: parseInt(this.tasaExito.value)
+                };
+                guardarRecetaPersonalizada(nuevaReceta);
+                alert('Receta guardada');
+                window.mostrarGestorRecetas();
+            };
+        };
+    });
+    // Eliminar receta
+    document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
+        btn.onclick = function() {
+            const clave = btn.getAttribute('data-clave');
+            const [equipo, clase, nivel, color, base] = clave.split('|');
+            if (confirm('¿Seguro que deseas eliminar esta receta?')) {
+                eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
+                window.mostrarGestorRecetas();
+            }
+        };
+    });
+};
