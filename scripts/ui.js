@@ -4,7 +4,7 @@ import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
 import { generarTablaArte } from './arte.js';
 import * as modales from './modales.js';
 import { restriccionesClase, mapaColores } from './datos.js'; // Importamos las restricciones
-import { consultaRapidaMateriales } from './materiales.js';
+import { consultaRapidaMateriales, guardarRecetaPersonalizada, obtenerRecetaPersonalizada, cargarRecetasPersonalizadas, eliminarRecetaPersonalizada } from './materiales.js';
 
 export function actualizarImagenEquipo(estado) {
     const elementoImagen = document.getElementById('equipment-img');
@@ -803,6 +803,7 @@ export function mostrarModalConsultaRapida(estado) {
         html = `<p style='color: #c00; font-weight: bold;'>${resultado.error}</p>`;
     } else {
         html = `<h2 style='color: #FFD600; text-align:center; font-size:2rem;'>⚡ Consulta rápida</h2>`;
+        html += `<button id='editar-receta-btn' style='float:right;background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-bottom:8px;font-size:1rem;'>✏️ Editar receta</button>`;
         html += `<p style='font-size:1.2rem; text-align:center;'><strong>Puedes fabricar <span style="color:#FFD600; font-size:1.5rem;">${resultado.maxEquipos}</span> equipo(s) completos</strong> con los materiales actuales.</p>`;
         html += `<hr/><h3>Desglose de materiales:</h3><ul style='font-size:1rem;'>`;
         for (const mat in resultado.desglose) {
@@ -816,9 +817,199 @@ export function mostrarModalConsultaRapida(estado) {
     // Usar el sistema de modales
     if (window.modales && window.modales.mostrarMensajeHTML) {
         window.modales.mostrarMensajeHTML('Consulta rápida', html, 'info');
+        setTimeout(() => {
+            const btn = document.getElementById('editar-receta-btn');
+            if (btn) btn.onclick = () => mostrarModalEdicionReceta(estado);
+        }, 200);
     } else if (window.modales && window.modales.mostrarMensaje) {
         window.modales.mostrarMensaje('Consulta rápida', html, 'info');
     } else {
         alert('Consulta rápida:\n' + (resultado.error || `Puedes fabricar ${resultado.maxEquipos} equipos completos.`));
     }
 }
+
+export function mostrarModalEdicionReceta(estado) {
+    // Obtener receta guardada o valores actuales
+    const receta = obtenerRecetaPersonalizada(
+        estado.equipoActual,
+        estado.claseActual,
+        estado.nivelActual,
+        estado.colorActual,
+        estado.colorBaseSeleccionado || 'N/A'
+    ) || {
+        equipo: estado.equipoActual,
+        clase: estado.claseActual,
+        nivel: estado.nivelActual,
+        color: estado.colorActual,
+        base: estado.colorBaseSeleccionado || 'N/A',
+        materiales: [1,1,1,1],
+        tasaExito: 100
+    };
+    // Formulario HTML
+    let html = `<h2 style='color:#FFD600;text-align:center;'>Editar Receta</h2>`;
+    html += `<form id='form-receta'>`;
+    html += `<div><label>Material 1: <input type='number' name='mat1' min='1' value='${receta.materiales[0]}' required></label></div>`;
+    html += `<div><label>Material 2: <input type='number' name='mat2' min='1' value='${receta.materiales[1]}' required></label></div>`;
+    html += `<div><label>Material 3: <input type='number' name='mat3' min='1' value='${receta.materiales[2]}' required></label></div>`;
+    html += `<div><label>Material 4: <input type='number' name='mat4' min='1' value='${receta.materiales[3]}' required></label></div>`;
+    html += `<div><label>Base: <input type='text' name='base' value='${receta.base}' required></label></div>`;
+    html += `<div><label>Tasa de éxito (%): <input type='number' name='tasaExito' min='1' max='100' value='${receta.tasaExito}' required></label></div>`;
+    html += `<div style='margin-top:10px;'><button type='submit' style='background:#FFD600;color:#333;font-weight:bold;'>Guardar receta</button></div>`;
+    html += `</form>`;
+    html += `<div id='resultado-receta'></div>`;
+    // Mostrar modal
+    if (window.modales && window.modales.mostrarMensajeHTML) {
+        window.modales.mostrarMensajeHTML('Editar Receta', html, 'info');
+    }
+    // Event listener para guardar
+    setTimeout(() => {
+        const form = document.getElementById('form-receta');
+        if (form) {
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const nuevaReceta = {
+                    equipo: estado.equipoActual,
+                    clase: estado.claseActual,
+                    nivel: estado.nivelActual,
+                    color: estado.colorActual,
+                    base: form.base.value,
+                    materiales: [
+                        parseInt(form.mat1.value),
+                        parseInt(form.mat2.value),
+                        parseInt(form.mat3.value),
+                        parseInt(form.mat4.value)
+                    ],
+                    tasaExito: parseInt(form.tasaExito.value)
+                };
+                guardarRecetaPersonalizada(nuevaReceta);
+                form.querySelector('button[type=submit]').textContent = '¡Guardado!';
+                setTimeout(()=>{form.querySelector('button[type=submit]').textContent = 'Guardar receta';}, 1200);
+            };
+        }
+    }, 200);
+}
+
+export function exportarRecetas() {
+    const recetas = cargarRecetasPersonalizadas();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute('href', dataStr);
+    dlAnchor.setAttribute('download', 'recetas_art_manager.json');
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    document.body.removeChild(dlAnchor);
+}
+
+export function importarRecetas() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const nuevas = JSON.parse(evt.target.result);
+                const actuales = cargarRecetasPersonalizadas();
+                let agregadas = 0;
+                for (const clave in nuevas) {
+                    if (!actuales[clave]) {
+                        actuales[clave] = nuevas[clave];
+                        agregadas++;
+                    }
+                }
+                localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
+                if (window.modales && window.modales.mostrarMensajeHTML) {
+                    window.modales.mostrarMensajeHTML('Importar recetas', `<p style='color:green;'>¡Importación completada! Se agregaron <b>${agregadas}</b> recetas nuevas.</p>`, 'success');
+                } else {
+                    alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
+                }
+                setTimeout(mostrarGestorRecetas, 1000);
+            } catch {
+                if (window.modales && window.modales.mostrarMensajeHTML) {
+                    window.modales.mostrarMensajeHTML('Importar recetas', `<p style='color:red;'>El archivo no es válido.</p>`, 'error');
+                } else {
+                    alert('El archivo no es válido.');
+                }
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+export function mostrarGestorRecetas() {
+    const recetas = cargarRecetasPersonalizadas();
+    let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
+    html += `<div style='text-align:center;margin-bottom:10px;'>
+        <button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>📤 Exportar</button>
+        <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>📥 Importar</button>
+    </div>`;
+    const claves = Object.keys(recetas);
+    if (claves.length === 0) {
+        html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
+    } else {
+        html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th>Base</th><th>Materiales</th><th>Éxito (%)</th><th>Acciones</th></tr></thead><tbody>`;
+        for (const clave of claves) {
+            const r = recetas[clave];
+            html += `<tr>`;
+            html += `<td>${r.equipo}</td>`;
+            html += `<td>${r.clase}</td>`;
+            html += `<td>${r.nivel}</td>`;
+            html += `<td>${r.color}</td>`;
+            html += `<td>${r.base}</td>`;
+            html += `<td>${r.materiales.join(', ')}</td>`;
+            html += `<td>${r.tasaExito || 100}</td>`;
+            html += `<td><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
+            html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
+            html += `</tr>`;
+        }
+        html += `</tbody></table>`;
+    }
+    if (window.modales && window.modales.mostrarMensajeHTML) {
+        window.modales.mostrarMensajeHTML('Gestor de Recetas', html, 'info');
+        setTimeout(() => {
+            // Botones exportar/importar
+            const btnExportar = document.getElementById('exportar-recetas-btn');
+            if (btnExportar) btnExportar.onclick = exportarRecetas;
+            const btnImportar = document.getElementById('importar-recetas-btn');
+            if (btnImportar) btnImportar.onclick = importarRecetas;
+            // Editar receta
+            document.querySelectorAll('.editar-receta-lista').forEach(btn => {
+                btn.onclick = () => {
+                    const clave = btn.getAttribute('data-clave');
+                    const [equipo, clase, nivel, color, base] = clave.split('|');
+                    window.modales.cerrarModales && window.modales.cerrarModales();
+                    setTimeout(()=>{
+                        window.mostrarModalEdicionReceta && window.mostrarModalEdicionReceta({
+                            equipoActual: equipo,
+                            claseActual: clase,
+                            nivelActual: nivel,
+                            colorActual: color,
+                            colorBaseSeleccionado: base
+                        });
+                    }, 200);
+                };
+            });
+            // Eliminar receta
+            document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
+                btn.onclick = () => {
+                    const clave = btn.getAttribute('data-clave');
+                    if (confirm('¿Seguro que deseas eliminar esta receta?')) {
+                        const [equipo, clase, nivel, color, base] = clave.split('|');
+                        eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
+                        window.modales.cerrarModales && window.modales.cerrarModales();
+                        setTimeout(mostrarGestorRecetas, 300);
+                    }
+                };
+            });
+        }, 200);
+    }
+}
+
+// Conectar el botón 📖 al gestor de recetas
+setTimeout(() => {
+    const btn = document.getElementById('gestor-recetas-btn');
+    if (btn) btn.onclick = mostrarGestorRecetas;
+}, 500);

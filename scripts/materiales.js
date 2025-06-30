@@ -449,3 +449,38 @@ export function consultaRapidaMateriales(estado) {
     }
     return { maxEquipos, desglose };
 }
+
+// === GESTOR DE RECETAS PERSONALIZADAS ===
+const RECETAS_KEY = 'recetasPersonalizadas';
+
+export function guardarRecetaPersonalizada(receta) {
+    const recetas = cargarRecetasPersonalizadas();
+    // Clave única: equipo|clase|nivel|color|base
+    const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
+    recetas[clave] = receta;
+    localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+}
+
+export function cargarRecetasPersonalizadas() {
+    try {
+        const data = localStorage.getItem(RECETAS_KEY);
+        return data ? JSON.parse(data) : {};
+    } catch {
+        return {};
+    }
+}
+
+export function obtenerRecetaPersonalizada(equipo, clase, nivel, color, base) {
+    const recetas = cargarRecetasPersonalizadas();
+    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+    return recetas[clave] || null;
+}
+
+export function eliminarRecetaPersonalizada(equipo, clase, nivel, color, base) {
+    const recetas = cargarRecetasPersonalizadas();
+    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+    if (recetas[clave]) {
+        delete recetas[clave];
+        localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+    }
+}
