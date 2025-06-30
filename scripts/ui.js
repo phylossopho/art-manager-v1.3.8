@@ -704,52 +704,42 @@ function colorFondoPorSeleccion(color) {
     return pastelizarColor('#FFFFFF', 0.7);
 }
 
-// Modifica aplicarFondoPorColorEquipo y actualizarColorFondoApp para usar colorFondoPorSeleccion
+// Modifica aplicarFondoPorColorEquipo para animar el h1
 function aplicarFondoPorColorEquipo() {
     const colorSelect = document.getElementById('color-select');
     if (!colorSelect) return;
-    document.body.style.transition = 'background 0.8s ease-in-out';
+    document.body.style.transition = 'background 0.8s cubic-bezier(0.4,0,0.2,1), background-color 0.8s cubic-bezier(0.4,0,0.2,1)';
     const color = colorSelect.value;
     const pastel = colorFondoPorSeleccion(color);
     document.body.style.background = pastel;
-    ajustarContrasteTitulo(pastel);
-}
-
-// Función para ajustar el contraste del título según el color de fondo
-function ajustarContrasteTitulo(colorFondo) {
+    // Transición sincronizada del h1
     const titulo = document.querySelector('header h1');
-    if (!titulo) return;
-    
-    // Convertir color de fondo a RGB para calcular luminosidad
-    let r, g, b;
-    if (colorFondo.startsWith('rgb')) {
-        const match = colorFondo.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-        if (match) {
-            r = parseInt(match[1]);
-            g = parseInt(match[2]);
-            b = parseInt(match[3]);
+    if (titulo) {
+        titulo.style.transition = 'color 0.8s cubic-bezier(0.4,0,0.2,1), text-shadow 0.8s cubic-bezier(0.4,0,0.2,1)';
+        // Ajustar contraste del título
+        let r, g, b;
+        if (pastel.startsWith('rgb')) {
+            const match = pastel.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+            if (match) {
+                r = parseInt(match[1]);
+                g = parseInt(match[2]);
+                b = parseInt(match[3]);
+            }
+        } else if (pastel.startsWith('#')) {
+            r = parseInt(pastel.slice(1, 3), 16);
+            g = parseInt(pastel.slice(3, 5), 16);
+            b = parseInt(pastel.slice(5, 7), 16);
+        } else {
+            r = g = b = 128;
         }
-    } else if (colorFondo.startsWith('#')) {
-        r = parseInt(colorFondo.slice(1, 3), 16);
-        g = parseInt(colorFondo.slice(3, 5), 16);
-        b = parseInt(colorFondo.slice(5, 7), 16);
-    } else {
-        // Color por defecto si no se puede parsear
-        r = g = b = 128;
-    }
-    
-    // Calcular luminosidad relativa (fórmula WCAG)
-    const luminosidad = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
-    // Ajustar color del título según luminosidad del fondo
-    if (luminosidad > 0.5) {
-        // Fondo claro, usar texto oscuro
-        titulo.style.color = '#2f2f2f';
-        titulo.style.textShadow = '0 2px 4px rgba(255, 255, 255, 0.3)';
-    } else {
-        // Fondo oscuro, usar texto claro
-        titulo.style.color = '#ffffff';
-        titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+        const luminosidad = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        if (luminosidad > 0.5) {
+            titulo.style.color = '#2f2f2f';
+            titulo.style.textShadow = '0 2px 4px rgba(255, 255, 255, 0.3)';
+        } else {
+            titulo.style.color = '#ffffff';
+            titulo.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.3)';
+        }
     }
 }
 
@@ -804,18 +794,3 @@ export function actualizarColorFondoApp(estado) {
         tabActiva.style.transition = 'background 0.8s ease-in-out, background-color 0.8s ease-in-out';
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const body = document.body;
-    // Asegura transición suave
-    body.style.transition = 'background-color 1.2s cubic-bezier(0.4,0,0.2,1)';
-    // Espera 6 segundos antes de cambiar el fondo si el usuario no ha elegido color
-    setTimeout(() => {
-        // Verifica si el usuario ya eligió un color personalizado
-        const colorElegido = window.localStorage.getItem('colorFondoApp');
-        if (!colorElegido) {
-            // Cambia a un color alternativo (elige uno, por ejemplo, #1e3a8a)
-            body.style.backgroundColor = '#1e3a8a';
-        }
-    }, 6000);
-});
