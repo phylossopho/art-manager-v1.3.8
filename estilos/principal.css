@@ -411,25 +411,29 @@ header h1 {
 
 .base-text {
     position: absolute;
-    top: 50%; /* Centrado vertical */
-    left: 50%; /* Centrado horizontal */
-    transform: translate(-50%, -50%); /* Centrado preciso */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: rgba(117, 3, 3, 0.6) !important;
     color: rgb(255, 255, 255) !important;
-    padding: 2px 4px !important; /* Padding reducido */
+    padding: 2px 4px !important;
     border-radius: 2px !important;
     font-size: 11px !important;
     font-weight: bold !important;
     text-align: center !important;
-    white-space: nowrap !important;
+    
+    /* Cambios clave para permitir múltiples líneas */
+    white-space: normal !important;  /* Cambiar de nowrap a normal */
+    word-wrap: break-word !important; /* Permitir que las palabras largas se dividan */
+    width: max-content !important; /* Ancho basado en el contenido */
+    max-width: 150px !important; /* Ancho máximo para forzar saltos de línea */
+    
     z-index: 10 !important;
     pointer-events: none !important;
-    line-height: 1.2 !important; /* Altura de línea ajustada */
-     /* Ancho máximo para evitar desbordamiento */
+    line-height: 1.2 !important;
     max-height: 21%;
     box-sizing: border-box !important;
 }
-
 .base-dynamic-content {
     display: flex;
     flex-direction: column;
