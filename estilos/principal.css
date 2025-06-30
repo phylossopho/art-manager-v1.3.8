@@ -1277,6 +1277,7 @@ body.hide-bottom-buttons .bottom-buttons {
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     transition: box-shadow 0.2s;
     z-index: 20;
+    opacity: 0.1;
 }
 .color-btn:active, .color-btn:focus {
     box-shadow: 0 2px 8px rgba(40, 167, 69, 0.18);
@@ -1285,8 +1286,8 @@ body.hide-bottom-buttons .bottom-buttons {
 
 /* Imagen denied específica para la base */
 .base-denied-img {
-    width: 90%;
-    height: 90%;
+    width: 95%;
+    height: 95%;
     object-fit: contain;
     display: block;
     margin: 0 auto;
@@ -1294,7 +1295,7 @@ body.hide-bottom-buttons .bottom-buttons {
 
 @media (max-width: 768px) {
     .base-denied-img {
-        width: 90%;
-        height: 90%;
+        width: 95%;
+        height: 95%;
     }
 }
