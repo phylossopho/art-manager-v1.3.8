@@ -2,6 +2,40 @@
 
 Una aplicación web completa para gestionar materiales, simular conversiones y crear equipos en Deck Heroes. Permite organizar inventarios, calcular conversiones automáticas y simular el uso de recursos para crear equipos de diferentes calidades y clases.
 
+## ℹ️ Guía de Ayuda Multiidioma
+
+La sección de ayuda y guía de uso está disponible en varios idiomas. Puedes cambiar el idioma de la ayuda desde la pestaña correspondiente haciendo clic en la bandera de tu preferencia.
+
+**Idiomas disponibles para la ayuda:**
+- Español (es)
+- Inglés (en)
+- Ruso (ru)
+- Alemán (de)
+- Portugués (pt)
+- Italiano (it)
+- Francés (fr)
+
+---
+
+## 🖼️ Ejemplos visuales
+
+### Pantalla principal de la aplicación
+![Vista principal de la app](screenshots/vista-principal.png)
+
+### Sección de ayuda multiidioma
+![Ayuda multiidioma con banderas](screenshots/ayuda-multiidioma.png)
+
+### Galería de imágenes
+![Galería de imágenes](screenshots/galeria.png)
+
+### Tabla de materiales
+![Tabla de materiales](screenshots/tabla-materiales.png)
+
+### Simulación de equipo (ARTE)
+![Simulación de equipo en ARTE](screenshots/arte-simulacion.png)
+
+---
+
 ## ✨ Características Principales
 
 ### 🛠️ Gestión de Materiales Avanzada
