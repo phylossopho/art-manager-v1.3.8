@@ -1019,3 +1019,25 @@ if (document.readyState === 'loading') {
 } else {
     conectarBotonGestorRecetas();
 }
+
+// Asignar evento al botón 📖 aunque el DOM cambie dinámicamente
+function asignarEventoGestorRecetas() {
+    const btn = document.getElementById('gestor-recetas-btn');
+    if (btn && !btn._eventoAsignado) {
+        btn.onclick = mostrarGestorRecetas;
+        btn._eventoAsignado = true;
+    }
+}
+
+// Intentar asignar al cargar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', asignarEventoGestorRecetas);
+} else {
+    asignarEventoGestorRecetas();
+}
+
+// Observer para cambios en el DOM
+const observer = new MutationObserver(() => {
+    asignarEventoGestorRecetas();
+});
+observer.observe(document.body, { childList: true, subtree: true });
