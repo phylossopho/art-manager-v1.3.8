@@ -65,13 +65,13 @@ export const translations = {
             ]
         },
         arte: {
-            title: "🎨 Pestaña ARTE",
-            description: "En la pestaña ARTE puedes simular la creación de un equipo y guardar la información para futuras consultas:",
+            title: "ARTE",
+            description: "En la pestaña de Materiales y en la de Conversiones puedes simular la creación de un equipo y guardar la información para futuras consultas.",
             features: [
                 "Primero, selecciona el tipo de equipo, la clase, el nivel y el color en los selectores superiores.",
-                "Elige también la base adecuada según el requisito previo que se muestra en la propia base (aparecerá un texto explicativo si hay alguna restricción).",
+                "En la parte intermedia podrás ver la cantidad de materiales disponibles que tienes, elige también la base adecuada según el requisito previo que se muestra en la propia base (aparecerá un texto explicativo si hay alguna restricción).",
                 "Después de seleccionar todos los datos, haz clic en el botón USAR para simular la creación del equipo.",
-                "Una vez simulado, podrás ver la información del equipo en la tabla de ARTE y almacenarla para futuras consultas.",
+                "Una vez simulado, podrás ver la información del equipo en la pestaña de ARTE y almacenarla para futuras consultas, también puedes eliminar esta simulación.",
                 "Puedes repetir el proceso con diferentes combinaciones para planificar tu progreso y comparar materiales necesarios."
             ]
         },
