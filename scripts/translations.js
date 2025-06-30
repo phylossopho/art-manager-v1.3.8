@@ -435,13 +435,17 @@ function updateSection(sectionId, content) {
 
     // Actualizar lista
     const list = section.querySelector('ul');
-    if (list && content.features) {
+    if (list) {
         list.innerHTML = '';
-        content.features.forEach(feature => {
-            const li = document.createElement('li');
-            li.textContent = feature;
-            list.appendChild(li);
-        });
+        // Soporta tanto 'features' como 'tabs' como array de elementos
+        const items = content.features || content.tabs;
+        if (Array.isArray(items)) {
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                list.appendChild(li);
+            });
+        }
     }
 
     // Actualizar pasos numerados

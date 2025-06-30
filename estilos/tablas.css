@@ -708,33 +708,28 @@ td {
         min-width: 30px !important;
         max-width: 40px !important;
     }
-    
     .arte-table-table .col-nombre {
         width: 18% !important;
         min-width: 40px !important;
     }
-    
     .arte-table-table .col-clase {
-        width: 12% !important;
-        min-width: 40px !important;
-        max-width: 50px !important;
-    }
-    
-    .arte-table-table .col-nivel {
-        width: 7% !important;
-        min-width: 25px !important;
-        max-width: 30px !important;
-    }
-    
-    .arte-table-table .col-material {
-        width: 9% !important;
+        width: 11% !important;
         min-width: 35px !important;
         max-width: 45px !important;
     }
-    
+    .arte-table-table .col-nivel {
+        width: 5% !important;
+        min-width: 20px !important;
+        max-width: 25px !important;
+    }
+    .arte-table-table .col-material {
+        width: 7% !important;
+        min-width: 25px !important;
+        max-width: 35px !important;
+    }
     .arte-table-table .col-accion {
-        width: 9% !important;
-        min-width: 40px !important;
-        max-width: 50px !important;
+        width: 18% !important;
+        min-width: 60px !important;
+        max-width: 90px !important;
     }
 }
