@@ -452,140 +452,26 @@ export function consultaRapidaMateriales(estado) {
     return { maxEquipos, desglose };
 }
 
-// === GESTOR DE RECETAS PERSONALIZADAS ===
-const RECETAS_KEY = 'recetasPersonalizadas';
-let recetasMemoriaFallback = {};
-let usandoFallback = false;
-
-function mostrarAvisoFallback() {
-    if (!usandoFallback) {
-        usandoFallback = true;
-        mostrarToastAmarillo('No se puede acceder a localStorage. Las recetas solo se guardarán temporalmente mientras la app esté abierta.');
-    }
-}
-
-function mostrarToastAmarillo(mensaje) {
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.style.position = 'fixed';
-        container.style.left = '0';
-        container.style.right = '0';
-        container.style.bottom = '0';
-        container.style.zIndex = '99999';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column-reverse';
-        container.style.alignItems = 'center';
-        container.style.pointerEvents = 'none';
-        document.body.appendChild(container);
-    }
-    const toast = document.createElement('div');
-    toast.className = 'toast toast-fallback';
-    toast.style.background = '#ffe066';
-    toast.style.color = '#222';
-    toast.style.fontWeight = 'bold';
-    toast.style.textAlign = 'center';
-    toast.style.borderRadius = '6px';
-    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)';
-    toast.style.margin = '0 0 16px 0';
-    toast.style.padding = '14px 32px';
-    toast.style.maxWidth = '90vw';
-    toast.style.opacity = '0.3';
-    toast.style.transform = 'translateY(30px)';
-    toast.style.transition = 'opacity 0.3s, transform 0.3s';
-    toast.style.pointerEvents = 'auto';
-    toast.innerText = mensaje;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-    }, 10);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(30px)';
-        setTimeout(() => {
-            if (toast.parentNode) toast.parentNode.removeChild(toast);
-        }, 300);
-    }, 3000);
-}
+// === GESTOR DE RECETAS SOLO EN MEMORIA ===
+if (!window._recetasMemoria) window._recetasMemoria = {};
 
 export function guardarRecetaPersonalizada(receta) {
-    try {
-        const recetas = cargarRecetasPersonalizadas();
-        const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
-        recetas[clave] = receta;
-        if (!usandoFallback) {
-            localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
-        } else {
-            recetasMemoriaFallback = recetas;
-        }
-    } catch (error) {
-        mostrarAvisoFallback();
-        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
-            window.modales.mostrarMensajeHTML('Error al guardar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0051');
-        } else {
-            alert('Error al guardar receta: ' + (error.message || error) + '\nCódigo de error: 0051');
-        }
-        recetasMemoriaFallback = recetasMemoriaFallback || {};
-        const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
-        recetasMemoriaFallback[clave] = receta;
-    }
+    const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
+    window._recetasMemoria[clave] = receta;
 }
 
 export function cargarRecetasPersonalizadas() {
-    try {
-        if (!usandoFallback) {
-            const data = localStorage.getItem(RECETAS_KEY);
-            return data ? JSON.parse(data) : {};
-        } else {
-            return recetasMemoriaFallback;
-        }
-    } catch (error) {
-        mostrarAvisoFallback();
-        // No mostrar error 0052 al usuario, solo operar en memoria
-        return recetasMemoriaFallback;
-    }
+    return window._recetasMemoria;
 }
 
 export function obtenerRecetaPersonalizada(equipo, clase, nivel, color, base) {
-    try {
-        const recetas = cargarRecetasPersonalizadas();
-        const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
-        return recetas[clave] || null;
-    } catch (error) {
-        mostrarAvisoFallback();
-        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
-            window.modales.mostrarMensajeHTML('Error al obtener receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0053');
-        } else {
-            alert('Error al obtener receta: ' + (error.message || error) + '\nCódigo de error: 0053');
-        }
-        return recetasMemoriaFallback[`${equipo}|${clase}|${nivel}|${color}|${base}`] || null;
-    }
+    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+    return window._recetasMemoria[clave] || null;
 }
 
 export function eliminarRecetaPersonalizada(equipo, clase, nivel, color, base) {
-    try {
-        const recetas = cargarRecetasPersonalizadas();
-        const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
-        if (recetas[clave]) {
-            delete recetas[clave];
-            if (!usandoFallback) {
-                localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
-            } else {
-                recetasMemoriaFallback = recetas;
-            }
-        }
-    } catch (error) {
-        mostrarAvisoFallback();
-        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
-            window.modales.mostrarMensajeHTML('Error al eliminar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0054');
-        } else {
-            alert('Error al eliminar receta: ' + (error.message || error) + '\nCódigo de error: 0054');
-        }
-        const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
-        if (recetasMemoriaFallback[clave]) {
-            delete recetasMemoriaFallback[clave];
-        }
+    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+    if (window._recetasMemoria[clave]) {
+        delete window._recetasMemoria[clave];
     }
 }

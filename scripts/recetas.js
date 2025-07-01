@@ -332,7 +332,6 @@ function importarRecetas() {
                         agregadas++;
                     }
                 }
-                localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
                 mostrarToastInfo(`Importación completada. Se agregaron ${agregadas} recetas.`);
                 mostrarGestorRecetas();
             } catch (err) {

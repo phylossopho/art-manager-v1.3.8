@@ -296,21 +296,12 @@ export function importarRecetas() {
                     mostrarToastAmarillo('No se encontraron recetas válidas en el archivo. Código: 003' + (errores.length ? `\nErrores: ${errores.join(', ')}` : ''));
                     return;
                 }
-                const actuales = cargarRecetasPersonalizadas();
-                for (const clave in recetasImportadas) {
-                    if (!actuales[clave]) {
-                        actuales[clave] = recetasImportadas[clave];
-                        agregadas++;
-                    }
-                }
-                localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
-                if (agregadas > 0) {
-                    let msg = `Importación completada. Se agregaron ${agregadas} recetas. Código: 004`;
-                    if (errores.length) msg += `\nAlgunas recetas fueron ignoradas: ${errores.join(', ')}`;
-                    mostrarToastAmarillo(msg);
-                } else {
-                    mostrarToastAmarillo('No se agregaron recetas nuevas. Código: 005' + (errores.length ? `\nErrores: ${errores.join(', ')}` : ''));
-                }
+                // Reemplazar completamente las recetas en memoria
+                window._recetasMemoria = recetasImportadas;
+                agregadas = Object.keys(recetasImportadas).length;
+                let msg = `Importación completada. Se agregaron ${agregadas} recetas. Código: 004`;
+                if (errores.length) msg += `\nAlgunas recetas fueron ignoradas: ${errores.join(', ')}`;
+                mostrarToastAmarillo(msg);
                 mostrarGestorRecetas();
             } catch (err) {
                 mostrarToastAmarillo('El archivo no es válido o está corrupto. Código: 006');

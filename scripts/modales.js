@@ -151,13 +151,7 @@ export function cerrarModalConTransicion(modalId) {
 export function mostrarBotonErroresSiHay() {
     // Verifica si ya existe el botón
     if (document.getElementById('boton-ver-errores')) return;
-    let log = [];
-    try {
-        log = localStorage.getItem('errores.log');
-        log = log ? JSON.parse(log) : [];
-    } catch {
-        log = window._erroresLog || [];
-    }
+    let log = window._erroresLog || [];
     if (log.length === 0) return;
     // Crear botón flotante
     const btn = document.createElement('button');
@@ -184,13 +178,7 @@ export function ocultarBotonErrores() {
 }
 
 export function mostrarModalErrores() {
-    let log = [];
-    try {
-        log = localStorage.getItem('errores.log');
-        log = log ? JSON.parse(log) : [];
-    } catch {
-        log = window._erroresLog || [];
-    }
+    let log = window._erroresLog || [];
     if (log.length === 0) return;
     // Crear modal simple
     let modal = document.getElementById('modal-log-errores');
@@ -243,17 +231,9 @@ export function mostrarModalErrores() {
 }
 
 function registrarErrorConCodigo(mensaje, codigo) {
-    try {
-        // Intentar guardar en localStorage (persistente en escritorio)
-        let log = localStorage.getItem('errores.log');
-        log = log ? JSON.parse(log) : [];
-        log.push({ codigo, mensaje, fecha: new Date().toISOString() });
-        localStorage.setItem('errores.log', JSON.stringify(log));
-    } catch {
-        // Si no se puede usar localStorage, guardar en window (solo sesión actual)
-        window._erroresLog = window._erroresLog || [];
-        window._erroresLog.push({ codigo, mensaje, fecha: new Date().toISOString() });
-    }
+    // Guardar solo en memoria
+    window._erroresLog = window._erroresLog || [];
+    window._erroresLog.push({ codigo, mensaje, fecha: new Date().toISOString() });
     // Mostrar el botón si hay errores
     setTimeout(() => {
         window.modales && window.modales.mostrarBotonErroresSiHay && window.modales.mostrarBotonErroresSiHay();
