@@ -94,21 +94,26 @@
             font-size: 14px;
         }
 
-        /* Tipos de toast */
+        /* Tipos de toast personalizados */
         .toast-success {
-            background-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.5); /* Verde con opacidad 0.5 */
+            color: #fff;
+            text-shadow: 1px 1px 4px #000, 0 0 2px #000;
         }
-
         .toast-error {
-            background-color: #f44336;
+            background-color: rgba(244, 67, 54, 0.3); /* Rojo con opacidad 0.3 */
+            color: #fff;
+            text-shadow: 1px 1px 4px #000, 0 0 2px #000;
         }
-
+        .toast-warning, .toast-fallback {
+            background-color: rgba(255, 224, 102, 0.3); /* Amarillo con opacidad 0.3 */
+            color: #222;
+            text-shadow: none;
+        }
         .toast-info {
             background-color: #2196F3;
-        }
-
-        .toast-warning {
-            background-color: #ff9800;
+            color: #fff;
+            text-shadow: 1px 1px 4px #000, 0 0 2px #000;
         }
     </style>
 </head>

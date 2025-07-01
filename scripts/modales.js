@@ -8,6 +8,13 @@ export function mostrarMensaje(titulo, mensaje, tipo = "info", codigo = null) {
     toast.id = ''; // Eliminar el id para no duplicar
     toast.classList.add('show', `toast-${tipo}`);
     
+    // Sombreado solo para error y éxito
+    if (tipo === 'error' || tipo === 'success') {
+        toast.style.textShadow = '1px 1px 4px #000, 0 0 2px #000';
+    } else {
+        toast.style.textShadow = 'none';
+    }
+    
     // Configurar título y cuerpo
     toast.querySelector('.toast-title').textContent = titulo;
     let mensajeFinal = mensaje;
@@ -29,14 +36,19 @@ export function mostrarMensaje(titulo, mensaje, tipo = "info", codigo = null) {
     setTimeout(() => {
         toast.style.display = 'block';
     }, 10);
-    
-    // Eliminar después de 3 segundos (3000ms) + 300ms de animación
+
+    // Animación de aparición (500ms)
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+
+    // Eliminar después de 4 segundos + 500ms de animación de salida
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
             toast.remove();
-        }, 300);
-    }, 1890);
+        }, 500);
+    }, 4000);
 }
 
 export function mostrarMensajeHTML(titulo, mensajeHTML, tipo = "info", codigo = null) {
@@ -46,6 +58,12 @@ export function mostrarMensajeHTML(titulo, mensajeHTML, tipo = "info", codigo = 
     const toast = template.cloneNode(true);
     toast.id = '';
     toast.classList.add('show', `toast-${tipo}`);
+    // Sombreado solo para error y éxito
+    if (tipo === 'error' || tipo === 'success') {
+        toast.style.textShadow = '1px 1px 4px #000, 0 0 2px #000';
+    } else {
+        toast.style.textShadow = 'none';
+    }
     // Configurar título y cuerpo
     toast.querySelector('.toast-title').textContent = titulo;
     let mensajeFinal = mensajeHTML;
@@ -64,13 +82,19 @@ export function mostrarMensajeHTML(titulo, mensajeHTML, tipo = "info", codigo = 
     setTimeout(() => {
         toast.style.display = 'block';
     }, 10);
-    // Eliminar después de 3 segundos (3000ms) + 300ms de animación
+
+    // Animación de aparición (500ms)
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+
+    // Eliminar después de 4 segundos + 500ms de animación de salida
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
             toast.remove();
-        }, 300);
-    }, 3000);
+        }, 500);
+    }, 4000);
 }
 
 export function alternarMenuCSVMovil() {
