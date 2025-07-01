@@ -142,7 +142,7 @@ export function generarTablaArte() {
     });
     table.appendChild(filaEncabezados);
 
-    // Función para crear celdas de material con fondo de color
+    // Función para crear celdas de material con color de fondo individual
     const crearCeldaMaterial = (material, color) => {
         const celda = document.createElement('td');
         const matBg = (color && mapaColores[color]) ? mapaColores[color] : '#f0f0f0';
@@ -178,10 +178,9 @@ export function generarTablaArte() {
         return celda;
     };
 
-    // Filas con datos - ORDEN INVERSO (más antiguo primero)
     [...equiposSimulados].reverse().forEach((equipo, idx) => {
         const fila = document.createElement('tr');
-        // 1. Imagen del equipo con fondo de color
+        // 1. Icono: fondo del color del equipo
         const celdaEquipoImg = document.createElement('td');
         celdaEquipoImg.className = 'col-imagen';
         let colorKey = (equipo.color || '').toLowerCase().replace(/\s+/g, '');
@@ -217,17 +216,14 @@ export function generarTablaArte() {
         fila.appendChild(celdaNivel);
 
         // 4. Material 3
-        const celdaMaterial3 = crearCeldaMaterial(equipo.material3, equipo.material3Color);
-        celdaMaterial3.className = 'col-material';
-        fila.appendChild(celdaMaterial3);
+        fila.appendChild(crearCeldaMaterial(equipo.material3, equipo.material3Color));
         // 5. Material 1
-        const celdaMaterial1 = crearCeldaMaterial(equipo.material1, equipo.material1Color);
-        celdaMaterial1.className = 'col-material';
-        fila.appendChild(celdaMaterial1);
-        // 6. Base (círculo de color, sin texto)
+        fila.appendChild(crearCeldaMaterial(equipo.material1, equipo.material1Color));
+        // 6. Base (círculo de color, sin texto, fondo de la celda igual al color de la base)
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material';
         const baseBg = (equipo.base && mapaColores[equipo.base]) ? mapaColores[equipo.base] : '#f0f0f0';
+        celdaBase.style.background = baseBg;
         const divBase = document.createElement('div');
         divBase.className = 'circle-color';
         divBase.style.width = '24px';
@@ -240,13 +236,9 @@ export function generarTablaArte() {
         celdaBase.appendChild(divBase);
         fila.appendChild(celdaBase);
         // 7. Material 2
-        const celdaMaterial2 = crearCeldaMaterial(equipo.material2, equipo.material2Color);
-        celdaMaterial2.className = 'col-material';
-        fila.appendChild(celdaMaterial2);
+        fila.appendChild(crearCeldaMaterial(equipo.material2, equipo.material2Color));
         // 8. Material 4
-        const celdaMaterial4 = crearCeldaMaterial(equipo.material4, equipo.material4Color);
-        celdaMaterial4.className = 'col-material';
-        fila.appendChild(celdaMaterial4);
+        fila.appendChild(crearCeldaMaterial(equipo.material4, equipo.material4Color));
 
         // 9. Columna Eliminar
         const celdaEliminar = document.createElement('td');
