@@ -1,19 +1,53 @@
 // scripts/app.js
 // ============= INICIO DE app.js =============
-import * as datos from './datos.js';
-import * as ui from './ui.js';
-import configurarEventListeners from './eventos.js';
-import {
-    construirMapaMaterialAEquipo,
-    inicializarAlmacenamientoMateriales,
-    abrirListaMateriales
-} from './materiales.js';
-import * as galeria from './galeria.js';
-import * as conversiones from './conversiones.js';
-import { simularUso } from './simulacion.js';
-import * as modales from './modales.js';
-import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
-import { changeLanguage } from './translations.js';
+
+console.log('🔧 Iniciando app.js...');
+
+// Importaciones con manejo de errores
+let datos, ui, configurarEventListeners, materiales, galeria, conversiones, simulacion, modales, baselogic, translations;
+
+async function cargarModulos() {
+    try {
+        console.log('📦 Cargando módulos...');
+        
+        datos = await import('./datos.js');
+        console.log('✅ datos.js cargado');
+        
+        ui = await import('./ui.js');
+        console.log('✅ ui.js cargado');
+        
+        const eventosModule = await import('./eventos.js');
+        configurarEventListeners = eventosModule.default;
+        console.log('✅ eventos.js cargado');
+        
+        materiales = await import('./materiales.js');
+        console.log('✅ materiales.js cargado');
+        
+        galeria = await import('./galeria.js');
+        console.log('✅ galeria.js cargado');
+        
+        conversiones = await import('./conversiones.js');
+        console.log('✅ conversiones.js cargado');
+        
+        simulacion = await import('./simulacion.js');
+        console.log('✅ simulacion.js cargado');
+        
+        modales = await import('./modales.js');
+        console.log('✅ modales.js cargado');
+        
+        baselogic = await import('./baselogic.js');
+        console.log('✅ baselogic.js cargado');
+        
+        translations = await import('./translations.js');
+        console.log('✅ translations.js cargado');
+        
+        console.log('✅ Todos los módulos cargados correctamente');
+        return true;
+    } catch (error) {
+        console.error('❌ Error cargando módulos:', error);
+        return false;
+    }
+}
 
 const estadoApp = {
     equipoActual: 'Espada',
@@ -27,8 +61,8 @@ const estadoApp = {
     imagenesGaleria: [],
     indiceCarruselActual: 0,
     colorBaseSeleccionado: null,
-    mapaColores: datos.mapaColores,
-    materialesData: datos.datosMateriales
+    mapaColores: {},
+    materialesData: {}
 };
 
 // Exponer globalmente para que backup.js pueda acceder
@@ -125,7 +159,9 @@ function limpiarDatosCompletos() {
         }
         
         // Reinicializar estructuras
-        inicializarAlmacenamientoMateriales(estadoApp);
+        if (materiales && materiales.inicializarAlmacenamientoMateriales) {
+            materiales.inicializarAlmacenamientoMateriales(estadoApp);
+        }
         
         console.log('🗑️ Todos los datos han sido limpiados');
         return true;
@@ -135,25 +171,53 @@ function limpiarDatosCompletos() {
     }
 }
 
-function iniciarApp() {
+async function iniciarApp() {
     try {
+        console.log('🚀 Iniciando aplicación...');
+        
+        // Cargar módulos primero
+        const modulosCargados = await cargarModulos();
+        if (!modulosCargados) {
+            throw new Error('No se pudieron cargar los módulos');
+        }
+        
         // Asignar datos importantes al estado
         estadoApp.materialesData = datos.datosMateriales;
         estadoApp.mapaColores = datos.mapaColores;
 
+        console.log('📊 Datos asignados al estado');
+
         // Construir estructuras de datos necesarias
-        construirMapaMaterialAEquipo(estadoApp);
-        inicializarAlmacenamientoMateriales(estadoApp);
+        if (materiales.construirMapaMaterialAEquipo) {
+            materiales.construirMapaMaterialAEquipo(estadoApp);
+        }
+        if (materiales.inicializarAlmacenamientoMateriales) {
+            materiales.inicializarAlmacenamientoMateriales(estadoApp);
+        }
+        
+        console.log('🏗️ Estructuras de datos construidas');
         
         // Configurar todos los event listeners
-        configurarEventListeners(estadoApp);
+        if (configurarEventListeners) {
+            configurarEventListeners(estadoApp);
+        }
+
+        console.log('🎧 Event listeners configurados');
 
         // Inicializar la interfaz de usuario
-        ui.actualizarUI(estadoApp);
-        ui.actualizarColorFondoApp(estadoApp);
+        if (ui.actualizarUI) {
+            ui.actualizarUI(estadoApp);
+        }
+        if (ui.actualizarColorFondoApp) {
+            ui.actualizarColorFondoApp(estadoApp);
+        }
+
+        console.log('🎨 UI actualizada');
 
         // Asignar la función de simulación al estado
-        estadoApp.simularUso = simularUso;
+        if (simulacion.simularUso) {
+            estadoApp.simularUso = simulacion.simularUso;
+        }
         
         // Exponer funciones de guardado globalmente
         window.guardarDatosCompletos = guardarDatosCompletos;
@@ -161,39 +225,60 @@ function iniciarApp() {
         window.limpiarDatosCompletos = limpiarDatosCompletos;
         
         // Exponer funciones de UI globalmente
-        window.actualizarUI = ui.actualizarUI;
-        window.actualizarImagenEquipo = ui.actualizarImagenEquipo;
-        window.actualizarTablaMateriales = ui.actualizarTablaMateriales;
-        window.actualizarSelectoresMaterialesInferiores = ui.actualizarSelectoresMaterialesInferiores;
-        window.cambiarPestana = ui.cambiarPestana;
-        window.construirMapaMaterialAEquipo = construirMapaMaterialAEquipo;
-        window.inicializarAlmacenamientoMateriales = inicializarAlmacenamientoMateriales;
-        window.abrirListaMateriales = abrirListaMateriales;
+        if (ui) {
+            window.actualizarUI = ui.actualizarUI;
+            window.actualizarImagenEquipo = ui.actualizarImagenEquipo;
+            window.actualizarTablaMateriales = ui.actualizarTablaMateriales;
+            window.actualizarSelectoresMaterialesInferiores = ui.actualizarSelectoresMaterialesInferiores;
+            window.cambiarPestana = ui.cambiarPestana;
+        }
+        if (materiales) {
+            window.construirMapaMaterialAEquipo = materiales.construirMapaMaterialAEquipo;
+            window.inicializarAlmacenamientoMateriales = materiales.inicializarAlmacenamientoMateriales;
+            window.abrirListaMateriales = materiales.abrirListaMateriales;
+        }
 
         // === ACTUALIZAR AYUDA DINÁMICAMENTE AL INICIAR ===
-        changeLanguage('es');
+        if (translations && translations.changeLanguage) {
+            translations.changeLanguage('es');
+        }
 
-        console.log('✅ Aplicación iniciada (almacenamiento manual)');
+        console.log('✅ Aplicación iniciada correctamente');
         console.log('💡 Usa el botón flotante para guardar/cargar tus datos');
     } catch (error) {
-        console.error('Error al iniciar la aplicación:', error);
-        modales.mostrarMensaje('Error Crítico', 
-            'No se pudo iniciar la aplicación. Por favor, recarga la página.', 'error');
+        console.error('❌ Error al iniciar la aplicación:', error);
+        if (modales && modales.mostrarMensaje) {
+            modales.mostrarMensaje('Error Crítico', 
+                'No se pudo iniciar la aplicación. Por favor, recarga la página.', 'error');
+        } else {
+            alert('Error al iniciar la aplicación: ' + error.message);
+        }
     }
 }
 
-document.addEventListener('DOMContentLoaded', iniciarApp);
+// Esperar a que el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarApp);
+} else {
+    // DOM ya está listo
+    iniciarApp();
+}
 
 // Manejo de errores global no controlados
 window.addEventListener('error', (event) => {
     console.error('Error no controlado:', event.error);
-    modales.mostrarMensaje('Error Inesperado', 
-        'Se produjo un error inesperado. Por favor, recarga la aplicación.', 'error');
+    if (modales && modales.mostrarMensaje) {
+        modales.mostrarMensaje('Error Inesperado', 
+            'Se produjo un error inesperado. Por favor, recarga la aplicación.', 'error');
+    }
 });
 
 window.addEventListener('unhandledrejection', (event) => {
     console.error('Promesa rechazada no controlada:', event.reason);
-    modales.mostrarMensaje('Error en Promesa', 
-        'Se produjo un error al procesar una operación. Por favor, inténtalo de nuevo.', 'error');
+    if (modales && modales.mostrarMensaje) {
+        modales.mostrarMensaje('Error en Promesa', 
+            'Se produjo un error al procesar una operación. Por favor, inténtalo de nuevo.', 'error');
+    }
 });
+
 // ============= FIN DE app.js =============
