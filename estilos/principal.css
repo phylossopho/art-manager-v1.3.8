@@ -1323,3 +1323,21 @@ body.hide-bottom-buttons .bottom-buttons {
     box-shadow: 0 4px 16px rgba(255, 214, 0, 0.28);
     transform: translateY(-2px) scale(1.08);
 }
+
+#arte-table td.col-imagen, #arte-table td.col-material {
+    background: inherit !important;
+}
+
+#arte-table td.col-imagen {
+    /* Para asegurar que la imagen no tape el fondo */
+    position: relative;
+}
+
+#arte-table td.col-imagen img {
+    position: relative;
+    z-index: 2;
+}
+
+#arte-table .circle-color {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
