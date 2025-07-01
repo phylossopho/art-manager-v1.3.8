@@ -22,9 +22,9 @@ export function mostrarGestorRecetas() {
             </div>
             <div class='modal-body'>
                 <div style='text-align:center;margin-bottom:10px;'>
-                    <button id='nueva-receta-btn' class='back-button' style='background:#4CAF50;margin-right:8px;'>➕ Nueva receta</button>
-                    <button id='importar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;'>📥 Importar</button>
-                    ${Object.keys(cargarRecetasPersonalizadas()).length > 0 ? `<button id='exportar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;margin-left:8px;'>📤 Exportar</button>` : ''}
+                    <button id='nueva-receta-btn' class='back-button' style='background:#4CAF50;margin-right:8px;' title='Nueva receta'>➕</button>
+                    <button id='importar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;' title='Importar recetas'>📥</button>
+                    ${Object.keys(cargarRecetasPersonalizadas()).length > 0 ? `<button id='exportar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;margin-left:8px;' title='Exportar recetas'>📤</button>` : ''}
                 </div>
                 ${(() => {
                     const recetas = cargarRecetasPersonalizadas();
@@ -73,8 +73,8 @@ export function mostrarGestorRecetas() {
                             }
                             let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
                             tabla += `<td style='text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
-                            tabla += `<td style='text-align:center;vertical-align:middle;'><button class='editar-receta-lista back-button' data-clave='${clave}' style='background:#FFD600;color:#333;margin-right:4px;'>✏️</button>`;
-                            tabla += `<button class='eliminar-receta-lista back-button' data-clave='${clave}' style='background:#f44336;color:#fff;'>🗑️</button></td>`;
+                            tabla += `<td style='text-align:center;vertical-align:middle;'><button class='editar-receta-lista back-button' data-clave='${clave}' style='background:#FFD600;color:#333;margin-right:4px;' title='Editar'>✏️</button>`;
+                            tabla += `<button class='eliminar-receta-lista back-button' data-clave='${clave}' style='background:#f44336;color:#fff;' title='Eliminar'>🗑️</button></td>`;
                             tabla += `</tr>`;
                         }
                         tabla += `</tbody></table></div>`;
@@ -83,7 +83,7 @@ export function mostrarGestorRecetas() {
                 })()}
             </div>
             <div class='modal-footer'>
-                <button id='volver-gestor-recetas' class='back-button' style='background:#2196F3;'>← Volver</button>
+                <button id='volver-gestor-recetas' class='back-button' style='background:#2196F3;' title='Volver'>←</button>
             </div>
         </div>`;
         contenido.innerHTML = html;
@@ -180,8 +180,8 @@ function mostrarFormularioReceta(contenido, receta) {
                 </div>
                 <div id='error-materiales' style='color:#f44336;font-weight:bold;margin-bottom:10px;display:none;'></div>
                 <div style='margin-top:10px;text-align:center;'>
-                    <button type='submit' class='back-button' style='background:#4CAF50;margin-right:10px;'>Guardar receta</button>
-                    <button type='button' id='volver-gestor-recetas' class='back-button' style='background:#2196F3;'>← Volver</button>
+                    <button type='submit' class='back-button' style='background:#4CAF50;margin-right:10px;' title='Guardar'>✔️</button>
+                    <button type='button' id='volver-gestor-recetas' class='back-button' style='background:#2196F3;' title='Volver'>←</button>
                 </div>
             </form>
         </div>

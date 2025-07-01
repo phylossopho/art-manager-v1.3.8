@@ -451,3 +451,34 @@
         font-size: 1.5rem;
     }
 }
+
+/* Centrado y fondo del modal gestor de recetas */
+#gestor-recetas-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5) !important;
+    align-items: center;
+    justify-content: center;
+    /* Flex para centrar el contenido */
+    display: flex;
+}
+#gestor-recetas-modal .modal-content {
+    margin: auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    border-radius: 12px;
+    background: #fff;
+    color: #222;
+    padding: 0;
+    min-width: 320px;
+    max-width: 95vw;
+    width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+}
