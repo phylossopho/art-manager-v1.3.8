@@ -130,53 +130,68 @@ function crearFABBackup() {
     });
 
     // Guardar datos (descargar JSON)
-    fabDownload.addEventListener('click', function() {
+    fabDownload.addEventListener('click', async function() {
         try {
             console.log('=== INICIANDO BACKUP ===');
-            
             // Obtener datos directamente de la memoria
             const datosCompletos = window.guardarDatosCompletos();
             if (!datosCompletos) {
                 alert('Error al preparar los datos para guardar.');
                 return;
             }
-            
             console.log('Datos a guardar:');
             console.log('- Materiales:', Object.keys(datosCompletos.materiales || {}).length);
             console.log('- Galería:', (datosCompletos.galeria || []).length);
             console.log('- Simulaciones:', (datosCompletos.simulaciones || []).length);
-
-            // Verificar que hay datos para guardar
             if (Object.keys(datosCompletos.materiales || {}).length === 0 && 
                 (datosCompletos.galeria || []).length === 0 && 
                 (datosCompletos.simulaciones || []).length === 0) {
                 alert('No hay datos para guardar. Primero agrega algunos materiales o simulaciones.');
                 return;
             }
-
-            // Pedir nombre del archivo
-            const nombreArchivo = prompt('Nombre del archivo de backup:', 
-                `backup-art-manager-${new Date().toISOString().split('T')[0]}`);
-            
-            if (!nombreArchivo) {
-                console.log('Backup cancelado por el usuario');
-                return;
+            const nombreSugerido = `backup-art-manager-${new Date().toISOString().split('T')[0]}.json`;
+            let guardadoExitoso = false;
+            // Intentar usar el selector moderno si está disponible
+            if (window.showSaveFilePicker) {
+                try {
+                    alert(`Elige dónde quieres guardar tu archivo de datos.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas)`);
+                    const options = {
+                        suggestedName: nombreSugerido,
+                        types: [
+                            {
+                                description: 'Archivo JSON',
+                                accept: { 'application/json': ['.json'] }
+                            }
+                        ]
+                    };
+                    const handle = await window.showSaveFilePicker(options);
+                    const writable = await handle.createWritable();
+                    await writable.write(JSON.stringify(datosCompletos, null, 2));
+                    await writable.close();
+                    guardadoExitoso = true;
+                    alert(`✅ Backup guardado correctamente.\n\nRecuerda dónde lo guardaste.\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería (base64)\n- ${(datosCompletos.simulaciones || []).length} simulaciones`);
+                } catch (e) {
+                    if (e.name !== 'AbortError') {
+                        alert('❌ Error al guardar el archivo: ' + (e.message || e));
+                    } else {
+                        alert('Guardado cancelado.');
+                    }
+                }
             }
-
-            // Crear y descargar el archivo
-            const blob = new Blob([JSON.stringify(datosCompletos, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = nombreArchivo.endsWith('.json') ? nombreArchivo : nombreArchivo + '.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            console.log('Backup creado exitosamente:', a.download);
-            alert(`✅ Backup guardado como: ${a.download}\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería (base64)\n- ${(datosCompletos.simulaciones || []).length} simulaciones\n\n💡 Las imágenes se guardan en base64 para garantizar compatibilidad.`);
-            
+            if (!guardadoExitoso) {
+                // Fallback tradicional
+                alert(`Elige dónde quieres guardar tu archivo de datos.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas en el diálogo de descarga)`);
+                const blob = new Blob([JSON.stringify(datosCompletos, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = nombreSugerido;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                alert(`✅ Backup guardado como: ${nombreSugerido}\n\nContenido:\n- ${Object.keys(datosCompletos.materiales || {}).length} materiales\n- ${(datosCompletos.galeria || []).length} imágenes en galería (base64)\n- ${(datosCompletos.simulaciones || []).length} simulaciones`);
+            }
             fabMenu.style.display = 'none';
         } catch (error) {
             console.error('Error al crear backup:', error);

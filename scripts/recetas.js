@@ -232,11 +232,46 @@ function importarRecetas() {
 
 function exportarRecetas() {
     const recetas = cargarRecetasPersonalizadas();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute('href', dataStr);
-    dlAnchor.setAttribute('download', 'recetas_art_manager.json');
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    document.body.removeChild(dlAnchor);
+    const nombreSugerido = 'recetas_art_manager.json';
+    let guardadoExitoso = false;
+    if (window.showSaveFilePicker) {
+        (async () => {
+            try {
+                alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas)`);
+                const options = {
+                    suggestedName: nombreSugerido,
+                    types: [
+                        {
+                            description: 'Archivo JSON',
+                            accept: { 'application/json': ['.json'] }
+                        }
+                    ]
+                };
+                const handle = await window.showSaveFilePicker(options);
+                const writable = await handle.createWritable();
+                await writable.write(JSON.stringify(recetas, null, 2));
+                await writable.close();
+                guardadoExitoso = true;
+                alert('✅ Recetas exportadas correctamente.\n\nRecuerda dónde lo guardaste.');
+            } catch (e) {
+                if (e.name !== 'AbortError') {
+                    alert('❌ Error al guardar el archivo: ' + (e.message || e));
+                } else {
+                    alert('Guardado cancelado.');
+                }
+            }
+        })();
+    }
+    if (!window.showSaveFilePicker || !guardadoExitoso) {
+        // Fallback tradicional
+        alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas en el diálogo de descarga)`);
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute('href', dataStr);
+        dlAnchor.setAttribute('download', nombreSugerido);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        document.body.removeChild(dlAnchor);
+        alert('✅ Recetas exportadas como: ' + nombreSugerido);
+    }
 } 
