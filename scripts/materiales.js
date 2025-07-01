@@ -501,11 +501,7 @@ export function cargarRecetasPersonalizadas() {
         }
     } catch (error) {
         mostrarAvisoFallback();
-        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
-            window.modales.mostrarMensajeHTML('Error al cargar recetas', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0052');
-        } else {
-            alert('Error al cargar recetas: ' + (error.message || error) + '\nCódigo de error: 0052');
-        }
+        // No mostrar error 0052 al usuario, solo operar en memoria
         return recetasMemoriaFallback;
     }
 }
