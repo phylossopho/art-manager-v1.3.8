@@ -1,5 +1,6 @@
 import { cargarRecetasPersonalizadas, eliminarRecetaPersonalizada, guardarRecetaPersonalizada, obtenerRecetaPersonalizada } from './materiales.js';
 import { imagenesEquipos, nivelesPorClase, coloresPorClase, obtenerRestriccionesClase } from './datos.js';
+import * as modales from './modales.js';
 
 export function mostrarGestorRecetas() {
     try {
@@ -163,52 +164,6 @@ function mostrarFormularioReceta(contenido, receta) {
     };
 }
 
-function mostrarToastAmarillo(mensaje) {
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.style.position = 'fixed';
-        container.style.left = '0';
-        container.style.right = '0';
-        container.style.bottom = '0';
-        container.style.zIndex = '99999';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column-reverse';
-        container.style.alignItems = 'center';
-        container.style.pointerEvents = 'none';
-        document.body.appendChild(container);
-    }
-    const toast = document.createElement('div');
-    toast.className = 'toast toast-fallback';
-    toast.style.background = '#ffe066';
-    toast.style.color = '#222';
-    toast.style.fontWeight = 'bold';
-    toast.style.textAlign = 'center';
-    toast.style.borderRadius = '6px';
-    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)';
-    toast.style.margin = '0 0 16px 0';
-    toast.style.padding = '14px 32px';
-    toast.style.maxWidth = '90vw';
-    toast.style.opacity = '0.3';
-    toast.style.transform = 'translateY(30px)';
-    toast.style.transition = 'opacity 0.3s, transform 0.3s';
-    toast.style.pointerEvents = 'auto';
-    toast.innerText = mensaje;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '0.3';
-        toast.style.transform = 'translateY(0)';
-    }, 10);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(30px)';
-        setTimeout(() => {
-            if (toast.parentNode) toast.parentNode.removeChild(toast);
-        }, 300);
-    }, 3000);
-}
-
 function esMovil() {
     return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
 }
@@ -236,12 +191,12 @@ export async function exportarRecetas() {
                 await writable.write(JSON.stringify(recetasArr, null, 2));
                 await writable.close();
                 guardadoExitoso = true;
-                mostrarToastAmarillo('✅ Recetas exportadas correctamente (formato array). Código: 001');
+                modales.mostrarMensaje('Éxito', '✅ Recetas exportadas correctamente (formato array).', 'success');
             } catch (e) {
                 if (e.name !== 'AbortError') {
-                    mostrarToastAmarillo('❌ Error al guardar el archivo: ' + (e.message || e) + ' Código: 002');
+                    modales.mostrarMensaje('Error', '❌ Error al guardar el archivo: ' + (e.message || e), 'error');
                 } else {
-                    mostrarToastAmarillo('Guardado cancelado. Código: 003');
+                    modales.mostrarMensaje('Cancelado', 'Guardado cancelado.', 'warning');
                 }
             }
         }
@@ -256,10 +211,10 @@ export async function exportarRecetas() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            mostrarToastAmarillo(`✅ Recetas exportadas como: ${nombreSugerido} (formato array). Código: 004`);
+            modales.mostrarMensaje('Éxito', `✅ Recetas exportadas como: ${nombreSugerido} (formato array).`, 'success');
         }
     } catch (error) {
-        mostrarToastAmarillo('❌ Error al exportar recetas: ' + (error.message || error) + ' Código: 005');
+        modales.mostrarMensaje('Error', '❌ Error al exportar recetas: ' + (error.message || error), 'error');
     }
 }
 
@@ -270,7 +225,7 @@ export function importarRecetas() {
     input.onchange = function(e) {
         const file = e.target.files[0];
         if (!file) {
-            mostrarToastAmarillo('Importación cancelada. Código: 001');
+            modales.mostrarMensaje('Cancelado', 'Importación cancelada.', 'warning');
             return;
         }
         const reader = new FileReader();
@@ -278,7 +233,7 @@ export function importarRecetas() {
             try {
                 let data = JSON.parse(evt.target.result);
                 if (!Array.isArray(data)) {
-                    mostrarToastAmarillo('El archivo debe ser un array de recetas. Código: 002');
+                    modales.mostrarMensaje('Advertencia', 'El archivo debe ser un array de recetas.', 'warning');
                     return;
                 }
                 let recetasImportadas = {};
@@ -293,18 +248,18 @@ export function importarRecetas() {
                     }
                 });
                 if (Object.keys(recetasImportadas).length === 0) {
-                    mostrarToastAmarillo('No se encontraron recetas válidas en el archivo. Código: 003' + (errores.length ? `\nErrores: ${errores.join(', ')}` : ''));
+                    modales.mostrarMensaje('Advertencia', 'No se encontraron recetas válidas en el archivo.' + (errores.length ? `\nErrores: ${errores.join(', ')}` : ''), 'warning');
                     return;
                 }
                 // Reemplazar completamente las recetas en memoria
                 window._recetasMemoria = recetasImportadas;
                 agregadas = Object.keys(recetasImportadas).length;
-                let msg = `Importación completada. Se agregaron ${agregadas} recetas. Código: 004`;
+                let msg = `Importación completada. Se agregaron ${agregadas} recetas.`;
                 if (errores.length) msg += `\nAlgunas recetas fueron ignoradas: ${errores.join(', ')}`;
-                mostrarToastAmarillo(msg);
+                modales.mostrarMensaje('Éxito', msg, 'success');
                 mostrarGestorRecetas();
             } catch (err) {
-                mostrarToastAmarillo('El archivo no es válido o está corrupto. Código: 006');
+                modales.mostrarMensaje('Error', 'El archivo no es válido o está corrupto.', 'error');
             }
         };
         reader.readAsText(file);
