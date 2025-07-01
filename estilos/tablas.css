@@ -9,7 +9,10 @@
     background-color: white;
     overflow-x: auto;
     max-width: 100%;
-    width: 100%;
+    width: 90vw !important;
+    min-width: 320px;
+    max-width: 90vw;
+    display: block;
 }
 
 /* Asegurar contraste del texto en tablas */
@@ -748,4 +751,17 @@ td {
     margin: 0 auto !important;
     padding: 0 !important;
     vertical-align: middle;
+}
+
+/* Permitir fondo personalizado en la celda del equipo */
+.materials-table td.equipo-bg {
+    background-color: var(--equipo-bg, #e0e0e0) !important;
+}
+
+/* Ajustar tabla para que use 90vw y permita scroll horizontal */
+.materials-table table {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+    table-layout: auto;
 }

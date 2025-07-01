@@ -54,7 +54,7 @@ export function mostrarGestorRecetas() {
                                 }
                             }
                             tabla += `<tr>`;
-                            tabla += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;"><img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'"></td>`;
+                            tabla += `<td class='equipo-bg' style="--equipo-bg:${colorFondo};text-align:center;vertical-align:middle;"><img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'"></td>`;
                             tabla += `<td style='text-align:center;vertical-align:middle;'>${r.clase}</td>`;
                             tabla += `<td style='text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
                             const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
