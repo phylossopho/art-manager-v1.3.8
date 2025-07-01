@@ -146,14 +146,21 @@ export function generarTablaArte() {
     const crearCeldaMaterial = (material, color) => {
         const celda = document.createElement('td');
         const matBg = (color && mapaColores[color]) ? mapaColores[color] : '#f0f0f0';
-        celda.style.background = matBg;
+        celda.style.backgroundColor = matBg;
         if (material && material !== 'N/A') {
             const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
             if (colores.includes(material.toLowerCase())) {
-                const span = document.createElement('span');
-                span.textContent = material;
-                span.style.fontWeight = 'bold';
-                celda.appendChild(span);
+                // Círculo de color para materiales de color
+                const divMat = document.createElement('div');
+                divMat.className = 'circle-color';
+                divMat.style.width = '22px';
+                divMat.style.height = '22px';
+                divMat.style.borderRadius = '50%';
+                divMat.style.margin = 'auto';
+                divMat.style.border = '2px solid #bbb';
+                divMat.style.display = 'inline-block';
+                divMat.style.backgroundColor = matBg;
+                celda.appendChild(divMat);
             } else {
                 const img = document.createElement('img');
                 const nombreImagen = material.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -185,7 +192,7 @@ export function generarTablaArte() {
         celdaEquipoImg.className = 'col-imagen';
         let colorKey = (equipo.color || '').toLowerCase().replace(/\s+/g, '');
         let colorFondo = (colorKey && mapaColores[colorKey]) ? mapaColores[colorKey] : '#e0e0e0';
-        celdaEquipoImg.style.background = colorFondo;
+        celdaEquipoImg.style.backgroundColor = colorFondo;
         const imgEquipo = document.createElement('img');
         imgEquipo.src = `images/${equipo.equipo.toLowerCase()}.png`;
         imgEquipo.alt = equipo.equipo;
@@ -223,7 +230,7 @@ export function generarTablaArte() {
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material';
         const baseBg = (equipo.base && mapaColores[equipo.base]) ? mapaColores[equipo.base] : '#f0f0f0';
-        celdaBase.style.background = baseBg;
+        celdaBase.style.backgroundColor = baseBg;
         const divBase = document.createElement('div');
         divBase.className = 'circle-color';
         divBase.style.width = '24px';
@@ -232,7 +239,7 @@ export function generarTablaArte() {
         divBase.style.margin = 'auto';
         divBase.style.border = '2px solid #bbb';
         divBase.style.display = 'inline-block';
-        divBase.style.background = baseBg;
+        divBase.style.backgroundColor = baseBg;
         celdaBase.appendChild(divBase);
         fila.appendChild(celdaBase);
         // 7. Material 2
