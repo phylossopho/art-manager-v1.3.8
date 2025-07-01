@@ -124,7 +124,7 @@ export function generarTablaArte() {
 
     // Encabezados sin la columna 'Color'
     const encabezados = [
-        "Icono", "Clase", "Nivel",
+        "Equipo", "Clase", "Nivel",
         "Material 3", "Material 1", "Base",
         "Material 2", "Material 4", "Eliminar"
     ];
@@ -228,7 +228,7 @@ export function generarTablaArte() {
         fila.appendChild(crearCeldaMaterial(equipo.material3, equipo.material3Color));
         // 5. Material 1
         fila.appendChild(crearCeldaMaterial(equipo.material1, equipo.material1Color));
-        // 6. Base (círculo de color, fondo de la celda blanco, color solo en el círculo)
+        // 6. Base (círculo de color, fondo de la celda blanco, color solo en el círculo, usando --circle-color)
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material force-bg';
         celdaBase.style.setProperty('--force-bg', '#fff');
@@ -242,7 +242,9 @@ export function generarTablaArte() {
         divBase.style.margin = 'auto';
         divBase.style.border = '2px solid #bbb';
         divBase.style.display = 'inline-block';
-        divBase.style.backgroundColor = baseBg;
+        divBase.style.backgroundColor = '';
+        divBase.style.setProperty('--circle-color', baseBg);
+        divBase.style.background = `var(--circle-color, ${baseBg})`;
         celdaBase.appendChild(divBase);
         fila.appendChild(celdaBase);
         // 7. Material 2
