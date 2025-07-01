@@ -44,6 +44,9 @@ async function cargarModulos() {
         console.log('✅ Todos los módulos cargados correctamente');
         return true;
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al cargar módulos', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0101');
+        }
         console.error('❌ Error cargando módulos:', error);
         return false;
     }
@@ -92,6 +95,9 @@ function guardarDatosCompletos() {
         
         return datosCompletos;
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al preparar datos', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0102');
+        }
         console.error('Error al preparar datos:', error);
         return null;
     }
@@ -141,6 +147,9 @@ function cargarDatosCompletos(datosJSON) {
         
         return true;
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al cargar datos', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0103');
+        }
         console.error('Error al cargar datos:', error);
         return false;
     }
@@ -166,6 +175,9 @@ function limpiarDatosCompletos() {
         console.log('🗑️ Todos los datos han sido limpiados');
         return true;
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al limpiar datos', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0104');
+        }
         console.error('Error al limpiar datos:', error);
         return false;
     }
@@ -247,6 +259,9 @@ async function iniciarApp() {
         console.log('✅ Aplicación iniciada correctamente');
         console.log('💡 Usa el botón flotante para guardar/cargar tus datos');
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al iniciar la aplicación', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0105');
+        }
         console.error('❌ Error al iniciar la aplicación:', error);
         if (modales && modales.mostrarMensaje) {
             modales.mostrarMensaje('Error Crítico', 

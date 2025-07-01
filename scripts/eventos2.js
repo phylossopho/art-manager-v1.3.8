@@ -208,6 +208,9 @@ function configurarEventListeners(estado) {
 
         console.log('Event listeners configurados con éxito');
     } catch (error) {
+        if (modales && typeof modales.mostrarMensajeHTML === 'function') {
+            modales.mostrarMensajeHTML('Error al configurar eventos', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0201');
+        }
         console.error('Error al configurar event listeners:', error);
     }
 }

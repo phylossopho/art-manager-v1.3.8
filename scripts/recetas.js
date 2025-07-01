@@ -4,116 +4,123 @@ import { cargarRecetasPersonalizadas, eliminarRecetaPersonalizada, guardarReceta
 import { imagenesEquipos, nivelesPorClase, coloresPorClase, obtenerRestriccionesClase } from './datos.js';
 
 export function mostrarGestorRecetas() {
-    console.log('🔧 Iniciando gestor de recetas...');
-    
-    var modal = document.getElementById('gestor-recetas-modal');
-    var contenido = document.getElementById('contenido-gestor-recetas');
-    
-    if (!modal || !contenido) {
-        console.error('❌ No se encontró el modal de recetas');
-        alert('Error: No se encontró el modal de recetas');
-        return;
-    }
-
-    let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
-    html += `<div style='text-align:center;margin-bottom:10px;'>
-        <button id='nueva-receta-btn' style='background:#4CAF50;color:#fff;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>➕ Nueva receta</button>
-        <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>📥 Importar</button>`;
-    
-    const recetas = cargarRecetasPersonalizadas();
-    const claves = Object.keys(recetas);
-    
-    if (claves.length > 0) {
-        html += `<button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-left:8px;font-size:1rem;'>📤 Exportar</button>`;
-    }
-    html += `</div>`;
-
-    if (claves.length === 0) {
-        html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
-    } else {
-        html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th style='padding:8px;'>Equipo</th><th style='padding:8px;'>Clase</th><th style='padding:8px;'>Nivel</th><th style='padding:8px;'>Base</th><th colspan='4' style='padding:8px;'>Materiales</th><th style='padding:8px;width:60px;'>Éxito (%)</th><th style='padding:8px;'>Acciones</th></tr></thead><tbody>`;
-        for (const clave of claves) {
-            const r = recetas[clave];
-            html += `<tr>`;
-            // Celda de equipo solo imagen, fondo según color, sin texto
-            const colorFondo = (r.color && window.mapaColores && window.mapaColores[r.color]) ? window.mapaColores[r.color] : '#e0e0e0';
-            html += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;padding:8px;">`;
-            html += `<img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'">`;
-            html += `</td>`;
-            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.clase}</td>`;
-            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
-            // Columna base: solo círculo de color, sin texto, usando background-color
-            const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
-            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:24px;height:24px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${baseBg};'></div></td>`;
-            // Materiales: 4 círculos, usando variable CSS
-            const ordenColores = ['dorado','morado','azul','verde','blanco'];
-            let materialesArr = [];
-            ordenColores.forEach(col => {
-                for(let i=0;i<(r.materiales[col]||0);i++){
-                    materialesArr.push(col);
-                }
-            });
-            for(let i=0;i<4;i++){
-                const matColor = materialesArr[i] || '';
-                const matBg = (matColor && window.mapaColores && window.mapaColores[matColor]) ? window.mapaColores[matColor] : '#f0f0f0';
-                html += `<td style='width:28px;height:28px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:22px;height:22px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${matBg};'></div></td>`;
-            }
-            // Tasa de éxito angosta
-            let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
-            html += `<td style='padding:8px;width:60px;text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
-            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
-            html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
-            html += `</tr>`;
+    try {
+        console.log('🔧 Iniciando gestor de recetas...');
+        
+        var modal = document.getElementById('gestor-recetas-modal');
+        var contenido = document.getElementById('contenido-gestor-recetas');
+        
+        if (!modal || !contenido) {
+            console.error('❌ No se encontró el modal de recetas');
+            alert('Error: No se encontró el modal de recetas');
+            return;
         }
-        html += `</tbody></table>`;
-    }
-    
-    contenido.innerHTML = html;
-    modal.style.display = 'flex';
-    
-    // Event listeners
-    document.getElementById('cerrar-gestor-recetas').onclick = function() {
-        modal.style.display = 'none';
-    };
 
-    document.getElementById('nueva-receta-btn').onclick = function() {
-        mostrarFormularioReceta(contenido, null);
-    };
+        let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
+        html += `<div style='text-align:center;margin-bottom:10px;'>
+            <button id='nueva-receta-btn' style='background:#4CAF50;color:#fff;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>➕ Nueva receta</button>
+            <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>�� Importar</button>`;
+        
+        const recetas = cargarRecetasPersonalizadas();
+        const claves = Object.keys(recetas);
+        
+        if (claves.length > 0) {
+            html += `<button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-left:8px;font-size:1rem;'>📤 Exportar</button>`;
+        }
+        html += `</div>`;
 
-    document.getElementById('importar-recetas-btn').onclick = function() {
-        importarRecetas();
-    };
-
-    if (claves.length > 0) {
-        document.getElementById('exportar-recetas-btn').onclick = function() {
-            exportarRecetas();
-        };
-    }
-
-    // Editar receta
-    document.querySelectorAll('.editar-receta-lista').forEach(btn => {
-        btn.onclick = function() {
-            const clave = btn.getAttribute('data-clave');
-            const [equipo, clase, nivel, color, base] = clave.split('|');
-            const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
-            if (!receta) return alert('No se encontró la receta');
-            mostrarFormularioReceta(contenido, receta);
-        };
-    });
-    
-    // Eliminar receta
-    document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
-        btn.onclick = function() {
-            const clave = btn.getAttribute('data-clave');
-            const [equipo, clase, nivel, color, base] = clave.split('|');
-            if (confirm('¿Seguro que deseas eliminar esta receta?')) {
-                eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
-                mostrarGestorRecetas();
+        if (claves.length === 0) {
+            html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
+        } else {
+            html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th style='padding:8px;'>Equipo</th><th style='padding:8px;'>Clase</th><th style='padding:8px;'>Nivel</th><th style='padding:8px;'>Base</th><th colspan='4' style='padding:8px;'>Materiales</th><th style='padding:8px;width:60px;'>Éxito (%)</th><th style='padding:8px;'>Acciones</th></tr></thead><tbody>`;
+            for (const clave of claves) {
+                const r = recetas[clave];
+                html += `<tr>`;
+                // Celda de equipo solo imagen, fondo según color, sin texto
+                const colorFondo = (r.color && window.mapaColores && window.mapaColores[r.color]) ? window.mapaColores[r.color] : '#e0e0e0';
+                html += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;padding:8px;">`;
+                html += `<img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'">`;
+                html += `</td>`;
+                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.clase}</td>`;
+                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
+                // Columna base: solo círculo de color, sin texto, usando background-color
+                const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
+                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:24px;height:24px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${baseBg};'></div></td>`;
+                // Materiales: 4 círculos, usando variable CSS
+                const ordenColores = ['dorado','morado','azul','verde','blanco'];
+                let materialesArr = [];
+                ordenColores.forEach(col => {
+                    for(let i=0;i<(r.materiales[col]||0);i++){
+                        materialesArr.push(col);
+                    }
+                });
+                for(let i=0;i<4;i++){
+                    const matColor = materialesArr[i] || '';
+                    const matBg = (matColor && window.mapaColores && window.mapaColores[matColor]) ? window.mapaColores[matColor] : '#f0f0f0';
+                    html += `<td style='width:28px;height:28px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:22px;height:22px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${matBg};'></div></td>`;
+                }
+                // Tasa de éxito angosta
+                let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
+                html += `<td style='padding:8px;width:60px;text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
+                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
+                html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
+                html += `</tr>`;
             }
+            html += `</tbody></table>`;
+        }
+        
+        contenido.innerHTML = html;
+        modal.style.display = 'flex';
+        
+        // Event listeners
+        document.getElementById('cerrar-gestor-recetas').onclick = function() {
+            modal.style.display = 'none';
         };
-    });
-    
-    console.log('✅ Gestor de recetas cargado correctamente');
+
+        document.getElementById('nueva-receta-btn').onclick = function() {
+            mostrarFormularioReceta(contenido, null);
+        };
+
+        document.getElementById('importar-recetas-btn').onclick = function() {
+            importarRecetas();
+        };
+
+        if (claves.length > 0) {
+            document.getElementById('exportar-recetas-btn').onclick = function() {
+                exportarRecetas();
+            };
+        }
+
+        // Editar receta
+        document.querySelectorAll('.editar-receta-lista').forEach(btn => {
+            btn.onclick = function() {
+                const clave = btn.getAttribute('data-clave');
+                const [equipo, clase, nivel, color, base] = clave.split('|');
+                const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
+                if (!receta) return alert('No se encontró la receta');
+                mostrarFormularioReceta(contenido, receta);
+            };
+        });
+        
+        // Eliminar receta
+        document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
+            btn.onclick = function() {
+                const clave = btn.getAttribute('data-clave');
+                const [equipo, clase, nivel, color, base] = clave.split('|');
+                if (confirm('¿Seguro que deseas eliminar esta receta?')) {
+                    eliminarRecetaPersonalizada(equipo, clase, nivel, color, base);
+                    mostrarGestorRecetas();
+                }
+            };
+        });
+        
+        console.log('✅ Gestor de recetas cargado correctamente');
+    } catch (error) {
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error en gestor de recetas', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0401');
+        }
+        console.error('Error en gestor de recetas:', error);
+    }
 }
 
 function mostrarFormularioReceta(contenido, receta) {

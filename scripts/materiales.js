@@ -480,6 +480,11 @@ export function guardarRecetaPersonalizada(receta) {
         }
     } catch (error) {
         mostrarAvisoFallback();
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al guardar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0051');
+        } else {
+            alert('Error al guardar receta: ' + (error.message || error) + '\nCódigo de error: 0051');
+        }
         recetasMemoriaFallback = recetasMemoriaFallback || {};
         const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
         recetasMemoriaFallback[clave] = receta;
@@ -496,6 +501,11 @@ export function cargarRecetasPersonalizadas() {
         }
     } catch (error) {
         mostrarAvisoFallback();
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al cargar recetas', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0052');
+        } else {
+            alert('Error al cargar recetas: ' + (error.message || error) + '\nCódigo de error: 0052');
+        }
         return recetasMemoriaFallback;
     }
 }
@@ -507,6 +517,11 @@ export function obtenerRecetaPersonalizada(equipo, clase, nivel, color, base) {
         return recetas[clave] || null;
     } catch (error) {
         mostrarAvisoFallback();
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al obtener receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0053');
+        } else {
+            alert('Error al obtener receta: ' + (error.message || error) + '\nCódigo de error: 0053');
+        }
         return recetasMemoriaFallback[`${equipo}|${clase}|${nivel}|${color}|${base}`] || null;
     }
 }
@@ -525,6 +540,11 @@ export function eliminarRecetaPersonalizada(equipo, clase, nivel, color, base) {
         }
     } catch (error) {
         mostrarAvisoFallback();
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al eliminar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error', '0054');
+        } else {
+            alert('Error al eliminar receta: ' + (error.message || error) + '\nCódigo de error: 0054');
+        }
         const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
         if (recetasMemoriaFallback[clave]) {
             delete recetasMemoriaFallback[clave];
