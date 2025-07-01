@@ -33,7 +33,7 @@ export function mostrarGestorRecetas() {
                         return `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
                     } else {
                         // Tabla responsiva
-                        let tabla = `<div style='overflow-x:auto;'><table class='materials-table' style='width:90vw;min-width:320px;max-width:90vw;font-size:0.98rem;'><thead><tr>`;
+                        let tabla = `<div class='recetas-table' style='overflow-x:auto;'><table class='materials-table' style='font-size:0.98rem;'><thead><tr>`;
                         tabla += `<th style='width:12vw;min-width:40px;'>Equipo</th>`;
                         tabla += `<th style='width:16vw;min-width:60px;'>Clase</th>`;
                         tabla += `<th style='width:10vw;min-width:40px;'>Nivel</th>`;

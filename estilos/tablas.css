@@ -2,17 +2,27 @@
 
 /* Tabla de materiales */
 .materials-table {
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: white;
-    overflow-x: auto;
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
+    margin: 0 auto;
+    display: table;
+}
+
+.recetas-table {
     width: 90vw !important;
     min-width: 320px;
     max-width: 90vw;
+    overflow-x: auto;
     display: block;
+    margin: 0 auto;
+}
+
+.recetas-table table {
+    width: 100%;
+    min-width: 320px;
+    max-width: 100%;
+    table-layout: auto;
 }
 
 /* Asegurar contraste del texto en tablas */
