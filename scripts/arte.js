@@ -228,12 +228,12 @@ export function generarTablaArte() {
         fila.appendChild(crearCeldaMaterial(equipo.material3, equipo.material3Color));
         // 5. Material 1
         fila.appendChild(crearCeldaMaterial(equipo.material1, equipo.material1Color));
-        // 6. Base (círculo de color, sin texto, fondo de la celda igual al color de la base)
+        // 6. Base (círculo de color, fondo de la celda blanco, color solo en el círculo)
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material force-bg';
+        celdaBase.style.setProperty('--force-bg', '#fff');
+        celdaBase.style.backgroundColor = '#fff';
         const baseBg = (equipo.base && mapaColores[equipo.base]) ? mapaColores[equipo.base] : '#f0f0f0';
-        celdaBase.style.setProperty('--force-bg', baseBg);
-        celdaBase.style.backgroundColor = baseBg;
         const divBase = document.createElement('div');
         divBase.className = 'circle-color';
         divBase.style.width = '24px';
