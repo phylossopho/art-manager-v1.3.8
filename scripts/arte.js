@@ -133,7 +133,6 @@ export function generarTablaArte() {
     encabezados.forEach((encabezado, index) => {
         const th = document.createElement('th');
         th.textContent = encabezado;
-        // Agregar clases específicas para cada columna
         if (index === 0) th.className = 'col-imagen';
         else if (index === 1) th.className = 'col-clase';
         else if (index === 2) th.className = 'col-nivel';
@@ -143,13 +142,12 @@ export function generarTablaArte() {
     });
     table.appendChild(filaEncabezados);
 
-    // Función para crear celdas de material (igual)
+    // Función para crear celdas de material con fondo de color
     const crearCeldaMaterial = (material, color) => {
         const celda = document.createElement('td');
+        const matBg = (color && mapaColores[color]) ? mapaColores[color] : '#f0f0f0';
+        celda.style.background = matBg;
         if (material && material !== 'N/A') {
-            if (color && mapaColores[color]) {
-                celda.style.backgroundColor = mapaColores[color];
-            }
             const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
             if (colores.includes(material.toLowerCase())) {
                 const span = document.createElement('span');
@@ -187,13 +185,8 @@ export function generarTablaArte() {
         const celdaEquipoImg = document.createElement('td');
         celdaEquipoImg.className = 'col-imagen';
         let colorKey = (equipo.color || '').toLowerCase().replace(/\s+/g, '');
-        let colorFondo;
-        if (colorKey && mapaColores[colorKey]) {
-            colorFondo = mapaColores[colorKey];
-        } else {
-            colorFondo = '#e0e0e0';
-        }
-        celdaEquipoImg.style.backgroundColor = colorFondo;
+        let colorFondo = (colorKey && mapaColores[colorKey]) ? mapaColores[colorKey] : '#e0e0e0';
+        celdaEquipoImg.style.background = colorFondo;
         const imgEquipo = document.createElement('img');
         imgEquipo.src = `images/${equipo.equipo.toLowerCase()}.png`;
         imgEquipo.alt = equipo.equipo;
@@ -231,36 +224,20 @@ export function generarTablaArte() {
         const celdaMaterial1 = crearCeldaMaterial(equipo.material1, equipo.material1Color);
         celdaMaterial1.className = 'col-material';
         fila.appendChild(celdaMaterial1);
-        // 6. Base
+        // 6. Base (círculo de color, sin texto)
         const celdaBase = document.createElement('td');
         celdaBase.className = 'col-material';
-        if (equipo.base && equipo.base !== 'N/A') {
-            if (mapaColores[equipo.base]) {
-                celdaBase.style.backgroundColor = mapaColores[equipo.base];
-            }
-            const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
-            if (colores.includes(equipo.base.toLowerCase())) {
-                celdaBase.textContent = equipo.base;
-                celdaBase.style.fontWeight = 'bold';
-            } else {
-                const nombreBase = equipo.base.toLowerCase();
-                const imgBase = document.createElement('img');
-                imgBase.src = `images/${nombreBase}.png`;
-                imgBase.alt = equipo.base;
-                imgBase.style.width = '100%';
-                imgBase.style.height = 'auto';
-                imgBase.style.maxWidth = '100%';
-                imgBase.style.display = 'block';
-                imgBase.style.margin = '0 auto';
-                imgBase.onerror = function() {
-                    this.style.display = 'none';
-                    celdaBase.textContent = equipo.base;
-                };
-                celdaBase.appendChild(imgBase);
-            }
-        } else {
-            celdaBase.textContent = 'N/A';
-        }
+        const baseBg = (equipo.base && mapaColores[equipo.base]) ? mapaColores[equipo.base] : '#f0f0f0';
+        const divBase = document.createElement('div');
+        divBase.className = 'circle-color';
+        divBase.style.width = '24px';
+        divBase.style.height = '24px';
+        divBase.style.borderRadius = '50%';
+        divBase.style.margin = 'auto';
+        divBase.style.border = '2px solid #bbb';
+        divBase.style.display = 'inline-block';
+        divBase.style.background = baseBg;
+        celdaBase.appendChild(divBase);
         fila.appendChild(celdaBase);
         // 7. Material 2
         const celdaMaterial2 = crearCeldaMaterial(equipo.material2, equipo.material2Color);
@@ -284,7 +261,6 @@ export function generarTablaArte() {
         btnEliminar.style.cursor = 'pointer';
         btnEliminar.style.display = 'block';
         btnEliminar.style.margin = '0 auto';
-        // El índice real en equiposSimulados (ya que se invierte)
         const realIdx = equiposSimulados.length - 1 - idx;
         btnEliminar.addEventListener('click', () => {
             equiposSimulados.splice(realIdx, 1);
