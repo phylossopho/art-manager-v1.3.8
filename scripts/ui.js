@@ -940,6 +940,10 @@ export function importarRecetas() {
     input.click();
 }
 
-// Asignar el evento al botón 📖
-var btn = document.getElementById('gestor-recetas-btn');
-if (btn) btn.onclick = mostrarGestorRecetas;
+// Al final del archivo o en la inicialización de la UI:
+document.addEventListener('DOMContentLoaded', () => {
+    const fabRecetas = document.getElementById('fab-recetas');
+    if (fabRecetas) fabRecetas.onclick = () => {
+        import('./recetas.js').then(m => m.mostrarGestorRecetas());
+    };
+});

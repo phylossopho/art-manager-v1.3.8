@@ -40,8 +40,8 @@ export function mostrarGestorRecetas() {
             html += `<td>${r.nivel}</td>`;
             html += `<td>${r.color}</td>`;
             html += `<td>${r.base}</td>`;
-            html += `<td>${r.materiales ? r.materiales.join(', ') : 'N/A'}</td>`;
-            html += `<td>${r.tasaExito || 100}</td>`;
+            html += `<td>${r.materiales ? Object.entries(r.materiales).map(([color, cant]) => cant > 0 ? `${cant} ${color}` : '').filter(Boolean).join(', ') : 'N/A'}</td>`;
+            html += `<td>${r.tasaExito || ''}</td>`;
             html += `<td><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
             html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
             html += `</tr>`;
@@ -58,7 +58,7 @@ export function mostrarGestorRecetas() {
     };
 
     document.getElementById('nueva-receta-btn').onclick = function() {
-        mostrarFormularioNuevaReceta(contenido);
+        mostrarFormularioReceta(contenido, null);
     };
 
     document.getElementById('importar-recetas-btn').onclick = function() {
@@ -78,7 +78,7 @@ export function mostrarGestorRecetas() {
             const [equipo, clase, nivel, color, base] = clave.split('|');
             const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
             if (!receta) return alert('No se encontró la receta');
-            mostrarFormularioEditarReceta(contenido, receta, equipo, clase, nivel, color);
+            mostrarFormularioReceta(contenido, receta);
         };
     });
     
@@ -97,319 +97,63 @@ export function mostrarGestorRecetas() {
     console.log('✅ Gestor de recetas cargado correctamente');
 }
 
-function mostrarFormularioNuevaReceta(contenido) {
-    const equipos = Object.keys(imagenesEquipos);
-    const clases = Object.keys(nivelesPorClase);
+function mostrarFormularioReceta(contenido, receta) {
+    // Obtener selección actual de la interfaz principal
+    const equipo = document.getElementById('equipment-select').value;
+    const clase = document.getElementById('class-select').value;
+    const nivel = document.getElementById('level-select').value;
+    const color = document.getElementById('color-select').value;
+    const colores = ['dorado', 'morado', 'azul', 'verde', 'blanco'];
     
-    let html = `<h2 style='color:#4CAF50;text-align:center;'>Nueva Receta</h2>`;
-    html += `<form id='form-nueva-receta'>`;
-    
-    // Paso 1: Equipo
+    let html = `<h2 style='color:#4CAF50;text-align:center;'>${receta ? 'Editar' : 'Nueva'} Receta</h2>`;
+    html += `<div style='margin-bottom:15px;padding:10px;background:#f0f0f0;border-radius:4px;text-align:center;'>`;
+    html += `<strong>Equipo:</strong> ${equipo} &nbsp; <strong>Clase:</strong> ${clase} &nbsp; <strong>Nivel:</strong> ${nivel} &nbsp; <strong>Color:</strong> ${color}`;
+    html += `</div>`;
+    html += `<form id='form-receta'>`;
     html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>1. Tipo de Equipo:</label>`;
-    html += `<select id='equipo-select' name='equipo' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona un equipo...</option>`;
-    equipos.forEach(equipo => {
-        html += `<option value='${equipo}'>${equipo}</option>`;
+    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Materiales requeridos por color:</label>`;
+    colores.forEach(col => {
+        html += `<div style='margin-bottom:8px;'><label>${col.charAt(0).toUpperCase() + col.slice(1)}: <input type='number' name='mat_${col}' min='0' value='${receta && receta.materiales && receta.materiales[col] ? receta.materiales[col] : 0}' style='width:60px;'></label></div>`;
     });
-    html += `</select>`;
     html += `</div>`;
-    
-    // Paso 2: Clase
+    // Color de la base
     html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>2. Clase:</label>`;
-    html += `<select id='clase-select' name='clase' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona una clase...</option>`;
-    clases.forEach(clase => {
-        html += `<option value='${clase}'>${clase}</option>`;
+    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Color de la base:</label>`;
+    html += `<select name='baseColor' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
+    html += `<option value=''>Selecciona un color...</option>`;
+    (coloresPorClase[clase] || colores).forEach(col => {
+        const sel = receta && receta.base && receta.base === col ? 'selected' : '';
+        html += `<option value='${col}' ${sel}>${col.charAt(0).toUpperCase() + col.slice(1)}</option>`;
     });
-    html += `</select>`;
-    html += `</div>`;
-    
-    // Paso 3: Nivel
-    html += `<div id='nivel-container' style='margin-bottom:15px;display:none;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>3. Nivel:</label>`;
-    html += `<select id='nivel-select' name='nivel' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona un nivel...</option>`;
-    html += `</select>`;
-    html += `</div>`;
-    
-    // Paso 4: Color
-    html += `<div id='color-container' style='margin-bottom:15px;display:none;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>4. Color del Equipo:</label>`;
-    html += `<select id='color-select' name='color' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona un color...</option>`;
-    html += `</select>`;
-    html += `</div>`;
-    
-    // Paso 5: Color de la base
-    html += `<div id='base-color-container' style='margin-bottom:15px;display:none;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>5. Color de la Base:</label>`;
-    html += `<select id='base-color-select' name='baseColor' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona un color...</option>`;
-    html += `</select>`;
-    html += `</div>`;
-    
-    // Paso 6: Materiales
-    html += `<div id='materiales-container' style='margin-bottom:15px;display:none;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>6. Materiales requeridos:</label>`;
-    html += `<div id='materiales-lista'>`;
-    html += `</div>`;
-    html += `</div>`;
-    
+    html += `</select></div>`;
     // Tasa de éxito
     html += `<div style='margin-bottom:15px;'>`;
     html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Tasa de éxito (%):</label>`;
-    html += `<input type='number' name='tasaExito' min='1' max='100' value='100' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
+    html += `<input type='number' name='tasaExito' min='1' max='100' value='${receta && receta.tasaExito ? receta.tasaExito : ''}' style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
     html += `</div>`;
-    
     html += `<div style='margin-top:20px;text-align:center;'>`;
     html += `<button type='submit' style='background:#4CAF50;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;margin-right:10px;'>Guardar receta</button>`;
     html += `<button type='button' id='volver-gestor-recetas' style='background:#2196F3;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;'>← Volver</button>`;
     html += `</div>`;
     html += `</form>`;
-    
     contenido.innerHTML = html;
-    
-    // Eventos
-    document.getElementById('equipo-select').onchange = actualizarClases;
-    document.getElementById('clase-select').onchange = actualizarNiveles;
-    document.getElementById('nivel-select').onchange = actualizarColores;
-    document.getElementById('color-select').onchange = actualizarBaseColor;
-    document.getElementById('base-color-select').onchange = mostrarMateriales;
     document.getElementById('volver-gestor-recetas').onclick = mostrarGestorRecetas;
-    
-    document.getElementById('form-nueva-receta').onsubmit = function(e) {
+    document.getElementById('form-receta').onsubmit = function(e) {
         e.preventDefault();
-        guardarNuevaReceta(this);
-    };
-}
-
-function actualizarClases() {
-    const equipo = document.getElementById('equipo-select').value;
-    const nivelContainer = document.getElementById('nivel-container');
-    const colorContainer = document.getElementById('color-container');
-    const baseColorContainer = document.getElementById('base-color-container');
-    const materialesContainer = document.getElementById('materiales-container');
-    
-    if (!equipo) {
-        nivelContainer.style.display = 'none';
-        colorContainer.style.display = 'none';
-        baseColorContainer.style.display = 'none';
-        materialesContainer.style.display = 'none';
-        return;
-    }
-    
-    nivelContainer.style.display = 'block';
-    colorContainer.style.display = 'none';
-    baseColorContainer.style.display = 'none';
-    materialesContainer.style.display = 'none';
-}
-
-function actualizarNiveles() {
-    const clase = document.getElementById('clase-select').value;
-    const nivelSelect = document.getElementById('nivel-select');
-    const colorContainer = document.getElementById('color-container');
-    const baseColorContainer = document.getElementById('base-color-container');
-    const materialesContainer = document.getElementById('materiales-container');
-    
-    if (!clase) {
-        colorContainer.style.display = 'none';
-        baseColorContainer.style.display = 'none';
-        materialesContainer.style.display = 'none';
-        return;
-    }
-    
-    nivelSelect.innerHTML = '<option value="">Selecciona un nivel...</option>';
-    const niveles = nivelesPorClase[clase] || [];
-    niveles.forEach(nivel => {
-        nivelSelect.innerHTML += `<option value="${nivel}">${nivel}</option>`;
-    });
-    
-    colorContainer.style.display = 'block';
-    baseColorContainer.style.display = 'none';
-    materialesContainer.style.display = 'none';
-}
-
-function actualizarColores() {
-    const clase = document.getElementById('clase-select').value;
-    const colorSelect = document.getElementById('color-select');
-    const baseColorContainer = document.getElementById('base-color-container');
-    const materialesContainer = document.getElementById('materiales-container');
-    
-    if (!clase) {
-        baseColorContainer.style.display = 'none';
-        materialesContainer.style.display = 'none';
-        return;
-    }
-    
-    colorSelect.innerHTML = '<option value="">Selecciona un color...</option>';
-    const colores = coloresPorClase[clase] || [];
-    colores.forEach(color => {
-        colorSelect.innerHTML += `<option value="${color}">${color}</option>`;
-    });
-    
-    baseColorContainer.style.display = 'block';
-    materialesContainer.style.display = 'none';
-}
-
-function actualizarBaseColor() {
-    const clase = document.getElementById('clase-select').value;
-    const baseColorSelect = document.getElementById('base-color-select');
-    const materialesContainer = document.getElementById('materiales-container');
-    
-    if (!clase) {
-        materialesContainer.style.display = 'none';
-        return;
-    }
-    
-    baseColorSelect.innerHTML = '<option value="">Selecciona un color...</option>';
-    const colores = coloresPorClase[clase] || [];
-    colores.forEach(color => {
-        baseColorSelect.innerHTML += `<option value="${color}">${color}</option>`;
-    });
-    
-    materialesContainer.style.display = 'block';
-}
-
-function mostrarMateriales() {
-    const equipo = document.getElementById('equipo-select').value;
-    const clase = document.getElementById('clase-select').value;
-    const materialesLista = document.getElementById('materiales-lista');
-    
-    if (!equipo || !clase) return;
-    
-    // Materiales básicos para cada equipo
-    const materiales = ['Material 1', 'Material 2', 'Material 3', 'Material 4'];
-    
-    materialesLista.innerHTML = materiales.map((material, index) => `
-        <div style='margin-bottom:10px;'>
-            <label style='display:block;margin-bottom:5px;'>${material}:</label>
-            <select name='material_${index}_color' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>
-                <option value=''>Selecciona color...</option>
-                <option value='dorado'>Dorado</option>
-                <option value='morado'>Morado</option>
-                <option value='azul'>Azul</option>
-                <option value='verde'>Verde</option>
-                <option value='blanco'>Blanco</option>
-            </select>
-        </div>
-    `).join('');
-}
-
-function guardarNuevaReceta(form) {
-    const equipo = form.equipo.value;
-    const clase = form.clase.value;
-    const nivel = form.nivel.value;
-    const color = form.color.value;
-    const baseColor = form.baseColor.value;
-    const tasaExito = parseInt(form.tasaExito.value);
-    
-    // Obtener materiales
-    const materiales = [];
-    for (let i = 0; i < 4; i++) {
-        const colorMaterial = form[`material_${i}_color`]?.value;
-        if (colorMaterial) {
-            materiales.push(`Material ${i + 1} (${colorMaterial})`);
-        }
-    }
-    
-    // Obtener base según restricciones
-    const restricciones = obtenerRestriccionesClase(clase);
-    const base = restricciones.opcionesBase && restricciones.opcionesBase[equipo] 
-        ? `${restricciones.opcionesBase[equipo]} ${baseColor}`
-        : `${equipo} ${clase} ${baseColor}`;
-    
-    const nuevaReceta = {
-        equipo: equipo,
-        clase: clase,
-        nivel: nivel,
-        color: color,
-        base: base,
-        materiales: materiales,
-        tasaExito: tasaExito
-    };
-    
-    guardarRecetaPersonalizada(nuevaReceta);
-    alert('Receta guardada exitosamente');
-    mostrarGestorRecetas();
-}
-
-function mostrarFormularioEditarReceta(contenido, receta, equipo, clase, nivel, color) {
-    let html = `<h2 style='color:#FFD600;text-align:center;'>Editar Receta</h2>`;
-    html += `<div style='margin-bottom:15px;padding:10px;background:#f0f0f0;border-radius:4px;'>`;
-    html += `<strong>Equipo:</strong> ${equipo}<br>`;
-    html += `<strong>Clase:</strong> ${clase}<br>`;
-    html += `<strong>Nivel:</strong> ${nivel}<br>`;
-    html += `<strong>Color:</strong> ${color}<br>`;
-    html += `<strong>Base:</strong> ${receta.base}`;
-    html += `</div>`;
-    
-    html += `<form id='form-editar-receta'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Materiales requeridos:</label>`;
-    
-    if (receta.materiales && receta.materiales.length > 0) {
-        receta.materiales.forEach((material, index) => {
-            const [nombre, colorMat] = material.includes('(') ? 
-                [material.split('(')[0].trim(), material.split('(')[1].replace(')', '').trim()] : 
-                [material, ''];
-            
-            html += `<div style='margin-bottom:10px;'>`;
-            html += `<label style='display:block;margin-bottom:5px;'>${nombre}:</label>`;
-            html += `<select name='material_${index}_color' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-            html += `<option value=''>Selecciona color...</option>`;
-            html += `<option value='dorado' ${colorMat === 'dorado' ? 'selected' : ''}>Dorado</option>`;
-            html += `<option value='morado' ${colorMat === 'morado' ? 'selected' : ''}>Morado</option>`;
-            html += `<option value='azul' ${colorMat === 'azul' ? 'selected' : ''}>Azul</option>`;
-            html += `<option value='verde' ${colorMat === 'verde' ? 'selected' : ''}>Verde</option>`;
-            html += `<option value='blanco' ${colorMat === 'blanco' ? 'selected' : ''}>Blanco</option>`;
-            html += `</select>`;
-            html += `</div>`;
+        const materiales = {};
+        colores.forEach(col => {
+            materiales[col] = parseInt(this[`mat_${col}`].value) || 0;
         });
-    }
-    
-    html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Tasa de éxito (%):</label>`;
-    html += `<input type='number' name='tasaExito' min='1' max='100' value='${receta.tasaExito || 100}' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `</div>`;
-    
-    html += `<div style='margin-top:20px;text-align:center;'>`;
-    html += `<button type='submit' style='background:#FFD600;color:#333;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;margin-right:10px;'>Guardar cambios</button>`;
-    html += `<button type='button' id='volver-gestor-recetas' style='background:#2196F3;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;'>← Volver</button>`;
-    html += `</div>`;
-    html += `</form>`;
-    
-    contenido.innerHTML = html;
-    
-    document.getElementById('volver-gestor-recetas').onclick = mostrarGestorRecetas;
-    
-    document.getElementById('form-editar-receta').onsubmit = function(e) {
-        e.preventDefault();
-        
-        const materialesConfig = [];
-        const materialesInputs = this.querySelectorAll('select[name^="material_"]');
-        materialesInputs.forEach((input, index) => {
-            const color = input.value;
-            if (color) {
-                const nombre = receta.materiales[index] ? 
-                    receta.materiales[index].split('(')[0].trim() : 
-                    `Material ${index + 1}`;
-                materialesConfig.push(`${nombre} (${color})`);
-            }
-        });
-        
+        const baseColor = this.baseColor.value;
+        const tasaExito = parseInt(this.tasaExito.value) || '';
         const nuevaReceta = {
-            equipo: equipo,
-            clase: clase,
-            nivel: nivel,
-            color: color,
-            base: receta.base,
-            materiales: materialesConfig,
-            tasaExito: parseInt(this.tasaExito.value)
+            equipo, clase, nivel, color,
+            base: baseColor,
+            materiales,
+            tasaExito
         };
-        
         guardarRecetaPersonalizada(nuevaReceta);
-        alert('Receta actualizada exitosamente');
+        alert('Receta guardada exitosamente');
         mostrarGestorRecetas();
     };
 }
