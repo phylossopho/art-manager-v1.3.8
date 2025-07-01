@@ -618,6 +618,22 @@
             setTimeout(handleBottomButtons, 100);
         }
     });
+
+    // Generar un parámetro de versión único por recarga
+    const version = Date.now();
+    // Actualizar todos los scripts y hojas de estilo para evitar caché
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('script[src]').forEach(function(s) {
+            if (!s.src.includes('version=')) {
+                s.src += (s.src.includes('?') ? '&' : '?') + 'version=' + version;
+            }
+        });
+        document.querySelectorAll('link[rel="stylesheet"][href]').forEach(function(l) {
+            if (!l.href.includes('version=')) {
+                l.href += (l.href.includes('?') ? '&' : '?') + 'version=' + version;
+            }
+        });
+    });
 </script>
 
 <!-- Contenedor de toasts -->
