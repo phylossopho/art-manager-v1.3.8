@@ -48,10 +48,12 @@ function crearFABBackup() {
                     <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
                 </svg>
             </button>
-            
             <div id="show-materials" class="floating-icon" title="Mostrar materiales">
                 <span style="font-size: 22px;">📋</span>
             </div>
+            <button id="fab-recetas" class="floating-icon" title="Gestor de Recetas" style="background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%) !important; color: #fff; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 1.4rem;">📖</span>
+            </button>
         </div>
         
         <div id="fab-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 30px; display: none; min-width: 350px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -85,6 +87,7 @@ function crearFABBackup() {
     const fabClear = document.getElementById('fab-clear');
     const fabClose = document.getElementById('fab-close');
     const showMaterialsButton = document.getElementById('show-materials');
+    const fabRecetas = document.getElementById('fab-recetas');
 
     // Efectos hover para el FAB
     fabButton.addEventListener('mouseenter', function() {
@@ -283,6 +286,21 @@ function crearFABBackup() {
         showMaterialsButton.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
             this.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.4)';
+        });
+    }
+
+    // Asignar evento al FAB de recetas
+    if (fabRecetas) {
+        fabRecetas.addEventListener('click', function() {
+            import('./recetas.js').then(m => m.mostrarGestorRecetas());
+        });
+        fabRecetas.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+            this.style.boxShadow = '0 12px 32px rgba(255, 204, 51, 0.5)';
+        });
+        fabRecetas.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 8px 24px rgba(255, 204, 51, 0.4)';
         });
     }
 }

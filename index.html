@@ -167,7 +167,6 @@
 
         <div class="right-panel">
             <!-- Contenedor para el FAB de backup, lo genera el JS -->
-            <button id="fab-recetas" class="gallery-button icon-button" title="Gestor de Recetas" style="margin-right:10px;">📖</button>
             <div id="fab-save-menu-container"></div>
         </div>
     </div>
@@ -192,9 +191,6 @@
 
     <!-- Contenido de las pestañas -->
     <div class="tab-content active" id="materials-tab">
-        <button id="consulta-rapida-btn" class="icon-button" title="Consulta rápida de materiales" style="margin-bottom: 10px; margin-right: 10px; float: right;">
-            ⚡ Consulta rápida
-        </button>
         <div class="materials-table" id="materials-table">
             <!-- Tabla de materiales se generará dinámicamente -->
         </div>
@@ -472,6 +468,19 @@
         <button id="gallery-button" class="gallery-button icon-button" title="Galería">
             <span style="font-size: 22px;">📷</span>
         </button>
+        <!-- Iconos de redes sociales -->
+        <div class="social-icons">
+            <a href="https://chat.whatsapp.com/DN5X1L7BqiJAMk4llRkLrN" target="_blank" class="social-icon" title="Grupo de WhatsApp - ⚔ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔">
+                <img src="images/whatsapp.png" alt="WhatsApp" onerror="this.style.display='none'">
+            </a>
+            <a href="https://t.me/+MJ8GLGcdPX9iMTcx" target="_blank" class="social-icon" title="Grupo de Telegram - ⚔️ 𝐮𝐧𝐢𝐨𝐧 𝐝𝐞 𝐡𝐞𝐫𝐨𝐞𝐬 ⚔️">
+                <img src="images/telegram.png" alt="Telegram" onerror="this.style.display='none'">
+            </a>
+            <a href="https://www.youtube.com/@DecodificandoDH" target="_blank" class="social-icon" title="Canal de YouTube - Decodificando DH">
+                <img src="images/decodificando.png" alt="YouTube" onerror="this.style.display='none'">
+            </a>
+        </div>
+        <button id="use-materials" class="use-button">USAR</button>
     </div>
 
     <!-- Modal para galería de imágenes -->
@@ -545,7 +554,7 @@
 </div>
 
 <!-- === SCRIPTS === -->
-<script type="module" src="scripts/app.js"></script>
+<script type="module" src="scripts/app2.js"></script>
 <script type="module" src="scripts/backup.js"></script>
 
 <script>

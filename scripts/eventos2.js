@@ -1,13 +1,12 @@
-// scripts/eventos.js
+// scripts/eventos2.js
 // ============= INICIO DE eventos.js =============
 import * as ui from './ui.js';
 import * as galeria from './galeria.js';
 import * as modales from './modales.js';
-import { usarMateriales } from './materiales.js';
+import { usarMateriales, abrirListaMateriales } from './materiales.js';
 import { crearBaseSelector, actualizarEstadoBase } from './baselogic.js';
-import { abrirListaMateriales } from './materiales.js';
 import { initLanguageSystem } from './translations.js';
-import { mostrarModalConsultaRapida } from './ui.js';
+import { mostrarModalConsultaRapida } from './consultaRapida.js';
 
 function configurarEventListeners(estado) {
     try {
@@ -206,14 +205,6 @@ function configurarEventListeners(estado) {
 
         // === SISTEMA DE IDIOMAS ===
         initLanguageSystem();
-
-        // === BOTÓN CONSULTA RÁPIDA ===
-        const consultaRapidaBtn = document.getElementById('consulta-rapida-btn');
-        if (consultaRapidaBtn) {
-            consultaRapidaBtn.addEventListener('click', () => {
-                mostrarModalConsultaRapida(estado);
-            });
-        }
 
         console.log('Event listeners configurados con éxito');
     } catch (error) {

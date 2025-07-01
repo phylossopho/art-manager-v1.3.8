@@ -735,3 +735,17 @@ td {
         max-width: 90px !important;
     }
 }
+
+.circle-color {
+    border-radius: 50% !important;
+    background-clip: padding-box !important;
+    display: inline-block !important;
+    background-color: var(--circle-color, #f0f0f0) !important;
+    border: 2px solid #bbb;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    vertical-align: middle;
+}

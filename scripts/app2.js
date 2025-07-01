@@ -1,7 +1,7 @@
-// scripts/app.js
-// ============= INICIO DE app.js =============
+// scripts/app2.js
+// ============= INICIO DE app2.js =============
 
-console.log('🔧 Iniciando app.js...');
+console.log('🔧 Iniciando app2.js...');
 
 // Importaciones con manejo de errores
 let datos, ui, configurarEventListeners, materiales, galeria, conversiones, simulacion, modales, baselogic, translations;
@@ -16,7 +16,7 @@ async function cargarModulos() {
         ui = await import('./ui.js');
         console.log('✅ ui.js cargado');
         
-        const eventosModule = await import('./eventos.js');
+        const eventosModule = await import('./eventos2.js');
         configurarEventListeners = eventosModule.default;
         console.log('✅ eventos.js cargado');
         
@@ -184,6 +184,7 @@ async function iniciarApp() {
         // Asignar datos importantes al estado
         estadoApp.materialesData = datos.datosMateriales;
         estadoApp.mapaColores = datos.mapaColores;
+        window.mapaColores = datos.mapaColores;
 
         console.log('📊 Datos asignados al estado');
 
@@ -281,4 +282,4 @@ window.addEventListener('unhandledrejection', (event) => {
     }
 });
 
-// ============= FIN DE app.js =============
+// ============= FIN DE app2.js =============

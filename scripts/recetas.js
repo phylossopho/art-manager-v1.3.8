@@ -31,18 +31,37 @@ export function mostrarGestorRecetas() {
     if (claves.length === 0) {
         html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
     } else {
-        html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th>Base</th><th>Materiales</th><th>Éxito (%)</th><th>Acciones</th></tr></thead><tbody>`;
+        html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th style='padding:8px;'>Equipo</th><th style='padding:8px;'>Clase</th><th style='padding:8px;'>Nivel</th><th style='padding:8px;'>Base</th><th colspan='4' style='padding:8px;'>Materiales</th><th style='padding:8px;width:60px;'>Éxito (%)</th><th style='padding:8px;'>Acciones</th></tr></thead><tbody>`;
         for (const clave of claves) {
             const r = recetas[clave];
             html += `<tr>`;
-            html += `<td>${r.equipo}</td>`;
-            html += `<td>${r.clase}</td>`;
-            html += `<td>${r.nivel}</td>`;
-            html += `<td>${r.color}</td>`;
-            html += `<td>${r.base}</td>`;
-            html += `<td>${r.materiales ? Object.entries(r.materiales).map(([color, cant]) => cant > 0 ? `${cant} ${color}` : '').filter(Boolean).join(', ') : 'N/A'}</td>`;
-            html += `<td>${r.tasaExito || ''}</td>`;
-            html += `<td><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
+            // Celda de equipo solo imagen, fondo según color, sin texto
+            const colorFondo = (r.color && window.mapaColores && window.mapaColores[r.color]) ? window.mapaColores[r.color] : '#e0e0e0';
+            html += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;padding:8px;">`;
+            html += `<img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'">`;
+            html += `</td>`;
+            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.clase}</td>`;
+            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
+            // Columna base: solo círculo de color, sin texto, usando background-color
+            const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
+            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:24px;height:24px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${baseBg};'></div></td>`;
+            // Materiales: 4 círculos, usando variable CSS
+            const ordenColores = ['dorado','morado','azul','verde','blanco'];
+            let materialesArr = [];
+            ordenColores.forEach(col => {
+                for(let i=0;i<(r.materiales[col]||0);i++){
+                    materialesArr.push(col);
+                }
+            });
+            for(let i=0;i<4;i++){
+                const matColor = materialesArr[i] || '';
+                const matBg = (matColor && window.mapaColores && window.mapaColores[matColor]) ? window.mapaColores[matColor] : '#f0f0f0';
+                html += `<td style='width:28px;height:28px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:22px;height:22px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${matBg};'></div></td>`;
+            }
+            // Tasa de éxito angosta
+            let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
+            html += `<td style='padding:8px;width:60px;text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
+            html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
             html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
             html += `</tr>`;
         }
@@ -129,7 +148,7 @@ function mostrarFormularioReceta(contenido, receta) {
     // Tasa de éxito
     html += `<div style='margin-bottom:15px;'>`;
     html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Tasa de éxito (%):</label>`;
-    html += `<input type='number' name='tasaExito' min='1' max='100' value='${receta && receta.tasaExito ? receta.tasaExito : ''}' style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
+    html += `<input type='number' name='tasaExito' min='1' max='100' step='any' value='${receta && receta.tasaExito ? receta.tasaExito : ''}' style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
     html += `</div>`;
     html += `<div style='margin-top:20px;text-align:center;'>`;
     html += `<button type='submit' style='background:#4CAF50;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;margin-right:10px;'>Guardar receta</button>`;
@@ -145,7 +164,7 @@ function mostrarFormularioReceta(contenido, receta) {
             materiales[col] = parseInt(this[`mat_${col}`].value) || 0;
         });
         const baseColor = this.baseColor.value;
-        const tasaExito = parseInt(this.tasaExito.value) || '';
+        const tasaExito = parseFloat(this.tasaExito.value) || '';
         const nuevaReceta = {
             equipo, clase, nivel, color,
             base: baseColor,

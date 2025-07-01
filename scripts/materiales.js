@@ -162,23 +162,25 @@ export function usarMateriales(estado) {
             estado.cambiosPendientes = true;
 
             // Agregar a la lista de equipos simulados
-            agregarEquipoSimulado({
+            const equipoSimulado = {
                 equipo: estado.equipoActual,
                 clase: clase,
                 nivel: estado.nivelActual,
                 color: estado.colorActual,
                 material1: materialsInView[0],
-                material1Color: estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[0]}`] || 'N/A',
+                material1Color: estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[0]}`] || estado.colorActual || 'N/A',
                 material2: materialsInView[1],
-                material2Color: estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[1]}`] || 'N/A',
+                material2Color: estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[1]}`] || estado.colorActual || 'N/A',
                 material3: material3Disponible(estado.nivelActual) ? materialsInView[2] : "N/A",
                 material3Color: material3Disponible(estado.nivelActual) ? 
-                    (estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[2]}`] || 'N/A') : 'N/A',
+                    (estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[2]}`] || estado.colorActual || 'N/A') : 'N/A',
                 material4: material4Disponible(estado.nivelActual) ? materialsInView[3] : "N/A",
                 material4Color: material4Disponible(estado.nivelActual) ? 
-                    (estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[3]}`] || 'N/A') : 'N/A',
+                    (estado.colorPorMaterialSeleccionado[`${claseAlmacen}:${materialsInView[3]}`] || estado.colorActual || 'N/A') : 'N/A',
                 base: estado.colorBaseSeleccionado || 'N/A'
-            });
+            };
+            console.log('Equipo simulado a guardar:', equipoSimulado);
+            agregarEquipoSimulado(equipoSimulado);
 
             // REINICIAR SELECTORES DE MATERIALES Y BASE
             // Eliminar todas las selecciones de color para los materiales actuales
