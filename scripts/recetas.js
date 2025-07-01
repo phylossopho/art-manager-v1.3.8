@@ -199,42 +199,12 @@ function mostrarFormularioReceta(contenido, receta) {
     };
 }
 
-function importarRecetas() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json,application/json';
-    input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            try {
-                const nuevas = JSON.parse(evt.target.result);
-                const actuales = cargarRecetasPersonalizadas();
-                let agregadas = 0;
-                for (const clave in nuevas) {
-                    if (!actuales[clave]) {
-                        actuales[clave] = nuevas[clave];
-                        agregadas++;
-                    }
-                }
-                localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
-                alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
-                mostrarGestorRecetas();
-            } catch {
-                alert('El archivo no es válido.');
-            }
-        };
-        reader.readAsText(file);
-    };
-    input.click();
-}
-
 function exportarRecetas() {
     const recetas = cargarRecetasPersonalizadas();
     const nombreSugerido = 'recetas_art_manager.json';
-    let guardadoExitoso = false;
-    if (window.showSaveFilePicker) {
+    // Detectar soporte real
+    const soportaSaveFilePicker = typeof window.showSaveFilePicker === 'function';
+    if (soportaSaveFilePicker) {
         (async () => {
             try {
                 alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas)`);
@@ -251,20 +221,18 @@ function exportarRecetas() {
                 const writable = await handle.createWritable();
                 await writable.write(JSON.stringify(recetas, null, 2));
                 await writable.close();
-                guardadoExitoso = true;
                 alert('✅ Recetas exportadas correctamente.\n\nRecuerda dónde lo guardaste.');
             } catch (e) {
-                if (e.name !== 'AbortError') {
-                    alert('❌ Error al guardar el archivo: ' + (e.message || e));
-                } else {
+                if (e.name === 'AbortError') {
                     alert('Guardado cancelado.');
+                } else {
+                    alert('❌ Error al guardar el archivo: ' + (e.message || e));
                 }
             }
         })();
-    }
-    if (!window.showSaveFilePicker || !guardadoExitoso) {
+    } else {
         // Fallback tradicional
-        alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas en el diálogo de descarga)`);
+        alert(`El archivo se descargará automáticamente con el nombre sugerido: ${nombreSugerido}`);
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
         const dlAnchor = document.createElement('a');
         dlAnchor.setAttribute('href', dataStr);
@@ -274,4 +242,49 @@ function exportarRecetas() {
         document.body.removeChild(dlAnchor);
         alert('✅ Recetas exportadas como: ' + nombreSugerido);
     }
+}
+
+function importarRecetas() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                let nuevas = JSON.parse(evt.target.result);
+                // Si el archivo es un array, convertirlo a objeto con claves únicas
+                if (Array.isArray(nuevas)) {
+                    const obj = {};
+                    nuevas.forEach((r, idx) => {
+                        if (r && r.equipo && r.clase && r.nivel && r.color && r.base) {
+                            const clave = `${r.equipo}|${r.clase}|${r.nivel}|${r.color}|${r.base}`;
+                            obj[clave] = r;
+                        } else {
+                            obj[`receta_${idx}`] = r;
+                        }
+                    });
+                    nuevas = obj;
+                }
+                if (typeof nuevas !== 'object' || nuevas === null) throw new Error('Formato de archivo no válido');
+                const actuales = cargarRecetasPersonalizadas();
+                let agregadas = 0;
+                for (const clave in nuevas) {
+                    if (!actuales[clave]) {
+                        actuales[clave] = nuevas[clave];
+                        agregadas++;
+                    }
+                }
+                localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
+                alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
+                mostrarGestorRecetas();
+            } catch (err) {
+                alert('El archivo no es válido o está corrupto.\n\nDetalle: ' + (err.message || err));
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 } 
