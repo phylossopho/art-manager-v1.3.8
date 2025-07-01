@@ -5,6 +5,10 @@ import { imagenesEquipos, nivelesPorClase, coloresPorClase, obtenerRestricciones
 
 export function mostrarGestorRecetas() {
     try {
+        // Asegurar que window.mapaColores esté disponible
+        if (!window.mapaColores && typeof imagenesEquipos === 'object' && typeof window.estadoApp === 'object' && window.estadoApp.mapaColores) {
+            window.mapaColores = window.estadoApp.mapaColores;
+        }
         console.log('🔧 Iniciando gestor de recetas...');
         
         var modal = document.getElementById('gestor-recetas-modal');
@@ -37,7 +41,16 @@ export function mostrarGestorRecetas() {
                 const r = recetas[clave];
                 html += `<tr>`;
                 // Celda de equipo solo imagen, fondo según color, sin texto
-                const colorFondo = (r.color && window.mapaColores && window.mapaColores[r.color]) ? window.mapaColores[r.color] : '#e0e0e0';
+                let colorFondo = '#e0e0e0';
+                if (r.color && window.mapaColores && window.mapaColores[r.color]) {
+                    colorFondo = window.mapaColores[r.color];
+                } else if (r.color && typeof r.color === 'string') {
+                    // Intentar forzar minúsculas y quitar espacios
+                    const colorKey = r.color.toLowerCase().replace(/\s+/g, '');
+                    if (window.mapaColores && window.mapaColores[colorKey]) {
+                        colorFondo = window.mapaColores[colorKey];
+                    }
+                }
                 html += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;padding:8px;">`;
                 html += `<img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'">`;
                 html += `</td>`;
@@ -172,8 +185,10 @@ function mostrarFormularioReceta(contenido, receta) {
         });
         const baseColor = this.baseColor.value;
         const tasaExito = parseFloat(this.tasaExito.value) || '';
+        // Asegurar que el color se guarda en minúsculas y sin espacios
+        const colorGuardado = color ? color.toLowerCase().replace(/\s+/g, '') : '';
         const nuevaReceta = {
-            equipo, clase, nivel, color,
+            equipo, clase, nivel, color: colorGuardado,
             base: baseColor,
             materiales,
             tasaExito
