@@ -5,7 +5,7 @@ import { generarTablaArte } from './arte.js';
 import * as modales from './modales.js';
 import { consultaRapidaMateriales, guardarRecetaPersonalizada, obtenerRecetaPersonalizada, cargarRecetasPersonalizadas, eliminarRecetaPersonalizada } from './materiales.js';
 import { restriccionesClase, mapaColores } from './datos.js';
-import { mostrarGestorRecetas } from './recetas.js';
+import { mostrarGestorRecetas } from './recetas2.js';
 
 export function actualizarImagenEquipo(estado) {
     const elementoImagen = document.getElementById('equipment-img');
@@ -840,6 +840,6 @@ export function importarRecetas() {
 document.addEventListener('DOMContentLoaded', () => {
     const fabRecetas = document.getElementById('fab-recetas');
     if (fabRecetas) fabRecetas.onclick = () => {
-        import('./recetas.js').then(m => m.mostrarGestorRecetas());
+        import('./recetas2.js').then(m => m.mostrarGestorRecetas());
     };
 });

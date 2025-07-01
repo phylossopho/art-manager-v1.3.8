@@ -491,7 +491,7 @@ function mostrarToastAmarillo(mensaje) {
     toast.style.margin = '0 0 16px 0';
     toast.style.padding = '14px 32px';
     toast.style.maxWidth = '90vw';
-    toast.style.opacity = '0';
+    toast.style.opacity = '0.3';
     toast.style.transform = 'translateY(30px)';
     toast.style.transition = 'opacity 0.3s, transform 0.3s';
     toast.style.pointerEvents = 'auto';
@@ -507,7 +507,7 @@ function mostrarToastAmarillo(mensaje) {
         setTimeout(() => {
             if (toast.parentNode) toast.parentNode.removeChild(toast);
         }, 300);
-    }, 1300);
+    }, 3000);
 }
 
 export function guardarRecetaPersonalizada(receta) {

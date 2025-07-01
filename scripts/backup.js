@@ -307,7 +307,7 @@ function crearFABBackup() {
     // Asignar evento al FAB de recetas
     if (fabRecetas) {
         fabRecetas.addEventListener('click', function() {
-            import('./recetas.js').then(m => m.mostrarGestorRecetas());
+            import('./recetas2.js').then(m => m.mostrarGestorRecetas());
         });
         fabRecetas.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-3px) scale(1.05)';
