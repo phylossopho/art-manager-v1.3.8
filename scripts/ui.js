@@ -797,17 +797,6 @@ export function actualizarColorFondoApp(estado) {
     }
 }
 
-export function exportarRecetas() {
-    const recetas = cargarRecetasPersonalizadas();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute('href', dataStr);
-    dlAnchor.setAttribute('download', 'recetas_art_manager.json');
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    document.body.removeChild(dlAnchor);
-}
-
 export function importarRecetas() {
     const input = document.createElement('input');
     input.type = 'file';
