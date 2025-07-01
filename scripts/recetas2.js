@@ -13,71 +13,95 @@ export function mostrarGestorRecetas() {
             alert('Error: No se encontró el modal de recetas');
             return;
         }
-        let html = `<h2 style='color:#FFD600;text-align:center;'>Gestor de Recetas</h2>`;
-        html += `<div style='text-align:center;margin-bottom:10px;'>
-            <button id='nueva-receta-btn' style='background:#4CAF50;color:#fff;font-weight:bold;border-radius:6px;padding:4px 10px;margin-right:8px;font-size:1rem;'>➕ Nueva receta</button>
-            <button id='importar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;font-size:1rem;'>📥 Importar</button>`;
-        const recetas = cargarRecetasPersonalizadas();
-        const claves = Object.keys(recetas);
-        if (claves.length > 0) {
-            html += `<button id='exportar-recetas-btn' style='background:#FFD600;color:#333;font-weight:bold;border-radius:6px;padding:4px 10px;margin-left:8px;font-size:1rem;'>📤 Exportar</button>`;
-        }
-        html += `</div>`;
-        if (claves.length === 0) {
-            html += `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
-        } else {
-            html += `<table style='width:100%;font-size:1rem;margin-top:10px;'><thead><tr><th style='padding:8px;'>Equipo</th><th style='padding:8px;'>Clase</th><th style='padding:8px;'>Nivel</th><th style='padding:8px;'>Base</th><th colspan='4' style='padding:8px;'>Materiales</th><th style='padding:8px;width:60px;'>Éxito (%)</th><th style='padding:8px;'>Acciones</th></tr></thead><tbody>`;
-            for (const clave of claves) {
-                const r = recetas[clave];
-                let colorFondo = '#e0e0e0';
-                if (r.color && window.mapaColores && window.mapaColores[r.color]) {
-                    colorFondo = window.mapaColores[r.color];
-                } else if (r.color && typeof r.color === 'string') {
-                    const colorKey = r.color.toLowerCase().replace(/\s+/g, '');
-                    if (window.mapaColores && window.mapaColores[colorKey]) {
-                        colorFondo = window.mapaColores[colorKey];
+        // Estructura de modal estándar
+        let html = `
+        <div class='modal-content' style='max-width: 95vw; width: 90vw; min-width: 320px;'>
+            <div class='modal-header'>
+                <h2 style='color:#4CAF50; font-size:1.4rem; margin:0;'>Gestor de Recetas</h2>
+                <span class='close' id='cerrar-gestor-recetas' title='Cerrar'>&times;</span>
+            </div>
+            <div class='modal-body'>
+                <div style='text-align:center;margin-bottom:10px;'>
+                    <button id='nueva-receta-btn' class='back-button' style='background:#4CAF50;margin-right:8px;'>➕ Nueva receta</button>
+                    <button id='importar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;'>📥 Importar</button>
+                    ${Object.keys(cargarRecetasPersonalizadas()).length > 0 ? `<button id='exportar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;margin-left:8px;'>📤 Exportar</button>` : ''}
+                </div>
+                ${(() => {
+                    const recetas = cargarRecetasPersonalizadas();
+                    const claves = Object.keys(recetas);
+                    if (claves.length === 0) {
+                        return `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
+                    } else {
+                        // Tabla responsiva
+                        let tabla = `<div style='overflow-x:auto;'><table class='materials-table' style='min-width:600px;width:100%;max-width:100%;font-size:0.98rem;'><thead><tr>`;
+                        tabla += `<th style='width:12vw;min-width:40px;'>Equipo</th>`;
+                        tabla += `<th style='width:16vw;min-width:60px;'>Clase</th>`;
+                        tabla += `<th style='width:10vw;min-width:40px;'>Nivel</th>`;
+                        tabla += `<th style='width:12vw;min-width:40px;'>Base</th>`;
+                        tabla += `<th colspan='4' style='width:24vw;min-width:80px;'>Materiales</th>`;
+                        tabla += `<th style='width:12vw;min-width:50px;'>Éxito (%)</th>`;
+                        tabla += `<th style='width:14vw;min-width:60px;'>Acciones</th>`;
+                        tabla += `</tr></thead><tbody>`;
+                        for (const clave of claves) {
+                            const r = recetas[clave];
+                            let colorFondo = '#e0e0e0';
+                            if (r.color && window.mapaColores && window.mapaColores[r.color]) {
+                                colorFondo = window.mapaColores[r.color];
+                            } else if (r.color && typeof r.color === 'string') {
+                                const colorKey = r.color.toLowerCase().replace(/\s+/g, '');
+                                if (window.mapaColores && window.mapaColores[colorKey]) {
+                                    colorFondo = window.mapaColores[colorKey];
+                                }
+                            }
+                            tabla += `<tr>`;
+                            tabla += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;"><img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'"></td>`;
+                            tabla += `<td style='text-align:center;vertical-align:middle;'>${r.clase}</td>`;
+                            tabla += `<td style='text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
+                            const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
+                            tabla += `<td style='text-align:center;vertical-align:middle;'><div class='circle-color' style='width:24px;height:24px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${baseBg};background:${baseBg};'></div></td>`;
+                            const ordenColores = ['dorado','morado','azul','verde','blanco'];
+                            let materialesArr = [];
+                            ordenColores.forEach(col => {
+                                for(let i=0;i<(r.materiales[col]||0);i++){
+                                    materialesArr.push(col);
+                                }
+                            });
+                            for(let i=0;i<4;i++){
+                                const matColor = materialesArr[i] || '';
+                                const matBg = (matColor && window.mapaColores && window.mapaColores[matColor]) ? window.mapaColores[matColor] : '#f0f0f0';
+                                tabla += `<td style='text-align:center;vertical-align:middle;'><div class='circle-color' style='width:22px;height:22px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${matBg};background:${matBg};'></div></td>`;
+                            }
+                            let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
+                            tabla += `<td style='text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
+                            tabla += `<td style='text-align:center;vertical-align:middle;'><button class='editar-receta-lista back-button' data-clave='${clave}' style='background:#FFD600;color:#333;margin-right:4px;'>✏️</button>`;
+                            tabla += `<button class='eliminar-receta-lista back-button' data-clave='${clave}' style='background:#f44336;color:#fff;'>🗑️</button></td>`;
+                            tabla += `</tr>`;
+                        }
+                        tabla += `</tbody></table></div>`;
+                        return tabla;
                     }
-                }
-                html += `<tr>`;
-                html += `<td style="background:${colorFondo};text-align:center;vertical-align:middle;padding:8px;">
-                    <img src='images/${r.equipo.toLowerCase()}.png' alt='' style='width:32px;height:32px;vertical-align:middle;' onerror="this.style.display='none'">
-                </td>`;
-                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.clase}</td>`;
-                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'>${r.nivel}</td>`;
-                const baseBg = (r.base && window.mapaColores && window.mapaColores[r.base]) ? window.mapaColores[r.base] : '#f0f0f0';
-                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:24px;height:24px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${baseBg};'></div></td>`;
-                const ordenColores = ['dorado','morado','azul','verde','blanco'];
-                let materialesArr = [];
-                ordenColores.forEach(col => {
-                    for(let i=0;i<(r.materiales[col]||0);i++){
-                        materialesArr.push(col);
-                    }
-                });
-                for(let i=0;i<4;i++){
-                    const matColor = materialesArr[i] || '';
-                    const matBg = (matColor && window.mapaColores && window.mapaColores[matColor]) ? window.mapaColores[matColor] : '#f0f0f0';
-                    html += `<td style='width:28px;height:28px;text-align:center;vertical-align:middle;'><div class='circle-color' style='width:22px;height:22px;border-radius:50%;margin:auto;border:2px solid #bbb;display:inline-block;--circle-color:${matBg};'></div></td>`;
-                }
-                let tasa = r.tasaExito !== undefined && r.tasaExito !== '' ? parseFloat(r.tasaExito) : '';
-                html += `<td style='padding:8px;width:60px;text-align:center;vertical-align:middle;'>${tasa !== '' ? tasa % 1 === 0 ? tasa : tasa.toFixed(2) : ''}</td>`;
-                html += `<td style='padding:8px;text-align:center;vertical-align:middle;'><button class='editar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#FFD600;color:#333;border-radius:5px;padding:2px 8px;margin-right:4px;'>✏️</button>`;
-                html += `<button class='eliminar-receta-lista' data-clave='${clave}' style='font-size:1.1rem;background:#f44336;color:#fff;border-radius:5px;padding:2px 8px;'>🗑️</button></td>`;
-                html += `</tr>`;
-            }
-            html += `</tbody></table>`;
-        }
+                })()}
+            </div>
+            <div class='modal-footer'>
+                <button id='volver-gestor-recetas' class='back-button' style='background:#2196F3;'>← Volver</button>
+            </div>
+        </div>`;
         contenido.innerHTML = html;
         modal.style.display = 'flex';
+        // Cerrar modal
         document.getElementById('cerrar-gestor-recetas').onclick = function() {
             modal.style.display = 'none';
         };
+        document.getElementById('volver-gestor-recetas').onclick = function() {
+            modal.style.display = 'none';
+        };
         document.getElementById('nueva-receta-btn').onclick = function() {
-            mostrarFormularioReceta(contenido, null);
+            mostrarFormularioReceta(document.getElementById('contenido-gestor-recetas'), null);
         };
         document.getElementById('importar-recetas-btn').onclick = function() {
             importarRecetas();
         };
-        if (claves.length > 0) {
+        if (Object.keys(cargarRecetasPersonalizadas()).length > 0) {
             document.getElementById('exportar-recetas-btn').onclick = function() {
                 exportarRecetas();
             };
@@ -88,7 +112,7 @@ export function mostrarGestorRecetas() {
                 const [equipo, clase, nivel, color, base] = clave.split('|');
                 const receta = obtenerRecetaPersonalizada(equipo, clase, nivel, color, base);
                 if (!receta) return alert('No se encontró la receta');
-                mostrarFormularioReceta(contenido, receta);
+                mostrarFormularioReceta(document.getElementById('contenido-gestor-recetas'), receta);
             };
         });
         document.querySelectorAll('.eliminar-receta-lista').forEach(btn => {
@@ -112,43 +136,78 @@ function mostrarFormularioReceta(contenido, receta) {
     const nivel = document.getElementById('level-select').value;
     const color = document.getElementById('color-select').value;
     const colores = ['dorado', 'morado', 'azul', 'verde', 'blanco'];
-    let html = `<h2 style='color:#4CAF50;text-align:center;'>${receta ? 'Editar' : 'Nueva'} Receta</h2>`;
-    html += `<div style='margin-bottom:15px;padding:10px;background:#f0f0f0;border-radius:4px;text-align:center;'>`;
-    html += `<strong>Equipo:</strong> ${equipo} &nbsp; <strong>Clase:</strong> ${clase} &nbsp; <strong>Nivel:</strong> ${nivel} &nbsp; <strong>Color:</strong> ${color}`;
-    html += `</div>`;
-    html += `<form id='form-receta'>`;
-    html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Materiales requeridos por color:</label>`;
-    colores.forEach(col => {
-        html += `<div style='margin-bottom:8px;'><label>${col.charAt(0).toUpperCase() + col.slice(1)}: <input type='number' name='mat_${col}' min='0' value='${receta && receta.materiales && receta.materiales[col] ? receta.materiales[col] : 0}' style='width:60px;'></label></div>`;
-    });
-    html += `</div>`;
-    html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Color de la base:</label>`;
-    html += `<select name='baseColor' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `<option value=''>Selecciona un color...</option>`;
-    (coloresPorClase[clase] || colores).forEach(col => {
-        const sel = receta && receta.base && receta.base === col ? 'selected' : '';
-        html += `<option value='${col}' ${sel}>${col.charAt(0).toUpperCase() + col.slice(1)}</option>`;
-    });
-    html += `</select></div>`;
-    html += `<div style='margin-bottom:15px;'>`;
-    html += `<label style='font-weight:bold;display:block;margin-bottom:5px;'>Tasa de éxito (%):</label>`;
-    html += `<input type='number' name='tasaExito' min='1' max='100' step='any' value='${receta && receta.tasaExito ? receta.tasaExito : ''}' style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>`;
-    html += `</div>`;
-    html += `<div style='margin-top:20px;text-align:center;'>`;
-    html += `<button type='submit' style='background:#4CAF50;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;margin-right:10px;'>Guardar receta</button>`;
-    html += `<button type='button' id='volver-gestor-recetas' style='background:#2196F3;color:#fff;font-weight:bold;padding:10px 20px;border-radius:6px;border:none;'>← Volver</button>`;
-    html += `</div>`;
-    html += `</form>`;
+    let html = `
+    <div class='modal-content' style='max-width: 95vw; width: 90vw; min-width: 320px;'>
+        <div class='modal-header'>
+            <h2 style='color:#4CAF50; font-size:1.2rem; margin:0;'>${receta ? 'Editar' : 'Nueva'} Receta</h2>
+            <span class='close' id='cerrar-form-receta' title='Cerrar'>&times;</span>
+        </div>
+        <div class='modal-body'>
+            <div class='centered-content' style='margin-bottom:10px;'>
+                <span class='centered-text'><strong>Equipo:</strong> ${equipo} &nbsp; <strong>Clase:</strong> ${clase} &nbsp; <strong>Nivel:</strong> ${nivel} &nbsp; <strong>Color:</strong> ${color}</span>
+            </div>
+            <form id='form-receta'>
+                <div style='margin-bottom:10px;'>
+                    <label style='font-weight:bold;display:block;margin-bottom:5px;'>Materiales requeridos por color:</label>
+                    <div style='display:grid;grid-template-columns:repeat(2,1fr);gap:8px;'>
+                        ${colores.map(col => {
+                            const val = receta && receta.materiales && receta.materiales[col] ? receta.materiales[col] : '';
+                            return `<div><label>${col.charAt(0).toUpperCase() + col.slice(1)}:
+                                <select name='mat_${col}' style='width:60px;padding:3px 6px;border-radius:5px;'>
+                                    <option value=''></option>
+                                    <option value='1' ${val==1?'selected':''}>1</option>
+                                    <option value='2' ${val==2?'selected':''}>2</option>
+                                    <option value='3' ${val==3?'selected':''}>3</option>
+                                    <option value='4' ${val==4?'selected':''}>4</option>
+                                </select>
+                            </label></div>`;
+                        }).join('')}
+                    </div>
+                </div>
+                <div style='margin-bottom:10px;'>
+                    <label style='font-weight:bold;display:block;margin-bottom:5px;'>Color de la base:</label>
+                    <select name='baseColor' required style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>
+                        <option value=''>Selecciona un color...</option>
+                        ${(coloresPorClase[clase] || colores).map(col => {
+                            const sel = receta && receta.base && receta.base === col ? 'selected' : '';
+                            return `<option value='${col}' ${sel}>${col.charAt(0).toUpperCase() + col.slice(1)}</option>`;
+                        }).join('')}
+                    </select>
+                </div>
+                <div style='margin-bottom:10px;'>
+                    <label style='font-weight:bold;display:block;margin-bottom:5px;'>Tasa de éxito (%):</label>
+                    <input type='number' name='tasaExito' min='1' max='100' step='any' value='${receta && receta.tasaExito ? receta.tasaExito : ''}' style='width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;'>
+                </div>
+                <div id='error-materiales' style='color:#f44336;font-weight:bold;margin-bottom:10px;display:none;'></div>
+                <div style='margin-top:10px;text-align:center;'>
+                    <button type='submit' class='back-button' style='background:#4CAF50;margin-right:10px;'>Guardar receta</button>
+                    <button type='button' id='volver-gestor-recetas' class='back-button' style='background:#2196F3;'>← Volver</button>
+                </div>
+            </form>
+        </div>
+    </div>`;
     contenido.innerHTML = html;
+    document.getElementById('cerrar-form-receta').onclick = mostrarGestorRecetas;
     document.getElementById('volver-gestor-recetas').onclick = mostrarGestorRecetas;
-    document.getElementById('form-receta').onsubmit = function(e) {
+    const form = document.getElementById('form-receta');
+    form.onsubmit = function(e) {
         e.preventDefault();
         const materiales = {};
+        let suma = 0;
         colores.forEach(col => {
-            materiales[col] = parseInt(this[`mat_${col}`].value) || 0;
+            const val = parseInt(this[`mat_${col}`].value) || 0;
+            materiales[col] = val;
+            suma += val;
         });
+        // Validar suma de materiales
+        if (![2,3,4].includes(suma)) {
+            const errorDiv = document.getElementById('error-materiales');
+            errorDiv.textContent = 'La suma de materiales debe ser 2, 3 o 4.';
+            errorDiv.style.display = 'block';
+            return;
+        } else {
+            document.getElementById('error-materiales').style.display = 'none';
+        }
         const baseColor = this.baseColor.value;
         const tasaExito = parseFloat(this.tasaExito.value) || '';
         const colorGuardado = color ? color.toLowerCase().replace(/\s+/g, '') : '';
@@ -159,7 +218,7 @@ function mostrarFormularioReceta(contenido, receta) {
             tasaExito
         };
         guardarRecetaPersonalizada(nuevaReceta);
-        alert('Receta guardada exitosamente');
+        modales.mostrarMensaje('Éxito', 'Receta guardada exitosamente', 'success');
         mostrarGestorRecetas();
     };
 }
