@@ -23,8 +23,8 @@ export function mostrarGestorRecetas() {
             <div class='modal-body'>
                 <div style='text-align:center;margin-bottom:10px;'>
                     <button id='nueva-receta-btn' class='back-button' style='background:#4CAF50;margin-right:8px;' title='Nueva receta'>➕</button>
-                    <button id='importar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;' title='Importar recetas'>📥</button>
-                    ${Object.keys(cargarRecetasPersonalizadas()).length > 0 ? `<button id='exportar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;margin-left:8px;' title='Exportar recetas'>📤</button>` : ''}
+                    <button id='importar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;' title='Importar recetas'>⬇️</button>
+                    ${Object.keys(cargarRecetasPersonalizadas()).length > 0 ? `<button id='exportar-recetas-btn' class='back-button' style='background:#FFD600;color:#333;margin-left:8px;' title='Exportar recetas'>⬆️</button>` : ''}
                 </div>
                 ${(() => {
                     const recetas = cargarRecetasPersonalizadas();
@@ -33,7 +33,7 @@ export function mostrarGestorRecetas() {
                         return `<p style='text-align:center;'>No hay recetas guardadas aún.</p>`;
                     } else {
                         // Tabla responsiva
-                        let tabla = `<div style='overflow-x:auto;'><table class='materials-table' style='min-width:600px;width:100%;max-width:100%;font-size:0.98rem;'><thead><tr>`;
+                        let tabla = `<div style='overflow-x:auto;'><table class='materials-table' style='width:90vw;min-width:320px;max-width:90vw;font-size:0.98rem;'><thead><tr>`;
                         tabla += `<th style='width:12vw;min-width:40px;'>Equipo</th>`;
                         tabla += `<th style='width:16vw;min-width:60px;'>Clase</th>`;
                         tabla += `<th style='width:10vw;min-width:40px;'>Nivel</th>`;
