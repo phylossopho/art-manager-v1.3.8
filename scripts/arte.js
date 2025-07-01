@@ -146,11 +146,12 @@ export function generarTablaArte() {
     const crearCeldaMaterial = (material, color) => {
         const celda = document.createElement('td');
         const matBg = (color && mapaColores[color]) ? mapaColores[color] : '#f0f0f0';
+        celda.classList.add('force-bg', 'col-material');
+        celda.style.setProperty('--force-bg', matBg);
         celda.style.backgroundColor = matBg;
         if (material && material !== 'N/A') {
             const colores = ['blanco', 'verde', 'azul', 'morado', 'dorado'];
             if (colores.includes(material.toLowerCase())) {
-                // Círculo de color para materiales de color
                 const divMat = document.createElement('div');
                 divMat.className = 'circle-color';
                 divMat.style.width = '22px';
@@ -189,9 +190,10 @@ export function generarTablaArte() {
         const fila = document.createElement('tr');
         // 1. Icono: fondo del color del equipo
         const celdaEquipoImg = document.createElement('td');
-        celdaEquipoImg.className = 'col-imagen';
+        celdaEquipoImg.className = 'col-imagen force-bg';
         let colorKey = (equipo.color || '').toLowerCase().replace(/\s+/g, '');
         let colorFondo = (colorKey && mapaColores[colorKey]) ? mapaColores[colorKey] : '#e0e0e0';
+        celdaEquipoImg.style.setProperty('--force-bg', colorFondo);
         celdaEquipoImg.style.backgroundColor = colorFondo;
         const imgEquipo = document.createElement('img');
         imgEquipo.src = `images/${equipo.equipo.toLowerCase()}.png`;
@@ -228,8 +230,9 @@ export function generarTablaArte() {
         fila.appendChild(crearCeldaMaterial(equipo.material1, equipo.material1Color));
         // 6. Base (círculo de color, sin texto, fondo de la celda igual al color de la base)
         const celdaBase = document.createElement('td');
-        celdaBase.className = 'col-material';
+        celdaBase.className = 'col-material force-bg';
         const baseBg = (equipo.base && mapaColores[equipo.base]) ? mapaColores[equipo.base] : '#f0f0f0';
+        celdaBase.style.setProperty('--force-bg', baseBg);
         celdaBase.style.backgroundColor = baseBg;
         const divBase = document.createElement('div');
         divBase.className = 'circle-color';

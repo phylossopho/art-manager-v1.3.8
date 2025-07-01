@@ -1325,19 +1325,29 @@ body.hide-bottom-buttons .bottom-buttons {
 }
 
 #arte-table td.col-imagen, #arte-table td.col-material {
-    background: inherit !important;
+    background-color: inherit !important;
+    background: none !important;
 }
 
-#arte-table td.col-imagen {
-    /* Para asegurar que la imagen no tape el fondo */
-    position: relative;
+#arte-table td.col-imagen[style], #arte-table td.col-material[style] {
+    background-color: unset !important;
 }
 
-#arte-table td.col-imagen img {
-    position: relative;
-    z-index: 2;
+#arte-table td.col-imagen.force-bg, #arte-table td.col-material.force-bg {
+    background-color: var(--force-bg) !important;
 }
 
 #arte-table .circle-color {
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#arte-table td.col-material {
+    position: relative;
+}
+
+#arte-table td.col-material .circle-color {
+    position: relative;
+    z-index: 2;
 }
