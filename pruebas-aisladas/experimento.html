@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Exportar/Importar Números Aleatorios</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 40px; }
+        .container { background: #fff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); max-width: 400px; margin: auto; padding: 32px; }
+        button { margin: 10px 0; padding: 10px 18px; border-radius: 6px; border: none; background: #2196F3; color: #fff; font-size: 1.1rem; cursor: pointer; }
+        button:disabled { background: #aaa; }
+        ul { padding-left: 20px; }
+        .hidden { display: none; }
+        .msg { margin: 12px 0; padding: 10px 16px; border-radius: 6px; font-size: 1rem; }
+        .msg-success { background: #e8f5e9; color: #256029; border: 1px solid #b2dfdb; }
+        .msg-error { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+        .msg-info { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Prueba Exportar/Importar</h2>
+    <button id="generar">Generar números aleatorios</button>
+    <ul id="lista"></ul>
+    <button id="exportar" class="hidden">Exportar números</button>
+    <button id="importar" class="hidden">Importar números</button>
+    <input type="file" id="file-input" accept=".json" class="hidden">
+    <div id="mensajes"></div>
+</div>
+<script>
+let numeros = [];
+const lista = document.getElementById('lista');
+const btnGenerar = document.getElementById('generar');
+const btnExportar = document.getElementById('exportar');
+const btnImportar = document.getElementById('importar');
+const fileInput = document.getElementById('file-input');
+const mensajes = document.getElementById('mensajes');
+
+function mostrarNumeros() {
+    lista.innerHTML = '';
+    numeros.forEach(n => {
+        const li = document.createElement('li');
+        li.textContent = n;
+        lista.appendChild(li);
+    });
+}
+
+function mostrarMensaje(msg, tipo = 'info', codigo = '') {
+    mensajes.innerHTML = `<div class="msg msg-${tipo}">${msg}${codigo ? `<br><small>Código: <b>${codigo}</b></small>` : ''}</div>`;
+}
+
+btnGenerar.onclick = () => {
+    try {
+        numeros = Array.from({length: 10}, () => Math.floor(Math.random() * 10000));
+        mostrarNumeros();
+        btnExportar.classList.remove('hidden');
+        btnImportar.classList.add('hidden');
+        mostrarMensaje('Números generados correctamente.', 'success', 'G-001');
+    } catch (e) {
+        mostrarMensaje('Error al generar números: ' + e.message, 'error', 'G-002');
+    }
+};
+
+btnExportar.onclick = async () => {
+    if (!Array.isArray(numeros) || numeros.length === 0) {
+        mostrarMensaje('No hay números para exportar.', 'error', 'E-001');
+        return;
+    }
+    if (!numeros.every(n => typeof n === 'number' && isFinite(n))) {
+        mostrarMensaje('Los datos a exportar no son válidos.', 'error', 'E-002');
+        return;
+    }
+    const nombre = `numeros-aleatorios-${Date.now()}.json`;
+    let guardado = false;
+    if (window.showSaveFilePicker) {
+        try {
+            const options = {
+                suggestedName: nombre,
+                types: [{ description: 'Archivo JSON', accept: { 'application/json': ['.json'] } }]
+            };
+            const handle = await window.showSaveFilePicker(options);
+            const writable = await handle.createWritable();
+            await writable.write(JSON.stringify(numeros));
+            await writable.close();
+            guardado = true;
+            mostrarMensaje('Archivo exportado correctamente.', 'success', 'E-003');
+        } catch (e) {
+            if (e.name !== 'AbortError') mostrarMensaje('Error al exportar: ' + e.message, 'error', 'E-004');
+            else mostrarMensaje('Exportación cancelada por el usuario.', 'info', 'E-005');
+        }
+    }
+    if (!guardado) {
+        try {
+            const blob = new Blob([JSON.stringify(numeros)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombre;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarMensaje('Archivo exportado correctamente.', 'success', 'E-006');
+        } catch (e) {
+            mostrarMensaje('Error al exportar (descarga tradicional): ' + e.message, 'error', 'E-007');
+            return;
+        }
+    }
+    // Resetear números
+    numeros = Array(numeros.length).fill(0);
+    mostrarNumeros();
+    btnExportar.classList.add('hidden');
+    btnImportar.classList.remove('hidden');
+};
+
+btnImportar.onclick = () => {
+    fileInput.value = '';
+    fileInput.click();
+};
+
+fileInput.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) {
+        mostrarMensaje('No se seleccionó ningún archivo.', 'info', 'I-001');
+        return;
+    }
+    if (!file.name.endsWith('.json')) {
+        mostrarMensaje('El archivo debe tener extensión .json', 'error', 'I-002');
+        return;
+    }
+    if (file.size === 0) {
+        mostrarMensaje('El archivo está vacío.', 'error', 'I-003');
+        return;
+    }
+    if (file.size > 1024 * 1024) {
+        mostrarMensaje('El archivo es demasiado grande (>1MB).', 'error', 'I-004');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => {
+        mostrarMensaje('Error al leer el archivo.', 'error', 'I-005');
+    };
+    reader.onload = evt => {
+        try {
+            const data = JSON.parse(evt.target.result);
+            if (!Array.isArray(data)) {
+                mostrarMensaje('El archivo no contiene un array.', 'error', 'I-006');
+                return;
+            }
+            if (data.length !== 10) {
+                mostrarMensaje('El array debe tener exactamente 10 elementos.', 'error', 'I-007');
+                return;
+            }
+            if (!data.every(n => typeof n === 'number' && isFinite(n))) {
+                mostrarMensaje('El array contiene elementos no numéricos o inválidos.', 'error', 'I-008');
+                return;
+            }
+            numeros = data;
+            mostrarNumeros();
+            btnExportar.classList.remove('hidden');
+            btnImportar.classList.add('hidden');
+            mostrarMensaje('Archivo importado correctamente.', 'success', 'I-009');
+        } catch (err) {
+            mostrarMensaje('Error al importar: ' + err.message, 'error', 'I-010');
+        }
+    };
+    reader.readAsText(file);
+};
+</script>
+</body>
+</html> 

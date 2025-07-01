@@ -213,13 +213,14 @@ function esMovil() {
     return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
 }
 
-export function exportarRecetas() {
-    const recetas = cargarRecetasPersonalizadas();
-    const nombreSugerido = 'recetas_art_manager.json';
-    const soportaSaveFilePicker = typeof window.showSaveFilePicker === 'function';
-    if (soportaSaveFilePicker && !esMovil()) {
-        (async () => {
+export async function exportarRecetas() {
+    try {
+        const recetas = cargarRecetasPersonalizadas();
+        const nombreSugerido = `recetas-art-manager-${new Date().toISOString().split('T')[0]}.json`;
+        let guardadoExitoso = false;
+        if (window.showSaveFilePicker && !esMovil()) {
             try {
+                alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas)`);
                 const options = {
                     suggestedName: nombreSugerido,
                     types: [
@@ -233,29 +234,32 @@ export function exportarRecetas() {
                 const writable = await handle.createWritable();
                 await writable.write(JSON.stringify(recetas, null, 2));
                 await writable.close();
+                guardadoExitoso = true;
                 mostrarToastAmarillo('✅ Recetas exportadas correctamente.');
             } catch (e) {
-                if (e.name === 'AbortError') {
-                    mostrarToastAmarillo('Guardado cancelado.');
+                if (e.name !== 'AbortError') {
+                    mostrarToastAmarillo('❌ Error al guardar el archivo: ' + (e.message || e));
                 } else {
-                    mostrarToastAmarillo('❌ Error al guardar el archivo.');
+                    mostrarToastAmarillo('Guardado cancelado.');
                 }
             }
-        })();
-    } else {
-        if (esMovil()) {
-            mostrarToastAmarillo('El archivo se descargará en tu carpeta de descargas. Puedes cambiar el nombre o moverlo desde tu gestor de archivos.');
-        } else {
-            alert(`El archivo se descargará automáticamente con el nombre sugerido: ${nombreSugerido}`);
         }
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
-        const dlAnchor = document.createElement('a');
-        dlAnchor.setAttribute('href', dataStr);
-        dlAnchor.setAttribute('download', nombreSugerido);
-        document.body.appendChild(dlAnchor);
-        dlAnchor.click();
-        document.body.removeChild(dlAnchor);
-        setTimeout(() => mostrarToastAmarillo('✅ Recetas exportadas.'), 400);
+        if (!guardadoExitoso) {
+            // Fallback tradicional
+            alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas en el diálogo de descarga)`);
+            const blob = new Blob([JSON.stringify(recetas, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombreSugerido;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarToastAmarillo(`✅ Recetas exportadas como: ${nombreSugerido}`);
+        }
+    } catch (error) {
+        mostrarToastAmarillo('❌ Error al exportar recetas: ' + (error.message || error));
     }
 }
 
@@ -272,26 +276,18 @@ export function importarRecetas() {
         const reader = new FileReader();
         reader.onload = function(evt) {
             try {
-                let nuevas = JSON.parse(evt.target.result);
-                if (Array.isArray(nuevas)) {
-                    const obj = {};
-                    nuevas.forEach((r, idx) => {
-                        if (r && r.equipo && r.clase && r.nivel && r.color && r.base) {
-                            const clave = `${r.equipo}|${r.clase}|${r.nivel}|${r.color}|${r.base}`;
-                            obj[clave] = r;
-                        } else {
-                            obj[`receta_${idx}`] = r;
-                        }
-                    });
-                    nuevas = obj;
-                }
-                if (typeof nuevas !== 'object' || nuevas === null) throw new Error('Formato de archivo no válido');
-                const actuales = cargarRecetasPersonalizadas();
+                const data = JSON.parse(evt.target.result);
+                if (!data || typeof data !== 'object') throw new Error('Archivo vacío o formato inválido');
+                // Validar que las claves sean del tipo esperado
                 let agregadas = 0;
-                for (const clave in nuevas) {
-                    if (!actuales[clave]) {
-                        actuales[clave] = nuevas[clave];
-                        agregadas++;
+                const actuales = cargarRecetasPersonalizadas();
+                for (const clave in data) {
+                    const r = data[clave];
+                    if (r && r.equipo && r.clase && r.nivel && r.color && r.base && r.materiales) {
+                        if (!actuales[clave]) {
+                            actuales[clave] = r;
+                            agregadas++;
+                        }
                     }
                 }
                 localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
