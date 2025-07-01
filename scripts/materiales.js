@@ -456,33 +456,65 @@ export function consultaRapidaMateriales(estado) {
 const RECETAS_KEY = 'recetasPersonalizadas';
 
 export function guardarRecetaPersonalizada(receta) {
-    const recetas = cargarRecetasPersonalizadas();
-    // Clave única: equipo|clase|nivel|color|base
-    const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
-    recetas[clave] = receta;
-    localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+    try {
+        const recetas = cargarRecetasPersonalizadas();
+        // Clave única: equipo|clase|nivel|color|base
+        const clave = `${receta.equipo}|${receta.clase}|${receta.nivel}|${receta.color}|${receta.base}`;
+        recetas[clave] = receta;
+        localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+    } catch (error) {
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al guardar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error');
+        } else {
+            alert('Error al guardar receta: ' + (error.message || error));
+        }
+        throw error;
+    }
 }
 
 export function cargarRecetasPersonalizadas() {
     try {
         const data = localStorage.getItem(RECETAS_KEY);
         return data ? JSON.parse(data) : {};
-    } catch {
+    } catch (error) {
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al cargar recetas', `<p style='color:red;'>${error.message || error}</p>`, 'error');
+        } else {
+            alert('Error al cargar recetas: ' + (error.message || error));
+        }
         return {};
     }
 }
 
 export function obtenerRecetaPersonalizada(equipo, clase, nivel, color, base) {
-    const recetas = cargarRecetasPersonalizadas();
-    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
-    return recetas[clave] || null;
+    try {
+        const recetas = cargarRecetasPersonalizadas();
+        const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+        return recetas[clave] || null;
+    } catch (error) {
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al obtener receta', `<p style='color:red;'>${error.message || error}</p>`, 'error');
+        } else {
+            alert('Error al obtener receta: ' + (error.message || error));
+        }
+        return null;
+    }
 }
 
 export function eliminarRecetaPersonalizada(equipo, clase, nivel, color, base) {
-    const recetas = cargarRecetasPersonalizadas();
-    const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
-    if (recetas[clave]) {
-        delete recetas[clave];
-        localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+    try {
+        const recetas = cargarRecetasPersonalizadas();
+        const clave = `${equipo}|${clase}|${nivel}|${color}|${base}`;
+        if (recetas[clave]) {
+            delete recetas[clave];
+            localStorage.setItem(RECETAS_KEY, JSON.stringify(recetas));
+        }
+    } catch (error) {
+        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
+            window.modales.mostrarMensajeHTML('Error al eliminar receta', `<p style='color:red;'>${error.message || error}</p>`, 'error');
+        } else {
+            alert('Error al eliminar receta: ' + (error.message || error));
+        }
+        throw error;
     }
 }
