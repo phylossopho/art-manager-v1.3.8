@@ -199,12 +199,61 @@ function mostrarFormularioReceta(contenido, receta) {
     };
 }
 
+function esMovil() {
+    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+}
+
+function mostrarToastInfo(mensaje) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.position = 'fixed';
+        container.style.left = '0';
+        container.style.right = '0';
+        container.style.bottom = '0';
+        container.style.zIndex = '99999';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column-reverse';
+        container.style.alignItems = 'center';
+        container.style.pointerEvents = 'none';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-info';
+    toast.style.background = '#ffe066';
+    toast.style.color = '#222';
+    toast.style.fontWeight = 'bold';
+    toast.style.textAlign = 'center';
+    toast.style.borderRadius = '6px';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)';
+    toast.style.margin = '0 0 16px 0';
+    toast.style.padding = '14px 32px';
+    toast.style.maxWidth = '90vw';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(30px)';
+    toast.style.transition = 'opacity 0.3s, transform 0.3s';
+    toast.style.pointerEvents = 'auto';
+    toast.innerText = mensaje;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    }, 10);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+    }, 1300);
+}
+
 function exportarRecetas() {
     const recetas = cargarRecetasPersonalizadas();
     const nombreSugerido = 'recetas_art_manager.json';
-    // Detectar soporte real
     const soportaSaveFilePicker = typeof window.showSaveFilePicker === 'function';
-    if (soportaSaveFilePicker) {
+    if (soportaSaveFilePicker && !esMovil()) {
         (async () => {
             try {
                 alert(`Elige dónde quieres guardar tus recetas.\n\nEl nombre sugerido es: ${nombreSugerido}\n(Puedes cambiarlo si lo deseas)`);
@@ -221,18 +270,22 @@ function exportarRecetas() {
                 const writable = await handle.createWritable();
                 await writable.write(JSON.stringify(recetas, null, 2));
                 await writable.close();
-                alert('✅ Recetas exportadas correctamente.\n\nRecuerda dónde lo guardaste.');
+                mostrarToastInfo('✅ Recetas exportadas correctamente.');
             } catch (e) {
                 if (e.name === 'AbortError') {
-                    alert('Guardado cancelado.');
+                    mostrarToastInfo('Guardado cancelado.');
                 } else {
-                    alert('❌ Error al guardar el archivo: ' + (e.message || e));
+                    mostrarToastInfo('❌ Error al guardar el archivo.');
                 }
             }
         })();
     } else {
-        // Fallback tradicional
-        alert(`El archivo se descargará automáticamente con el nombre sugerido: ${nombreSugerido}`);
+        // Fallback tradicional, mensaje claro para móvil
+        if (esMovil()) {
+            mostrarToastInfo('El archivo se descargará en tu carpeta de descargas. Puedes cambiar el nombre o moverlo desde tu gestor de archivos.');
+        } else {
+            alert(`El archivo se descargará automáticamente con el nombre sugerido: ${nombreSugerido}`);
+        }
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recetas, null, 2));
         const dlAnchor = document.createElement('a');
         dlAnchor.setAttribute('href', dataStr);
@@ -240,7 +293,7 @@ function exportarRecetas() {
         document.body.appendChild(dlAnchor);
         dlAnchor.click();
         document.body.removeChild(dlAnchor);
-        alert('✅ Recetas exportadas como: ' + nombreSugerido);
+        setTimeout(() => mostrarToastInfo('✅ Recetas exportadas.'), 400);
     }
 }
 
@@ -250,12 +303,14 @@ function importarRecetas() {
     input.accept = '.json,application/json';
     input.onchange = function(e) {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file) {
+            mostrarToastInfo('Importación cancelada.');
+            return;
+        }
         const reader = new FileReader();
         reader.onload = function(evt) {
             try {
                 let nuevas = JSON.parse(evt.target.result);
-                // Si el archivo es un array, convertirlo a objeto con claves únicas
                 if (Array.isArray(nuevas)) {
                     const obj = {};
                     nuevas.forEach((r, idx) => {
@@ -278,10 +333,10 @@ function importarRecetas() {
                     }
                 }
                 localStorage.setItem('recetasPersonalizadas', JSON.stringify(actuales));
-                alert(`Importación completada. Se agregaron ${agregadas} recetas nuevas.`);
+                mostrarToastInfo(`Importación completada. Se agregaron ${agregadas} recetas.`);
                 mostrarGestorRecetas();
             } catch (err) {
-                alert('El archivo no es válido o está corrupto.\n\nDetalle: ' + (err.message || err));
+                mostrarToastInfo('El archivo no es válido o está corrupto.');
             }
         };
         reader.readAsText(file);

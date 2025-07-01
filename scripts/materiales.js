@@ -460,12 +460,54 @@ let usandoFallback = false;
 function mostrarAvisoFallback() {
     if (!usandoFallback) {
         usandoFallback = true;
-        if (window.modales && typeof window.modales.mostrarMensajeHTML === 'function') {
-            window.modales.mostrarMensajeHTML('Aviso', `<p style='color:orange;'>No se puede acceder a localStorage. Las recetas solo se guardarán temporalmente mientras la app esté abierta.</p>`, 'warning');
-        } else {
-            alert('No se puede acceder a localStorage. Las recetas solo se guardarán temporalmente mientras la app esté abierta.');
-        }
+        mostrarToastAmarillo('No se puede acceder a localStorage. Las recetas solo se guardarán temporalmente mientras la app esté abierta.');
     }
+}
+
+function mostrarToastAmarillo(mensaje) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.position = 'fixed';
+        container.style.left = '0';
+        container.style.right = '0';
+        container.style.bottom = '0';
+        container.style.zIndex = '99999';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column-reverse';
+        container.style.alignItems = 'center';
+        container.style.pointerEvents = 'none';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-fallback';
+    toast.style.background = '#ffe066';
+    toast.style.color = '#222';
+    toast.style.fontWeight = 'bold';
+    toast.style.textAlign = 'center';
+    toast.style.borderRadius = '6px';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)';
+    toast.style.margin = '0 0 16px 0';
+    toast.style.padding = '14px 32px';
+    toast.style.maxWidth = '90vw';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(30px)';
+    toast.style.transition = 'opacity 0.3s, transform 0.3s';
+    toast.style.pointerEvents = 'auto';
+    toast.innerText = mensaje;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    }, 10);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+    }, 1300);
 }
 
 export function guardarRecetaPersonalizada(receta) {
