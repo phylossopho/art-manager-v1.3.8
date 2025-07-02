@@ -601,8 +601,14 @@ function renderListaTiempoRecetas() {
     const r = recetas[idx];
     if (!r) return;
     const tiempo = calcularTiempoReceta(r);
+    // Construir string de materiales (solo los > 0)
+    const materialesStr = Object.entries(r.materiales)
+      .filter(([color, cantidad]) => cantidad > 0)
+      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
+      .join(' | ');
+    // Formato: Nivel 1 | Dorado | 2 morados | 98.02 %
     html += `<li style='margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;'>`;
-    html += `<span style='font-weight:bold;'>${r.clase} ${r.nivel} ${r.color}</span> <span style='color:#1e3a8a;'>${tiempo} h</span>`;
+    html += `<span style='font-weight:bold;'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</span> <span style='color:#1e3a8a;'>${tiempo} h</span>`;
     html += `<button onclick='eliminarRecetaTiempo(${i})' style='background:#e53935;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:8px;'>✖</button>`;
     html += `</li>`;
   });
@@ -654,7 +660,12 @@ document.getElementById('agregar-receta-tiempo').onclick = function() {
   if (recetasNormales.length === 0) return;
   let opciones = '';
   recetasNormales.forEach(r => {
-    opciones += `<option value='${r.idx}'>${r.clase} ${r.nivel} ${r.color} (D:${r.materiales.dorado}, M:${r.materiales.morado}, A:${r.materiales.azul}, V:${r.materiales.verde}, B:${r.materiales.blanco})</option>`;
+    // Construir string de materiales (solo los > 0)
+    const materialesStr = Object.entries(r.materiales)
+      .filter(([color, cantidad]) => cantidad > 0)
+      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
+      .join(' | ');
+    opciones += `<option value='${r.idx}'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</option>`;
   });
   const sel = document.createElement('select');
   sel.innerHTML = opciones;
