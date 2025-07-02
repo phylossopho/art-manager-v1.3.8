@@ -340,21 +340,17 @@ function renderTabla() {
     });
     // Mostrar/ocultar botones de guardar/importar
     document.getElementById('guardar-recetas').style.display = recetas.length ? 'block' : 'none';
-    document.getElementById('importar-recetas').style.display = 'block';
+    //document.getElementById('importar-recetas').style.display = 'block';
 }
 
 const TIEMPOS_MATERIAL = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
 let recetasTiempoSeleccion = {};
-
 document.getElementById('agregar-receta-tiempo').onclick = abrirModalSeleccionRecetas;
 
 function abrirModalSeleccionRecetas() {
-  // Obtener recetas normales
   const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
   if (recetasNormales.length === 0) return;
-  // Inicializar selección si está vacía
   if (!recetasTiempoSeleccion || typeof recetasTiempoSeleccion !== 'object') recetasTiempoSeleccion = {};
-  // Modal
   const modal = document.createElement('div');
   modal.style.position = 'fixed';
   modal.style.top = '0';
@@ -366,7 +362,6 @@ function abrirModalSeleccionRecetas() {
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
   modal.style.zIndex = '9999';
-  // Contenido
   const inner = document.createElement('div');
   inner.style.background = '#fff';
   inner.style.padding = '28px 18px 18px 18px';
@@ -377,7 +372,6 @@ function abrirModalSeleccionRecetas() {
   inner.style.width = 'min(600px,98vw)';
   inner.style.maxHeight = '90vh';
   inner.style.overflowY = 'auto';
-  // Tabla
   let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>% Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
   recetasNormales.forEach(r => {
     const materialesStr = Object.entries(r.materiales)
@@ -397,12 +391,10 @@ function abrirModalSeleccionRecetas() {
     tabla += `</tr>`;
   });
   tabla += `</tbody></table>`;
-  // Resumen de tiempo
   const resumenDiv = document.createElement('div');
   resumenDiv.id = 'modal-resumen-tiempo-recetas';
   resumenDiv.style.margin = '12px 0 18px 0';
   resumenDiv.style.fontSize = '1.08em';
-  // Botón cerrar
   const cerrar = document.createElement('button');
   cerrar.textContent = 'Cerrar';
   cerrar.style.background = '#1e3a8a';
@@ -421,7 +413,6 @@ function abrirModalSeleccionRecetas() {
   inner.appendChild(cerrar);
   modal.appendChild(inner);
   document.body.appendChild(modal);
-  // Eventos + y -
   setTimeout(() => {
     document.querySelectorAll('.btn-mas').forEach(btn => {
       btn.onclick = function() {
@@ -442,7 +433,6 @@ function abrirModalSeleccionRecetas() {
 }
 
 function actualizarTablaModalRecetas() {
-  // Re-renderizar solo el tbody de la tabla
   const tbody = document.querySelector('#tabla-modal-recetas-tiempo tbody');
   if (!tbody) return;
   const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
@@ -465,7 +455,6 @@ function actualizarTablaModalRecetas() {
     html += `</tr>`;
   });
   tbody.innerHTML = html;
-  // Reasignar eventos
   document.querySelectorAll('.btn-mas').forEach(btn => {
     btn.onclick = function() {
       const idx = this.getAttribute('data-idx');
@@ -492,7 +481,6 @@ function calcularTiempoReceta(receta) {
 }
 
 function actualizarResumenModalTiempo() {
-  // Calcular el total de horas y materiales
   let totalHoras = 0;
   let totalMateriales = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
   Object.entries(recetasTiempoSeleccion).forEach(([idx, cantidad]) => {
@@ -505,7 +493,6 @@ function actualizarResumenModalTiempo() {
       totalMateriales[color] += (r.materiales[color] || 0) * cantidad;
     }
   });
-  // Conversión a meses, semanas, días, horas
   const horasFormateadas = totalHoras.toLocaleString('es-MX');
   let horasRestantes = totalHoras;
   const meses = Math.floor(horasRestantes / (30*24));
@@ -531,7 +518,6 @@ function actualizarResumenModalTiempo() {
   document.getElementById('modal-resumen-tiempo-recetas').innerHTML = html;
 }
 
-// Lógica de restricciones automáticas
 const claseSelect = document.getElementById('clase');
 const nivelSelect = document.getElementById('nivel');
 const baseClaseSelect = document.getElementById('base-clase');
@@ -540,13 +526,10 @@ const baseNivelSelect = document.getElementById('base-nivel');
 function aplicarRestricciones() {
     const clase = claseSelect.value;
     const nivelEquipo = parseInt(nivelSelect.value);
-    // Reset: habilitar todo
     nivelSelect.disabled = false;
     baseClaseSelect.disabled = false;
     baseNivelSelect.disabled = false;
-    // Habilitar todos los niveles de la base
     Array.from(baseNivelSelect.options).forEach(opt => { opt.disabled = false; });
-
     if (clase === 'Campeón') {
         nivelSelect.value = '4';
         nivelSelect.disabled = true;
@@ -571,18 +554,15 @@ function aplicarRestricciones() {
     } else if (clase === 'Normal') {
         baseClaseSelect.value = 'Normal';
         baseClaseSelect.disabled = true;
-        // Solo permitir niveles de base <= nivel del equipo
         Array.from(baseNivelSelect.options).forEach(opt => {
             if (opt.value && parseInt(opt.value) > nivelEquipo) {
                 opt.disabled = true;
             }
         });
-        // Si el nivel actual de la base es mayor, lo ajusta
         if (baseNivelSelect.value && parseInt(baseNivelSelect.value) > nivelEquipo) {
             baseNivelSelect.value = nivelEquipo;
         }
     } else {
-        // Normal: todo editable
         nivelSelect.disabled = false;
         baseClaseSelect.disabled = false;
         baseNivelSelect.disabled = false;
@@ -591,7 +571,6 @@ function aplicarRestricciones() {
 claseSelect.addEventListener('change', aplicarRestricciones);
 nivelSelect.addEventListener('change', aplicarRestricciones);
 document.addEventListener('DOMContentLoaded', aplicarRestricciones);
-
 document.getElementById('confirm-borrar-aceptar').onclick = function() {
     if (borrarIndex !== null && borrarIndex >= 0) {
         recetas.splice(borrarIndex, 1);
