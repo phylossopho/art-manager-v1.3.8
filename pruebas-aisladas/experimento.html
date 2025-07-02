@@ -107,6 +107,10 @@
 </head>
 <body>
 <div class="container">
+    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:18px;">
+        <button id="importar-recetas" style="padding:10px 24px;font-size:1rem;background:#1976d2;color:#fff;border:none;border-radius:6px;cursor:pointer;">Importar recetas</button>
+        <input type="file" id="file-import" accept=".json" style="display:none;">
+    </div>
     <h2>Generador de Recetas Universal</h2>
     <form id="receta-form" autocomplete="off">
         <fieldset>
@@ -247,6 +251,7 @@
                 <th colspan="8">Equipo</th>
                 <th colspan="3">Base</th>
                 <th rowspan="2">Éxito</th>
+                <th rowspan="2">Acciones</th>
             </tr>
             <tr>
                 <th>Clase</th>
@@ -264,7 +269,9 @@
         </thead>
         <tbody></tbody>
     </table>
-    <button id="guardar-recetas" style="display:none;margin:18px auto 0 auto;display:block;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
+    <div style="display:flex;gap:12px;justify-content:center;margin:18px 0 0 0;">
+        <button id="guardar-recetas" style="display:none;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
+    </div>
 </div>
 <script>
 const form = document.getElementById('receta-form');
@@ -365,9 +372,53 @@ function renderTabla() {
             <td>${receta.base ? receta.base.nivel : ''}</td>
             <td>${receta.base ? receta.base.color : ''}</td>
             <td>${receta.porcentaje}%</td>
+            <td>
+                <button class="editar-btn" title="Editar" style="background:none;border:none;cursor:pointer;font-size:1.2em;">✏️</button>
+                <button class="borrar-btn" title="Borrar" style="background:none;border:none;cursor:pointer;font-size:1.2em;">🗑️</button>
+            </td>
         `;
+        // Acciones borrar y editar
+        tr.querySelector('.borrar-btn').onclick = () => {
+            const realIdx = recetas.indexOf(recetasFiltradas[idx]);
+            if (realIdx !== -1) {
+                recetas.splice(realIdx, 1);
+                renderTabla();
+            }
+        };
+        tr.querySelector('.editar-btn').onclick = () => {
+            // Cargar los datos de la receta en el formulario para editar
+            const r = recetasFiltradas[idx];
+            document.getElementById('clase').value = r.clase;
+            document.getElementById('color').value = r.color;
+            document.getElementById('porcentaje').value = r.porcentaje;
+            document.querySelectorAll('.color-material')[0].value = r.materiales.dorado;
+            document.querySelectorAll('.color-material')[1].value = r.materiales.morado;
+            document.querySelectorAll('.color-material')[2].value = r.materiales.azul;
+            document.querySelectorAll('.color-material')[3].value = r.materiales.verde;
+            document.querySelectorAll('.color-material')[4].value = r.materiales.blanco;
+            if (r.base) {
+                document.getElementById('base-clase').value = r.base.clase;
+                document.getElementById('base-nivel').value = r.base.nivel;
+                document.getElementById('base-color').value = r.base.color;
+            } else {
+                document.getElementById('base-clase').value = '';
+                document.getElementById('base-nivel').value = '';
+                document.getElementById('base-color').value = '';
+            }
+            document.getElementById('nivel').value = r.nivel;
+            aplicarRestricciones();
+            // Eliminar la receta editada para que al guardar se reemplace
+            const realIdx = recetas.indexOf(recetasFiltradas[idx]);
+            if (realIdx !== -1) {
+                recetas.splice(realIdx, 1);
+                renderTabla();
+            }
+        };
         tbody.appendChild(tr);
     });
+    // Mostrar/ocultar botones de guardar/importar
+    document.getElementById('guardar-recetas').style.display = recetas.length ? 'block' : 'none';
+    document.getElementById('importar-recetas').style.display = 'block';
 }
 
 // Lógica de restricciones automáticas
@@ -378,10 +429,13 @@ const baseNivelSelect = document.getElementById('base-nivel');
 
 function aplicarRestricciones() {
     const clase = claseSelect.value;
+    const nivelEquipo = parseInt(nivelSelect.value);
     // Reset: habilitar todo
     nivelSelect.disabled = false;
     baseClaseSelect.disabled = false;
     baseNivelSelect.disabled = false;
+    // Habilitar todos los niveles de la base
+    Array.from(baseNivelSelect.options).forEach(opt => { opt.disabled = false; });
 
     if (clase === 'Campeón') {
         nivelSelect.value = '4';
@@ -404,6 +458,19 @@ function aplicarRestricciones() {
         baseNivelSelect.disabled = true;
         baseClaseSelect.value = 'Lord';
         baseClaseSelect.disabled = true;
+    } else if (clase === 'Normal') {
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+        // Solo permitir niveles de base <= nivel del equipo
+        Array.from(baseNivelSelect.options).forEach(opt => {
+            if (opt.value && parseInt(opt.value) > nivelEquipo) {
+                opt.disabled = true;
+            }
+        });
+        // Si el nivel actual de la base es mayor, lo ajusta
+        if (baseNivelSelect.value && parseInt(baseNivelSelect.value) > nivelEquipo) {
+            baseNivelSelect.value = nivelEquipo;
+        }
     } else {
         // Normal: todo editable
         nivelSelect.disabled = false;
@@ -412,7 +479,39 @@ function aplicarRestricciones() {
     }
 }
 claseSelect.addEventListener('change', aplicarRestricciones);
+nivelSelect.addEventListener('change', aplicarRestricciones);
 document.addEventListener('DOMContentLoaded', aplicarRestricciones);
+
+document.getElementById('importar-recetas').onclick = function() {
+    document.getElementById('file-import').click();
+};
+document.getElementById('file-import').onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const data = JSON.parse(evt.target.result);
+            if (!Array.isArray(data)) throw new Error('El archivo no contiene un array de recetas.');
+            let nuevos = 0;
+            data.forEach(recetaNueva => {
+                // Deduplicación: compara todos los campos relevantes
+                const existe = recetas.some(r =>
+                    JSON.stringify(r) === JSON.stringify(recetaNueva)
+                );
+                if (!existe) {
+                    recetas.push(recetaNueva);
+                    nuevos++;
+                }
+            });
+            renderTabla();
+            alert(`Se importaron ${nuevos} recetas nuevas.`);
+        } catch (err) {
+            alert('Error al importar: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+};
 </script>
 </body>
 </html> 
