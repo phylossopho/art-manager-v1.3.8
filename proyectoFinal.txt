@@ -1,0 +1,53 @@
+Gestor y Optimizador de Recetas Deck Heroes - Documento de Referencia
+===============================================================
+
+1. Simulación y Creación de Recetas
+-----------------------------------
+- Receta Universal: flexible, editable, exportable/importable.
+- Receta Real: asociada a equipo concreto (Espada, Botas, etc.).
+- Edición, borrado, importación/exportación de recetas.
+
+2. Inventario de Materiales
+---------------------------
+- Registro de materiales actuales del usuario.
+- Visualización rápida de existencias.
+- Edición manual y actualización automática tras simulaciones.
+
+3. Comparación y Análisis
+-------------------------
+- Comparar receta universal vs. equipo real.
+- Calcular materiales requeridos vs. materiales disponibles.
+- Identificar faltantes y posibles conversiones.
+
+4. Motor de Optimización
+------------------------
+- Algoritmo para encontrar la mejor ruta de producción:
+  - Uso eficiente de materiales y conversiones.
+  - Minimización de recursos y tiempo.
+- Consideración de tiempos de producción por material.
+- Sugerencia de pasos óptimos (qué fabricar, convertir, cuándo).
+
+5. Gestión de Tiempos
+---------------------
+- Registro de tiempo de producción por material.
+- Cálculo de tiempo total estimado para fabricar el equipo.
+- Visualización de cronograma o pasos temporales.
+
+6. Interfaz de Usuario
+----------------------
+- Responsive (usable en móvil y escritorio).
+- Secciones compactas y claras (Equipo, Materiales, Base, Éxito).
+- Tabla de recetas con edición, borrado, importación/exportación.
+- Panel de resultados: ruta óptima, pasos, tiempos, advertencias.
+
+7. Experiencia y Comunidad
+--------------------------
+- Compartir recetas y rutas óptimas con otros usuarios.
+- Registro de errores y avisos amigables.
+- Documentación y ayuda integrada.
+
+Notas adicionales:
+------------------
+- El sistema debe poder identificar una receta universal, compararla con un equipo real, analizar los materiales requeridos, compararlos con el inventario, y sugerir la mejor combinación y ruta de producción.
+- Se debe considerar el tiempo de producción de materiales, especialmente para equipos normales (cimientos).
+- El objetivo final es que la app sugiera la mejor ruta de acción con los recursos y tiempos disponibles, o indique qué falta para lograr el objetivo. 
