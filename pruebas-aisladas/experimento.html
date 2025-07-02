@@ -399,10 +399,12 @@ function renderTabla() {
     }
     // Ordenar por clase, nivel, color (jerarquía), número de materiales (jerarquía)
     const colorOrden = { dorado: 5, morado: 4, azul: 3, verde: 2, blanco: 1 };
+    const claseOrden = { 'Normal': 1, 'Campeón': 2, 'Planewalker': 3, 'Lord': 4, 'Noble Lord': 5 };
     recetasFiltradas = recetasFiltradas.slice().sort((a, b) => {
-        // 1. Clase (alfabético)
-        if (a.clase < b.clase) return -1;
-        if (a.clase > b.clase) return 1;
+        // 1. Clase (jerarquía definida)
+        const claseA = claseOrden[a.clase] || 99;
+        const claseB = claseOrden[b.clase] || 99;
+        if (claseA !== claseB) return claseA - claseB;
         // 2. Nivel (numérico ascendente)
         const nivelA = parseInt(a.nivel);
         const nivelB = parseInt(b.nivel);
@@ -773,6 +775,135 @@ renderTabla = (function(orig){
     mostrarAnalizadorTiempo();
   };
 })(renderTabla);
+
+let recetasTiempoSeleccion = {};
+
+function abrirModalSeleccionRecetas() {
+  // Obtener recetas normales
+  const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
+  if (recetasNormales.length === 0) return;
+  // Inicializar selección si está vacía
+  if (!recetasTiempoSeleccion || typeof recetasTiempoSeleccion !== 'object') recetasTiempoSeleccion = {};
+  // Modal
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.background = 'rgba(0,0,0,0.6)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = '9999';
+  // Contenido
+  const inner = document.createElement('div');
+  inner.style.background = '#fff';
+  inner.style.padding = '28px 18px 18px 18px';
+  inner.style.borderRadius = '12px';
+  inner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
+  inner.style.textAlign = 'center';
+  inner.style.maxWidth = '98vw';
+  inner.style.width = 'min(600px,98vw)';
+  inner.style.maxHeight = '90vh';
+  inner.style.overflowY = 'auto';
+  // Tabla
+  let tabla = `<table style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>% Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
+  recetasNormales.forEach(r => {
+    const materialesStr = Object.entries(r.materiales)
+      .filter(([color, cantidad]) => cantidad > 0)
+      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
+      .join(', ');
+    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
+    tabla += `<tr>`;
+    tabla += `<td>${r.nivel}</td>`;
+    tabla += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
+    tabla += `<td>${materialesStr}</td>`;
+    tabla += `<td>${parseFloat(r.porcentaje).toFixed(2)}%</td>`;
+    tabla += `<td><button style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;' onclick='sumarRecetaTiempo(${r.idx})'>+</button></td>`;
+    tabla += `<td><button style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;' onclick='restarRecetaTiempo(${r.idx})'>-</button></td>`;
+    tabla += `<td style='font-weight:bold;font-size:1.1em;'>${cantidad > 0 ? cantidad : ''}</td>`;
+    tabla += `</tr>`;
+  });
+  tabla += `</tbody></table>`;
+  // Resumen de tiempo
+  const resumenDiv = document.createElement('div');
+  resumenDiv.id = 'modal-resumen-tiempo-recetas';
+  resumenDiv.style.margin = '12px 0 18px 0';
+  resumenDiv.style.fontSize = '1.08em';
+  // Botón cerrar
+  const cerrar = document.createElement('button');
+  cerrar.textContent = 'Cerrar';
+  cerrar.style.background = '#1e3a8a';
+  cerrar.style.color = '#fff';
+  cerrar.style.border = 'none';
+  cerrar.style.borderRadius = '8px';
+  cerrar.style.padding = '8px 24px';
+  cerrar.style.fontSize = '1.1em';
+  cerrar.style.marginTop = '10px';
+  cerrar.style.cursor = 'pointer';
+  cerrar.onclick = function() {
+    document.body.removeChild(modal);
+  };
+  inner.innerHTML = `<div style='font-size:1.15em;font-weight:bold;margin-bottom:12px;'>Selecciona recetas de equipo Normal</div>${tabla}`;
+  inner.appendChild(resumenDiv);
+  inner.appendChild(cerrar);
+  modal.appendChild(inner);
+  document.body.appendChild(modal);
+  actualizarResumenModalTiempo();
+}
+
+function sumarRecetaTiempo(idx) {
+  recetasTiempoSeleccion[idx] = (recetasTiempoSeleccion[idx] || 0) + 1;
+  actualizarResumenModalTiempo();
+}
+function restarRecetaTiempo(idx) {
+  if (recetasTiempoSeleccion[idx]) recetasTiempoSeleccion[idx]--;
+  if (recetasTiempoSeleccion[idx] < 0) recetasTiempoSeleccion[idx] = 0;
+  actualizarResumenModalTiempo();
+}
+function actualizarResumenModalTiempo() {
+  // Calcular el total de horas y materiales
+  let totalHoras = 0;
+  let totalMateriales = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
+  Object.entries(recetasTiempoSeleccion).forEach(([idx, cantidad]) => {
+    cantidad = parseInt(cantidad);
+    if (!cantidad || cantidad <= 0) return;
+    const r = recetas[idx];
+    if (!r) return;
+    totalHoras += calcularTiempoReceta(r) * cantidad;
+    for (const color in totalMateriales) {
+      totalMateriales[color] += (r.materiales[color] || 0) * cantidad;
+    }
+  });
+  // Conversión a meses, semanas, días, horas
+  const horasFormateadas = totalHoras.toLocaleString('es-MX');
+  let horasRestantes = totalHoras;
+  const meses = Math.floor(horasRestantes / (30*24));
+  horasRestantes = horasRestantes % (30*24);
+  const semanas = Math.floor(horasRestantes / (7*24));
+  horasRestantes = horasRestantes % (7*24);
+  const dias = Math.floor(horasRestantes / 24);
+  horasRestantes = horasRestantes % 24;
+  let partes = [];
+  if (meses > 0) partes.push(`🗓️ ${meses} mes${meses > 1 ? 'es' : ''}`);
+  if (semanas > 0) partes.push(`📆 ${semanas} semana${semanas > 1 ? 's' : ''}`);
+  if (dias > 0) partes.push(`📅 ${dias} día${dias > 1 ? 's' : ''}`);
+  if (horasRestantes > 0 || partes.length === 0) partes.push(`🕒 ${horasRestantes} hora${horasRestantes !== 1 ? 's' : ''}`);
+  let conversionStr = partes.join(', ');
+  let html = `<div style='margin-bottom:8px;'><strong>Tiempo total:</strong> <span style='color:#1e3a8a;font-size:1.1em;'>🕒 ${horasFormateadas} horas</span></div>`;
+  html += `<div style='color:#555;margin-bottom:8px;font-size:1.08em;'>= ${conversionStr}</div>`;
+  html += `<div style='margin-bottom:4px;'><strong>Materiales totales:</strong></div>`;
+  html += `<div style='display:flex;gap:12px;flex-wrap:wrap;'>`;
+  for (const color of ['dorado','morado','azul','verde','blanco']) {
+    html += `<span style='background:#eee;padding:4px 10px;border-radius:8px;font-weight:bold;color:#333;'>${color.charAt(0).toUpperCase()+color.slice(1)}: ${totalMateriales[color]}</span>`;
+  }
+  html += `</div>`;
+  document.getElementById('modal-resumen-tiempo-recetas').innerHTML = html;
+}
+
+// Reemplazar el evento del botón agregar-receta-tiempo
+document.getElementById('agregar-receta-tiempo').onclick = abrirModalSeleccionRecetas;
 </script>
 </body>
 </html> 
