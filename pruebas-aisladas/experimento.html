@@ -2,246 +2,111 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador de Recetas Universal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimento Recetas DH</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 40px;
-        }
-        .container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            width: 90vw;
-            max-width: 1200px;
-            margin: auto;
-            padding: 32px 18px 32px 18px;
-        }
-        h2 {
-            color: #333;
-            text-align: center;
-        }
-        fieldset {
-            border: 1.5px solid #bbb;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            padding: 18px 12px 12px 12px;
-            position: relative;
-        }
-        legend {
-            font-size: 1.05rem;
-            font-weight: bold;
-            color: #555;
-            position: absolute;
-            top: -1.2em;
-            right: 16px;
-            background: #fff;
-            padding: 0 8px;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-            margin-bottom: 4px;
-        }
-        select, input[type="number"] {
-            padding: 6px 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid #bbb;
-            font-size: 1rem;
-        }
-        .materiales-select {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .agregar-btn {
-            display: block;
-            width: 100%;
-            margin: 18px 0 24px 0;
-            padding: 10px 0;
-            font-size: 1.1rem;
-            background: #2196F3;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .agregar-btn:hover {
-            background: #1769aa;
-        }
-        .filtros {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-        .filtros label {
-            margin: 0 2px 0 0;
-            font-size: 0.98rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 6px 8px;
-            text-align: center;
-        }
-        th {
-            background: #eee;
-        }
-        .inline-selects {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .secciones-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-        .secciones-grid fieldset {
-            margin-bottom: 0;
-        }
-        @media (max-width: 700px) {
-            .secciones-grid {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto auto;
-            }
-        }
+        body { font-family: Arial, sans-serif; background: #f4f6fa; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+        h1 { color: #1e3a8a; text-align: center; margin-bottom: 18px; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 8px 6px; text-align: center; font-size: 1em; }
+        th { background: #e3eafc; color: #1e3a8a; }
+        tr:nth-child(even) { background: #f7faff; }
+        .agregar-btn { background: #2196F3; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1.1em; cursor: pointer; margin: 18px 0; }
+        .agregar-btn:hover { background: #1769aa; }
+        .filtros { margin: 18px 0 10px 0; display: flex; gap: 18px; align-items: center; }
+        .filtros label { font-weight: bold; }
+        .inline-selects { display: flex; gap: 12px; align-items: center; }
+        fieldset { border: 1px solid #bbb; border-radius: 8px; margin-bottom: 12px; padding: 10px 16px; }
+        legend { color: #1e3a8a; font-weight: bold; }
+        .circle-color { display: inline-block; width: 18px; height: 18px; border-radius: 50%; border: 2px solid #bbb; margin: 0 2px; }
+        .backdrop-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:18px;">
-        <button id="importar-recetas" style="padding:10px 24px;font-size:1rem;background:#1976d2;color:#fff;border:none;border-radius:6px;cursor:pointer;">Importar recetas</button>
-        <input type="file" id="file-import" accept=".json" style="display:none;">
-    </div>
-    <h2>Generador de Recetas Universal</h2>
-    <form id="receta-form" autocomplete="off">
-        <div class="secciones-grid">
-            <fieldset>
-                <legend>Equipo final</legend>
-                <div class="inline-selects">
-                    <label for="clase">Clase:</label>
-                    <select id="clase" required>
-                        <option value="Normal">Normal</option>
-                        <option value="Campeón">Campeón</option>
-                        <option value="Planewalker">Planewalker</option>
-                        <option value="Lord">Lord</option>
-                        <option value="Noble Lord">Noble Lord</option>
-                    </select>
-                    <label for="nivel">Nivel:</label>
-                    <select id="nivel" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <label for="color">Color:</label>
-                    <select id="color" required>
-                        <option value="blanco">Blanco</option>
-                        <option value="verde">Verde</option>
-                        <option value="azul">Azul</option>
-                        <option value="morado">Morado</option>
-                        <option value="dorado">Dorado</option>
-                    </select>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Materiales</legend>
-                <div class="materiales-select inline-selects">
-                    <select class="color-material">
-                        <option value="0">Dorado: 0</option>
-                        <option value="1">Dorado: 1</option>
-                        <option value="2">Dorado: 2</option>
-                        <option value="3">Dorado: 3</option>
-                        <option value="4">Dorado: 4</option>
-                    </select>
-                    <select class="color-material">
-                        <option value="0">Morado: 0</option>
-                        <option value="1">Morado: 1</option>
-                        <option value="2">Morado: 2</option>
-                        <option value="3">Morado: 3</option>
-                        <option value="4">Morado: 4</option>
-                    </select>
-                    <select class="color-material">
-                        <option value="0">Azul: 0</option>
-                        <option value="1">Azul: 1</option>
-                        <option value="2">Azul: 2</option>
-                        <option value="3">Azul: 3</option>
-                        <option value="4">Azul: 4</option>
-                    </select>
-                    <select class="color-material">
-                        <option value="0">Verde: 0</option>
-                        <option value="1">Verde: 1</option>
-                        <option value="2">Verde: 2</option>
-                        <option value="3">Verde: 3</option>
-                        <option value="4">Verde: 4</option>
-                    </select>
-                    <select class="color-material">
-                        <option value="0">Blanco: 0</option>
-                        <option value="1">Blanco: 1</option>
-                        <option value="2">Blanco: 2</option>
-                        <option value="3">Blanco: 3</option>
-                        <option value="4">Blanco: 4</option>
-                    </select>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Base</legend>
-                <div class="inline-selects">
-                    <label for="base-clase">Clase:</label>
-                    <select id="base-clase">
-                        <option value="">-</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Campeón">Campeón</option>
-                        <option value="Planewalker">Planewalker</option>
-                        <option value="Lord">Lord</option>
-                        <option value="Noble Lord">Noble Lord</option>
-                    </select>
-                    <label for="base-nivel">Nivel:</label>
-                    <select id="base-nivel">
-                        <option value="">-</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <label for="base-color">Color:</label>
-                    <select id="base-color">
-                        <option value="">-</option>
-                        <option value="blanco">Blanco</option>
-                        <option value="verde">Verde</option>
-                        <option value="azul">Azul</option>
-                        <option value="morado">Morado</option>
-                        <option value="dorado">Dorado</option>
-                    </select>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Éxito</legend>
-                <div class="inline-selects">
-                    <label for="porcentaje">Porcentaje:</label>
-                    <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
-                </div>
-            </fieldset>
-        </div>
+    <h1>Gestor de Recetas - Experimento</h1>
+    <form id="receta-form">
+        <fieldset>
+            <legend>Equipo</legend>
+            <div class="inline-selects">
+                <label for="clase">Clase:</label>
+                <select id="clase">
+                    <option value="Normal">Normal</option>
+                    <option value="Campeón">Campeón</option>
+                    <option value="Planewalker">Planewalker</option>
+                    <option value="Lord">Lord</option>
+                    <option value="Noble Lord">Noble Lord</option>
+                </select>
+                <label for="nivel">Nivel:</label>
+                <select id="nivel">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="color">Color:</label>
+                <select id="color">
+                    <option value="blanco">Blanco</option>
+                    <option value="verde">Verde</option>
+                    <option value="azul">Azul</option>
+                    <option value="morado">Morado</option>
+                    <option value="dorado">Dorado</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Materiales</legend>
+            <div class="inline-selects">
+                <label>Dorado: <input type="number" class="color-material" min="0" value="0" style="width:50px;"></label>
+                <label>Morado: <input type="number" class="color-material" min="0" value="0" style="width:50px;"></label>
+                <label>Azul: <input type="number" class="color-material" min="0" value="0" style="width:50px;"></label>
+                <label>Verde: <input type="number" class="color-material" min="0" value="0" style="width:50px;"></label>
+                <label>Blanco: <input type="number" class="color-material" min="0" value="0" style="width:50px;"></label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Base</legend>
+            <div class="inline-selects">
+                <label for="base-clase">Clase:</label>
+                <select id="base-clase">
+                    <option value="">-</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Campeón">Campeón</option>
+                    <option value="Planewalker">Planewalker</option>
+                    <option value="Lord">Lord</option>
+                    <option value="Noble Lord">Noble Lord</option>
+                </select>
+                <label for="base-nivel">Nivel:</label>
+                <select id="base-nivel">
+                    <option value="">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="base-color">Color:</label>
+                <select id="base-color">
+                    <option value="">-</option>
+                    <option value="blanco">Blanco</option>
+                    <option value="verde">Verde</option>
+                    <option value="azul">Azul</option>
+                    <option value="morado">Morado</option>
+                    <option value="dorado">Dorado</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Éxito</legend>
+            <div class="inline-selects">
+                <label for="porcentaje">Porcentaje:</label>
+                <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
+            </div>
+        </fieldset>
         <button type="submit" class="agregar-btn" form="receta-form">Agregar receta</button>
     </form>
-
     <div class="filtros">
         <label for="filtro-clase">Filtrar clase:</label>
         <select id="filtro-clase">
@@ -289,6 +154,7 @@
     </table>
     <div style="display:flex;gap:12px;justify-content:center;margin:18px 0 0 0;">
         <button id="guardar-recetas" style="display:none;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
+        <button id="agregar-receta-tiempo" style="padding:10px 24px;font-size:1rem;background:#1e3a8a;color:#fff;border:none;border-radius:6px;cursor:pointer;">+ Agregar receta</button>
     </div>
 </div>
 <div id="modal-confirm-borrar" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:9999;align-items:center;justify-content:center;">
@@ -297,15 +163,6 @@
     <button id="confirm-borrar-aceptar" style="background:#43a047;color:#fff;font-size:1.2rem;padding:8px 18px;margin:0 10px 0 0;border:none;border-radius:6px;cursor:pointer;">Aceptar ✅</button>
     <button id="confirm-borrar-cancelar" style="background:#e53935;color:#fff;font-size:1.2rem;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;">NO ❌</button>
   </div>
-</div>
-<div id="analizador-tiempo-recetas" style="margin:32px auto 0 auto;max-width:600px;padding:18px 16px 16px 16px;background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:none;">
-  <h3 style="margin-top:0;margin-bottom:12px;font-size:1.15rem;color:#1e3a8a;text-align:center;">⏳ Analizador de Tiempo (solo equipo Normal)</h3>
-  <div id="lista-tiempo-recetas"></div>
-  <div style="margin:10px 0 0 0;text-align:center;">
-    <button id="agregar-receta-tiempo" style="background:#43a047;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;">+ Agregar receta</button>
-    <button id="limpiar-tiempo-recetas" style="background:#e53935;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;margin-left:8px;">Limpiar</button>
-  </div>
-  <div id="resumen-tiempo-recetas" style="margin-top:18px;"></div>
 </div>
 <script>
 const form = document.getElementById('receta-form');
@@ -486,297 +343,10 @@ function renderTabla() {
     document.getElementById('importar-recetas').style.display = 'block';
 }
 
-// Lógica de restricciones automáticas
-const claseSelect = document.getElementById('clase');
-const nivelSelect = document.getElementById('nivel');
-const baseClaseSelect = document.getElementById('base-clase');
-const baseNivelSelect = document.getElementById('base-nivel');
-
-function aplicarRestricciones() {
-    const clase = claseSelect.value;
-    const nivelEquipo = parseInt(nivelSelect.value);
-    // Reset: habilitar todo
-    nivelSelect.disabled = false;
-    baseClaseSelect.disabled = false;
-    baseNivelSelect.disabled = false;
-    // Habilitar todos los niveles de la base
-    Array.from(baseNivelSelect.options).forEach(opt => { opt.disabled = false; });
-
-    if (clase === 'Campeón') {
-        nivelSelect.value = '4';
-        nivelSelect.disabled = true;
-        baseNivelSelect.value = '4';
-        baseNivelSelect.disabled = true;
-        baseClaseSelect.value = 'Normal';
-        baseClaseSelect.disabled = true;
-    } else if (clase === 'Planewalker' || clase === 'Lord') {
-        nivelSelect.value = '5';
-        nivelSelect.disabled = true;
-        baseNivelSelect.value = '5';
-        baseNivelSelect.disabled = true;
-        baseClaseSelect.value = 'Normal';
-        baseClaseSelect.disabled = true;
-    } else if (clase === 'Noble Lord') {
-        nivelSelect.value = '5';
-        nivelSelect.disabled = true;
-        baseNivelSelect.value = '5';
-        baseNivelSelect.disabled = true;
-        baseClaseSelect.value = 'Lord';
-        baseClaseSelect.disabled = true;
-    } else if (clase === 'Normal') {
-        baseClaseSelect.value = 'Normal';
-        baseClaseSelect.disabled = true;
-        // Solo permitir niveles de base <= nivel del equipo
-        Array.from(baseNivelSelect.options).forEach(opt => {
-            if (opt.value && parseInt(opt.value) > nivelEquipo) {
-                opt.disabled = true;
-            }
-        });
-        // Si el nivel actual de la base es mayor, lo ajusta
-        if (baseNivelSelect.value && parseInt(baseNivelSelect.value) > nivelEquipo) {
-            baseNivelSelect.value = nivelEquipo;
-        }
-    } else {
-        // Normal: todo editable
-        nivelSelect.disabled = false;
-        baseClaseSelect.disabled = false;
-        baseNivelSelect.disabled = false;
-    }
-}
-claseSelect.addEventListener('change', aplicarRestricciones);
-nivelSelect.addEventListener('change', aplicarRestricciones);
-document.addEventListener('DOMContentLoaded', aplicarRestricciones);
-
-document.getElementById('importar-recetas').onclick = function() {
-    document.getElementById('file-import').click();
-};
-document.getElementById('file-import').onchange = function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        try {
-            const data = JSON.parse(evt.target.result);
-            if (!Array.isArray(data)) throw new Error('El archivo no contiene un array de recetas.');
-            let nuevos = 0;
-            data.forEach(recetaNueva => {
-                // Deduplicación: compara todos los campos relevantes
-                const existe = recetas.some(r =>
-                    JSON.stringify(r) === JSON.stringify(recetaNueva)
-                );
-                if (!existe) {
-                    recetas.push(recetaNueva);
-                    nuevos++;
-                }
-            });
-            renderTabla();
-            resetFormularioUI();
-            alert(`Se importaron ${nuevos} recetas nuevas.`);
-        } catch (err) {
-            alert('Error al importar: ' + err.message);
-        }
-    };
-    reader.readAsText(file);
-};
-
-document.getElementById('confirm-borrar-aceptar').onclick = function() {
-    if (borrarIndex !== null && borrarIndex >= 0) {
-        recetas.splice(borrarIndex, 1);
-        renderTabla();
-        resetFormularioUI();
-    }
-    borrarIndex = null;
-    document.getElementById('modal-confirm-borrar').style.display = 'none';
-};
-document.getElementById('confirm-borrar-cancelar').onclick = function() {
-    borrarIndex = null;
-    document.getElementById('modal-confirm-borrar').style.display = 'none';
-};
-
 const TIEMPOS_MATERIAL = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
-let recetasTiempo = [];
-
-function mostrarAnalizadorTiempo() {
-  const div = document.getElementById('analizador-tiempo-recetas');
-  if (!div) return;
-  // Solo mostrar si hay recetas de clase Normal
-  const recetasNormales = recetas.filter(r => r.clase === 'Normal');
-  if (recetasNormales.length === 0) {
-    div.style.display = 'none';
-    return;
-  }
-  div.style.display = 'block';
-  renderListaTiempoRecetas();
-}
-
-function renderListaTiempoRecetas() {
-  const listaDiv = document.getElementById('lista-tiempo-recetas');
-  if (!listaDiv) return;
-  if (recetasTiempo.length === 0) {
-    listaDiv.innerHTML = '<div style="color:#888;text-align:center;">Agrega recetas para analizar su tiempo total.</div>';
-    document.getElementById('resumen-tiempo-recetas').innerHTML = '';
-    return;
-  }
-  let html = '<ul style="list-style:none;padding:0;margin:0;">';
-  recetasTiempo.forEach((idx, i) => {
-    const r = recetas[idx];
-    if (!r) return;
-    const tiempo = calcularTiempoReceta(r);
-    // Construir string de materiales (solo los > 0)
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
-    // Formato: Nivel 1 | Dorado | 2 morados | 98.02 %
-    html += `<li style='margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;'>`;
-    html += `<span style='font-weight:bold;'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</span> <span style='color:#1e3a8a;'>${tiempo} h</span>`;
-    html += `<button onclick='eliminarRecetaTiempo(${i})' style='background:#e53935;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:8px;'>✖</button>`;
-    html += `</li>`;
-  });
-  html += '</ul>';
-  listaDiv.innerHTML = html;
-  renderResumenTiempoRecetas();
-}
-
-function calcularTiempoReceta(receta) {
-  let total = 0;
-  for (const color in TIEMPOS_MATERIAL) {
-    total += (receta.materiales[color] || 0) * TIEMPOS_MATERIAL[color];
-  }
-  return total;
-}
-
-function renderResumenTiempoRecetas() {
-  const resumenDiv = document.getElementById('resumen-tiempo-recetas');
-  if (!resumenDiv) return;
-  // Sumar tiempos y materiales
-  let totalHoras = 0;
-  let totalMateriales = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
-  recetasTiempo.forEach(idx => {
-    const r = recetas[idx];
-    if (!r) return;
-    totalHoras += calcularTiempoReceta(r);
-    for (const color in totalMateriales) {
-      totalMateriales[color] += (r.materiales[color] || 0);
-    }
-  });
-  // Formateo de horas con separador de miles
-  const horasFormateadas = totalHoras.toLocaleString('es-MX');
-  // Conversión a meses, semanas, días y horas
-  let horasRestantes = totalHoras;
-  const meses = Math.floor(horasRestantes / (30*24));
-  horasRestantes = horasRestantes % (30*24);
-  const semanas = Math.floor(horasRestantes / (7*24));
-  horasRestantes = horasRestantes % (7*24);
-  const dias = Math.floor(horasRestantes / 24);
-  horasRestantes = horasRestantes % 24;
-  // Construir string de conversión
-  let partes = [];
-  if (meses > 0) partes.push(`🗓️ ${meses} mes${meses > 1 ? 'es' : ''}`);
-  if (semanas > 0) partes.push(`📆 ${semanas} semana${semanas > 1 ? 's' : ''}`);
-  if (dias > 0) partes.push(`📅 ${dias} día${dias > 1 ? 's' : ''}`);
-  if (horasRestantes > 0 || partes.length === 0) partes.push(`🕒 ${horasRestantes} hora${horasRestantes !== 1 ? 's' : ''}`);
-  let conversionStr = partes.join(', ');
-  let html = `<div style='margin-bottom:8px;'><strong>Tiempo total:</strong> <span style='color:#1e3a8a;font-size:1.1em;'>🕒 ${horasFormateadas} horas</span></div>`;
-  html += `<div style='color:#555;margin-bottom:8px;font-size:1.08em;'>= ${conversionStr}</div>`;
-  html += `<div style='margin-bottom:4px;'><strong>Materiales totales:</strong></div>`;
-  html += `<div style='display:flex;gap:12px;flex-wrap:wrap;'>`;
-  for (const color of ['dorado','morado','azul','verde','blanco']) {
-    html += `<span style='background:#eee;padding:4px 10px;border-radius:8px;font-weight:bold;color:#333;'>${color.charAt(0).toUpperCase()+color.slice(1)}: ${totalMateriales[color]}</span>`;
-  }
-  html += `</div>`;
-  resumenDiv.innerHTML = html;
-}
-
-function eliminarRecetaTiempo(i) {
-  recetasTiempo.splice(i,1);
-  renderListaTiempoRecetas();
-}
-
-document.getElementById('agregar-receta-tiempo').onclick = function() {
-  // Mostrar selector de receta Normal
-  const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
-  if (recetasNormales.length === 0) return;
-  let opciones = '';
-  recetasNormales.forEach(r => {
-    // Construir string de materiales (solo los > 0)
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
-    opciones += `<option value='${r.idx}'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</option>`;
-  });
-  const sel = document.createElement('select');
-  sel.innerHTML = opciones;
-  sel.style.marginRight = '8px';
-  sel.style.padding = '4px 8px';
-  sel.style.borderRadius = '6px';
-  sel.style.fontSize = '1rem';
-  const okBtn = document.createElement('button');
-  okBtn.textContent = 'Agregar';
-  okBtn.style.background = '#43a047';
-  okBtn.style.color = '#fff';
-  okBtn.style.border = 'none';
-  okBtn.style.borderRadius = '6px';
-  okBtn.style.padding = '4px 14px';
-  okBtn.style.marginLeft = '6px';
-  okBtn.style.cursor = 'pointer';
-  const modal = document.createElement('div');
-  modal.style.position = 'fixed';
-  modal.style.top = '0';
-  modal.style.left = '0';
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.background = 'rgba(0,0,0,0.18)';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = '9999';
-  const inner = document.createElement('div');
-  inner.style.background = '#fff';
-  inner.style.padding = '24px 18px 18px 18px';
-  inner.style.borderRadius = '10px';
-  inner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
-  inner.style.textAlign = 'center';
-  inner.innerHTML = `<div style='font-size:1.1rem;margin-bottom:12px;'>Selecciona una receta Normal:</div>`;
-  inner.appendChild(sel);
-  inner.appendChild(okBtn);
-  const cancelar = document.createElement('button');
-  cancelar.textContent = 'Cancelar';
-  cancelar.style.background = '#e53935';
-  cancelar.style.color = '#fff';
-  cancelar.style.border = 'none';
-  cancelar.style.borderRadius = '6px';
-  cancelar.style.padding = '4px 14px';
-  cancelar.style.marginLeft = '8px';
-  cancelar.style.cursor = 'pointer';
-  inner.appendChild(cancelar);
-  modal.appendChild(inner);
-  document.body.appendChild(modal);
-  okBtn.onclick = function() {
-    const idx = parseInt(sel.value);
-    recetasTiempo.push(idx);
-    renderListaTiempoRecetas();
-    document.body.removeChild(modal);
-  };
-  cancelar.onclick = function() {
-    document.body.removeChild(modal);
-  };
-};
-document.getElementById('limpiar-tiempo-recetas').onclick = function() {
-  recetasTiempo = [];
-  renderListaTiempoRecetas();
-};
-
-// Mostrar/ocultar analizador según recetas
-renderTabla = (function(orig){
-  return function() {
-    orig.apply(this, arguments);
-    mostrarAnalizadorTiempo();
-  };
-})(renderTabla);
-
 let recetasTiempoSeleccion = {};
+
+document.getElementById('agregar-receta-tiempo').onclick = abrirModalSeleccionRecetas;
 
 function abrirModalSeleccionRecetas() {
   // Obtener recetas normales
@@ -913,6 +483,14 @@ function actualizarTablaModalRecetas() {
   actualizarResumenModalTiempo();
 }
 
+function calcularTiempoReceta(receta) {
+  let total = 0;
+  for (const color in TIEMPOS_MATERIAL) {
+    total += (receta.materiales[color] || 0) * TIEMPOS_MATERIAL[color];
+  }
+  return total;
+}
+
 function actualizarResumenModalTiempo() {
   // Calcular el total de horas y materiales
   let totalHoras = 0;
@@ -952,6 +530,81 @@ function actualizarResumenModalTiempo() {
   html += `</div>`;
   document.getElementById('modal-resumen-tiempo-recetas').innerHTML = html;
 }
+
+// Lógica de restricciones automáticas
+const claseSelect = document.getElementById('clase');
+const nivelSelect = document.getElementById('nivel');
+const baseClaseSelect = document.getElementById('base-clase');
+const baseNivelSelect = document.getElementById('base-nivel');
+
+function aplicarRestricciones() {
+    const clase = claseSelect.value;
+    const nivelEquipo = parseInt(nivelSelect.value);
+    // Reset: habilitar todo
+    nivelSelect.disabled = false;
+    baseClaseSelect.disabled = false;
+    baseNivelSelect.disabled = false;
+    // Habilitar todos los niveles de la base
+    Array.from(baseNivelSelect.options).forEach(opt => { opt.disabled = false; });
+
+    if (clase === 'Campeón') {
+        nivelSelect.value = '4';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '4';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+    } else if (clase === 'Planewalker' || clase === 'Lord') {
+        nivelSelect.value = '5';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '5';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+    } else if (clase === 'Noble Lord') {
+        nivelSelect.value = '5';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '5';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Lord';
+        baseClaseSelect.disabled = true;
+    } else if (clase === 'Normal') {
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+        // Solo permitir niveles de base <= nivel del equipo
+        Array.from(baseNivelSelect.options).forEach(opt => {
+            if (opt.value && parseInt(opt.value) > nivelEquipo) {
+                opt.disabled = true;
+            }
+        });
+        // Si el nivel actual de la base es mayor, lo ajusta
+        if (baseNivelSelect.value && parseInt(baseNivelSelect.value) > nivelEquipo) {
+            baseNivelSelect.value = nivelEquipo;
+        }
+    } else {
+        // Normal: todo editable
+        nivelSelect.disabled = false;
+        baseClaseSelect.disabled = false;
+        baseNivelSelect.disabled = false;
+    }
+}
+claseSelect.addEventListener('change', aplicarRestricciones);
+nivelSelect.addEventListener('change', aplicarRestricciones);
+document.addEventListener('DOMContentLoaded', aplicarRestricciones);
+
+document.getElementById('confirm-borrar-aceptar').onclick = function() {
+    if (borrarIndex !== null && borrarIndex >= 0) {
+        recetas.splice(borrarIndex, 1);
+        renderTabla();
+        resetFormularioUI();
+    }
+    borrarIndex = null;
+    document.getElementById('modal-confirm-borrar').style.display = 'none';
+};
+document.getElementById('confirm-borrar-cancelar').onclick = function() {
+    borrarIndex = null;
+    document.getElementById('modal-confirm-borrar').style.display = 'none';
+};
 </script>
 </body>
 </html> 
