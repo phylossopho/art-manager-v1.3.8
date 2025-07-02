@@ -808,20 +808,21 @@ function abrirModalSeleccionRecetas() {
   inner.style.maxHeight = '90vh';
   inner.style.overflowY = 'auto';
   // Tabla
-  let tabla = `<table style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>% Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
+  let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>% Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
   recetasNormales.forEach(r => {
     const materialesStr = Object.entries(r.materiales)
       .filter(([color, cantidad]) => cantidad > 0)
       .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
       .join(', ');
     const cantidad = recetasTiempoSeleccion[r.idx] || 0;
-    tabla += `<tr>`;
+    const desvanecido = cantidad > 0;
+    tabla += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
     tabla += `<td>${r.nivel}</td>`;
     tabla += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
     tabla += `<td>${materialesStr}</td>`;
     tabla += `<td>${parseFloat(r.porcentaje).toFixed(2)}%</td>`;
-    tabla += `<td><button style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;' onclick='sumarRecetaTiempo(${r.idx})'>+</button></td>`;
-    tabla += `<td><button style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;' onclick='restarRecetaTiempo(${r.idx})'>-</button></td>`;
+    tabla += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;${desvanecido ? "opacity:0.3;pointer-events:none;" : ""}'>+</button></td>`;
+    tabla += `<td><button class='btn-menos' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;'>-</button></td>`;
     tabla += `<td style='font-weight:bold;font-size:1.1em;'>${cantidad > 0 ? cantidad : ''}</td>`;
     tabla += `</tr>`;
   });
@@ -850,18 +851,68 @@ function abrirModalSeleccionRecetas() {
   inner.appendChild(cerrar);
   modal.appendChild(inner);
   document.body.appendChild(modal);
+  // Eventos + y -
+  setTimeout(() => {
+    document.querySelectorAll('.btn-mas').forEach(btn => {
+      btn.onclick = function() {
+        const idx = this.getAttribute('data-idx');
+        recetasTiempoSeleccion[idx] = 1;
+        actualizarTablaModalRecetas();
+      };
+    });
+    document.querySelectorAll('.btn-menos').forEach(btn => {
+      btn.onclick = function() {
+        const idx = this.getAttribute('data-idx');
+        recetasTiempoSeleccion[idx] = 0;
+        actualizarTablaModalRecetas();
+      };
+    });
+  }, 10);
   actualizarResumenModalTiempo();
 }
 
-function sumarRecetaTiempo(idx) {
-  recetasTiempoSeleccion[idx] = (recetasTiempoSeleccion[idx] || 0) + 1;
+function actualizarTablaModalRecetas() {
+  // Re-renderizar solo el tbody de la tabla
+  const tbody = document.querySelector('#tabla-modal-recetas-tiempo tbody');
+  if (!tbody) return;
+  const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
+  let html = '';
+  recetasNormales.forEach(r => {
+    const materialesStr = Object.entries(r.materiales)
+      .filter(([color, cantidad]) => cantidad > 0)
+      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
+      .join(', ');
+    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
+    const desvanecido = cantidad > 0;
+    html += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
+    html += `<td>${r.nivel}</td>`;
+    html += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
+    html += `<td>${materialesStr}</td>`;
+    html += `<td>${parseFloat(r.porcentaje).toFixed(2)}%</td>`;
+    html += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;${desvanecido ? "opacity:0.3;pointer-events:none;" : ""}'>+</button></td>`;
+    html += `<td><button class='btn-menos' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;'>-</button></td>`;
+    html += `<td style='font-weight:bold;font-size:1.1em;'>${cantidad > 0 ? cantidad : ''}</td>`;
+    html += `</tr>`;
+  });
+  tbody.innerHTML = html;
+  // Reasignar eventos
+  document.querySelectorAll('.btn-mas').forEach(btn => {
+    btn.onclick = function() {
+      const idx = this.getAttribute('data-idx');
+      recetasTiempoSeleccion[idx] = 1;
+      actualizarTablaModalRecetas();
+    };
+  });
+  document.querySelectorAll('.btn-menos').forEach(btn => {
+    btn.onclick = function() {
+      const idx = this.getAttribute('data-idx');
+      recetasTiempoSeleccion[idx] = 0;
+      actualizarTablaModalRecetas();
+    };
+  });
   actualizarResumenModalTiempo();
 }
-function restarRecetaTiempo(idx) {
-  if (recetasTiempoSeleccion[idx]) recetasTiempoSeleccion[idx]--;
-  if (recetasTiempoSeleccion[idx] < 0) recetasTiempoSeleccion[idx] = 0;
-  actualizarResumenModalTiempo();
-}
+
 function actualizarResumenModalTiempo() {
   // Calcular el total de horas y materiales
   let totalHoras = 0;
@@ -901,9 +952,6 @@ function actualizarResumenModalTiempo() {
   html += `</div>`;
   document.getElementById('modal-resumen-tiempo-recetas').innerHTML = html;
 }
-
-// Reemplazar el evento del botón agregar-receta-tiempo
-document.getElementById('agregar-receta-tiempo').onclick = abrirModalSeleccionRecetas;
 </script>
 </body>
 </html> 
