@@ -278,6 +278,19 @@ const form = document.getElementById('receta-form');
 const tabla = document.getElementById('tabla-recetas');
 const tbody = tabla.querySelector('tbody');
 let recetas = [];
+let editIndex = null; // Índice de la receta que se está editando
+const agregarBtn = document.querySelector('.agregar-btn');
+
+function resetFormularioUI() {
+    form.reset();
+    document.getElementById('base-clase').value = '';
+    document.getElementById('base-nivel').value = '';
+    document.getElementById('base-color').value = '';
+    agregarBtn.textContent = 'Agregar receta';
+    agregarBtn.style.background = '#2196F3';
+    editIndex = null;
+    aplicarRestricciones();
+}
 
 form.onsubmit = function(e) {
     e.preventDefault();
@@ -312,13 +325,14 @@ form.onsubmit = function(e) {
         nivel: baseNivel,
         color: baseColor
     } : null;
-    recetas.push({ clase, nivel, color, porcentaje, materiales, base });
+    const nuevaReceta = { clase, nivel, color, porcentaje, materiales, base };
+    if (editIndex !== null) {
+        recetas[editIndex] = nuevaReceta;
+    } else {
+        recetas.push(nuevaReceta);
+    }
     renderTabla();
-    form.reset();
-    // Limpiar también el formulario de base
-    document.getElementById('base-clase').value = '';
-    document.getElementById('base-nivel').value = '';
-    document.getElementById('base-color').value = '';
+    resetFormularioUI();
 };
 
 document.getElementById('filtro-clase').onchange = renderTabla;
@@ -407,12 +421,10 @@ function renderTabla() {
             }
             document.getElementById('nivel').value = r.nivel;
             aplicarRestricciones();
-            // Eliminar la receta editada para que al guardar se reemplace
-            const realIdx = recetas.indexOf(recetasFiltradas[idx]);
-            if (realIdx !== -1) {
-                recetas.splice(realIdx, 1);
-                renderTabla();
-            }
+            // Guardar el índice real de la receta que se está editando
+            editIndex = recetas.indexOf(recetasFiltradas[idx]);
+            agregarBtn.textContent = 'Modificar receta';
+            agregarBtn.style.background = '#ff9800';
         };
         tbody.appendChild(tr);
     });
@@ -505,6 +517,7 @@ document.getElementById('file-import').onchange = function(e) {
                 }
             });
             renderTabla();
+            resetFormularioUI();
             alert(`Se importaron ${nuevos} recetas nuevas.`);
         } catch (err) {
             alert('Error al importar: ' + err.message);
