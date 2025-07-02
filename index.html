@@ -286,18 +286,42 @@
             </table>
             <div class="conversion-notes">
                 <p><strong>Equivalencias:</strong></p>
-                <ul>
-                    <li>4 Blancos = 1 Verde</li>
-                    <li>4 Verdes = 1 Azul</li>
-                    <li>4 Azules = 1 Morado</li>
-                    <li>4 Morados = 1 Dorado</li>
-                    <li>16 Blancos = 1 Azul</li>
-                    <li>16 Verdes = 1 Morado</li>
-                    <li>16 Azules = 1 Dorado</li>
-                    <li>64 Blancos = 1 Morado</li>
-                    <li>64 Verdes = 1 Dorado</li>
-                    <li>256 Blancos = 1 Dorado</li>
-                </ul>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start;">
+                  <div style="flex: 1 1 260px; min-width: 220px;">
+                    <ul style="margin-bottom: 0;">
+                        <li>4 Blancos = 1 Verde</li>
+                        <li>4 Verdes = 1 Azul</li>
+                        <li>4 Azules = 1 Morado</li>
+                        <li>4 Morados = 1 Dorado</li>
+                        <li>16 Blancos = 1 Azul</li>
+                        <li>16 Verdes = 1 Morado</li>
+                        <li>16 Azules = 1 Dorado</li>
+                        <li>64 Blancos = 1 Morado</li>
+                        <li>64 Verdes = 1 Dorado</li>
+                        <li>256 Blancos = 1 Dorado</li>
+                        <li style="margin-top: 10px; font-size: 13px; color: #666;">* Solo se pueden poner en cola materiales blancos y verdes.</li>
+                        <li style="font-size: 13px; color: #666;">* Los materiales azules, morados y dorados solo se obtienen por conversión.</li>
+                    </ul>
+                  </div>
+                  <div style="flex: 1 1 180px; min-width: 160px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr>
+                          <th style="background: #f0f0f0; border: 1px solid #ccc; padding: 6px 8px;">Material</th>
+                          <th style="background: #f0f0f0; border: 1px solid #ccc; padding: 6px 8px;">Equivalencia en tiempo (horas)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td style="border: 1px solid #ccc; padding: 6px 8px;">Blanco</td><td style="border: 1px solid #ccc; padding: 6px 8px;">2</td></tr>
+                        <tr><td style="border: 1px solid #ccc; padding: 6px 8px;">Verde</td><td style="border: 1px solid #ccc; padding: 6px 8px;">8</td></tr>
+                        <tr><td style="border: 1px solid #ccc; padding: 6px 8px;">Azul</td><td style="border: 1px solid #ccc; padding: 6px 8px;">32</td></tr>
+                        <tr><td style="border: 1px solid #ccc; padding: 6px 8px;">Morado</td><td style="border: 1px solid #ccc; padding: 6px 8px;">128</td></tr>
+                        <tr><td style="border: 1px solid #ccc; padding: 6px 8px;">Dorado</td><td style="border: 1px solid #ccc; padding: 6px 8px;">512</td></tr>
+                      </tbody>
+                    </table>
+                    <div style="font-size: 12px; color: #888; margin-top: 6px;">* El azul y superiores no se pueden poner en cola directamente.</div>
+                  </div>
+                </div>
             </div>
         </div>
         
