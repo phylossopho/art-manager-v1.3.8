@@ -290,6 +290,22 @@
     <div style="display:flex;gap:12px;justify-content:center;margin:18px 0 0 0;">
         <button id="guardar-recetas" style="display:none;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
     </div>
+    <!-- Botón para abrir el Analizador de tiempo -->
+    <div style="display:flex;justify-content:center;margin:24px 0 0 0;">
+        <button id="abrir-analizador-tiempo" style="padding:12px 32px;font-size:1.15rem;background:#1e3a8a;color:#fff;border:none;border-radius:8px;cursor:pointer;">Analizador de tiempo</button>
+    </div>
+    <!-- Modal del Analizador de tiempo -->
+    <div id="modal-analizador-tiempo" class="modal">
+      <div class="modal-content" style="width:85vw;max-width:1100px;max-height:85vh;overflow:auto;padding:24px 18px 18px 18px;">
+        <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;">
+          <h2 style="margin:0;font-size:1.3rem;color:#1e3a8a;">⏳ Analizador de Tiempo (equipos normales, nivel 1 a 5)</h2>
+          <button id="cerrar-analizador-tiempo" class="close" style="font-size:2rem;background:none;border:none;color:#e53935;cursor:pointer;">&times;</button>
+        </div>
+        <div class="modal-body" id="tabla-analizador-tiempo" style="margin-top:18px;">
+          <!-- La tabla se generará dinámicamente con JS -->
+        </div>
+      </div>
+    </div>
 </div>
 <div id="modal-confirm-borrar" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;padding:28px 24px 18px 24px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.18);max-width:320px;text-align:center;">
@@ -298,16 +314,9 @@
     <button id="confirm-borrar-cancelar" style="background:#e53935;color:#fff;font-size:1.2rem;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;">NO ❌</button>
   </div>
 </div>
-<div id="analizador-tiempo-recetas" style="margin:32px auto 0 auto;max-width:600px;padding:18px 16px 16px 16px;background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:none;">
-  <h3 style="margin-top:0;margin-bottom:12px;font-size:1.15rem;color:#1e3a8a;text-align:center;">⏳ Analizador de Tiempo (solo equipo Normal)</h3>
-  <div id="lista-tiempo-recetas"></div>
-  <div style="margin:10px 0 0 0;text-align:center;">
-    <button id="agregar-receta-tiempo" style="background:#43a047;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;">+ Agregar receta</button>
-    <button id="limpiar-tiempo-recetas" style="background:#e53935;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;margin-left:8px;">Limpiar</button>
-  </div>
-  <div id="resumen-tiempo-recetas" style="margin-top:18px;"></div>
-</div>
-<script>
+<script type="module">
+import { renderTablaEquiposNormales } from '../scripts/arte.js';
+
 const form = document.getElementById('receta-form');
 const tabla = document.getElementById('tabla-recetas');
 const tbody = tabla.querySelector('tbody');
@@ -593,186 +602,10 @@ document.getElementById('confirm-borrar-cancelar').onclick = function() {
     document.getElementById('modal-confirm-borrar').style.display = 'none';
 };
 
-const TIEMPOS_MATERIAL = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
-let recetasTiempo = [];
-
-function mostrarAnalizadorTiempo() {
-  const div = document.getElementById('analizador-tiempo-recetas');
-  if (!div) return;
-  // Solo mostrar si hay recetas de clase Normal
-  const recetasNormales = recetas.filter(r => r.clase === 'Normal');
-  if (recetasNormales.length === 0) {
-    div.style.display = 'none';
-    return;
-  }
-  div.style.display = 'block';
-  renderListaTiempoRecetas();
-}
-
-function renderListaTiempoRecetas() {
-  const listaDiv = document.getElementById('lista-tiempo-recetas');
-  if (!listaDiv) return;
-  if (recetasTiempo.length === 0) {
-    listaDiv.innerHTML = '<div style="color:#888;text-align:center;">Agrega recetas para analizar su tiempo total.</div>';
-    document.getElementById('resumen-tiempo-recetas').innerHTML = '';
-    return;
-  }
-  let html = '<ul style="list-style:none;padding:0;margin:0;">';
-  recetasTiempo.forEach((idx, i) => {
-    const r = recetas[idx];
-    if (!r) return;
-    const tiempo = calcularTiempoReceta(r);
-    // Construir string de materiales (solo los > 0)
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
-    // Formato: Nivel 1 | Dorado | 2 morados | 98.02 %
-    html += `<li style='margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;'>`;
-    html += `<span style='font-weight:bold;'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</span> <span style='color:#1e3a8a;'>${tiempo} h</span>`;
-    html += `<button onclick='eliminarRecetaTiempo(${i})' style='background:#e53935;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:8px;'>✖</button>`;
-    html += `</li>`;
-  });
-  html += '</ul>';
-  listaDiv.innerHTML = html;
-  renderResumenTiempoRecetas();
-}
-
-function calcularTiempoReceta(receta) {
-  let total = 0;
-  for (const color in TIEMPOS_MATERIAL) {
-    total += (receta.materiales[color] || 0) * TIEMPOS_MATERIAL[color];
-  }
-  return total;
-}
-
-function renderResumenTiempoRecetas() {
-  const resumenDiv = document.getElementById('resumen-tiempo-recetas');
-  if (!resumenDiv) return;
-  // Sumar tiempos y materiales
-  let totalHoras = 0;
-  let totalMateriales = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
-  recetasTiempo.forEach(idx => {
-    const r = recetas[idx];
-    if (!r) return;
-    totalHoras += calcularTiempoReceta(r);
-    for (const color in totalMateriales) {
-      totalMateriales[color] += (r.materiales[color] || 0);
-    }
-  });
-  // Formateo de horas con separador de miles
-  const horasFormateadas = totalHoras.toLocaleString('es-MX');
-  // Conversión a meses, semanas, días y horas
-  let horasRestantes = totalHoras;
-  const meses = Math.floor(horasRestantes / (30*24));
-  horasRestantes = horasRestantes % (30*24);
-  const semanas = Math.floor(horasRestantes / (7*24));
-  horasRestantes = horasRestantes % (7*24);
-  const dias = Math.floor(horasRestantes / 24);
-  horasRestantes = horasRestantes % 24;
-  // Construir string de conversión
-  let partes = [];
-  if (meses > 0) partes.push(`🗓️ ${meses} mes${meses > 1 ? 'es' : ''}`);
-  if (semanas > 0) partes.push(`📆 ${semanas} semana${semanas > 1 ? 's' : ''}`);
-  if (dias > 0) partes.push(`📅 ${dias} día${dias > 1 ? 's' : ''}`);
-  if (horasRestantes > 0 || partes.length === 0) partes.push(`🕒 ${horasRestantes} hora${horasRestantes !== 1 ? 's' : ''}`);
-  let conversionStr = partes.join(', ');
-  let html = `<div style='margin-bottom:8px;'><strong>Tiempo total:</strong> <span style='color:#1e3a8a;font-size:1.1em;'>🕒 ${horasFormateadas} horas</span></div>`;
-  html += `<div style='color:#555;margin-bottom:8px;font-size:1.08em;'>= ${conversionStr}</div>`;
-  html += `<div style='margin-bottom:4px;'><strong>Materiales totales:</strong></div>`;
-  html += `<div style='display:flex;gap:12px;flex-wrap:wrap;'>`;
-  for (const color of ['dorado','morado','azul','verde','blanco']) {
-    html += `<span style='background:#eee;padding:4px 10px;border-radius:8px;font-weight:bold;color:#333;'>${color.charAt(0).toUpperCase()+color.slice(1)}: ${totalMateriales[color]}</span>`;
-  }
-  html += `</div>`;
-  resumenDiv.innerHTML = html;
-}
-
-function eliminarRecetaTiempo(i) {
-  recetasTiempo.splice(i,1);
-  renderListaTiempoRecetas();
-}
-
-document.getElementById('agregar-receta-tiempo').onclick = function() {
-  // Mostrar selector de receta Normal
-  const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
-  if (recetasNormales.length === 0) return;
-  let opciones = '';
-  recetasNormales.forEach(r => {
-    // Construir string de materiales (solo los > 0)
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
-    opciones += `<option value='${r.idx}'>Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %</option>`;
-  });
-  const sel = document.createElement('select');
-  sel.innerHTML = opciones;
-  sel.style.marginRight = '8px';
-  sel.style.padding = '4px 8px';
-  sel.style.borderRadius = '6px';
-  sel.style.fontSize = '1rem';
-  const okBtn = document.createElement('button');
-  okBtn.textContent = 'Agregar';
-  okBtn.style.background = '#43a047';
-  okBtn.style.color = '#fff';
-  okBtn.style.border = 'none';
-  okBtn.style.borderRadius = '6px';
-  okBtn.style.padding = '4px 14px';
-  okBtn.style.marginLeft = '6px';
-  okBtn.style.cursor = 'pointer';
-  const modal = document.createElement('div');
-  modal.style.position = 'fixed';
-  modal.style.top = '0';
-  modal.style.left = '0';
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.background = 'rgba(0,0,0,0.18)';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = '9999';
-  const inner = document.createElement('div');
-  inner.style.background = '#fff';
-  inner.style.padding = '24px 18px 18px 18px';
-  inner.style.borderRadius = '10px';
-  inner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
-  inner.style.textAlign = 'center';
-  inner.innerHTML = `<div style='font-size:1.1rem;margin-bottom:12px;'>Selecciona una receta Normal:</div>`;
-  inner.appendChild(sel);
-  inner.appendChild(okBtn);
-  const cancelar = document.createElement('button');
-  cancelar.textContent = 'Cancelar';
-  cancelar.style.background = '#e53935';
-  cancelar.style.color = '#fff';
-  cancelar.style.border = 'none';
-  cancelar.style.borderRadius = '6px';
-  cancelar.style.padding = '4px 14px';
-  cancelar.style.marginLeft = '8px';
-  cancelar.style.cursor = 'pointer';
-  inner.appendChild(cancelar);
-  modal.appendChild(inner);
-  document.body.appendChild(modal);
-  okBtn.onclick = function() {
-    const idx = parseInt(sel.value);
-    recetasTiempo.push(idx);
-    renderListaTiempoRecetas();
-    document.body.removeChild(modal);
-  };
-  cancelar.onclick = function() {
-    document.body.removeChild(modal);
-  };
-};
-document.getElementById('limpiar-tiempo-recetas').onclick = function() {
-  recetasTiempo = [];
-  renderListaTiempoRecetas();
-};
-
 // Mostrar/ocultar analizador según recetas
 renderTabla = (function(orig){
   return function() {
     orig.apply(this, arguments);
-    mostrarAnalizadorTiempo();
   };
 })(renderTabla);
 
@@ -791,7 +624,7 @@ function abrirModalSeleccionRecetas() {
   modal.style.left = '0';
   modal.style.width = '100vw';
   modal.style.height = '100vh';
-  modal.style.background = 'rgba(0,0,0,0.6)';
+  modal.style.background = 'rgba(0,0,0,0.18)';
   modal.style.display = 'flex';
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
@@ -799,8 +632,8 @@ function abrirModalSeleccionRecetas() {
   // Contenido
   const inner = document.createElement('div');
   inner.style.background = '#fff';
-  inner.style.padding = '28px 18px 18px 18px';
-  inner.style.borderRadius = '12px';
+  inner.style.padding = '24px 18px 18px 18px';
+  inner.style.borderRadius = '10px';
   inner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
   inner.style.textAlign = 'center';
   inner.style.maxWidth = '98vw';
@@ -951,6 +784,27 @@ function actualizarResumenModalTiempo() {
   html += `</div>`;
   document.getElementById('modal-resumen-tiempo-recetas').innerHTML = html;
 }
+
+// Abrir el modal
+const btnAbrir = document.getElementById('abrir-analizador-tiempo');
+const modal = document.getElementById('modal-analizador-tiempo');
+const btnCerrar = document.getElementById('cerrar-analizador-tiempo');
+
+btnAbrir.addEventListener('click', () => {
+    modal.style.display = 'block';
+    renderTablaEquiposNormales('tabla-analizador-tiempo');
+});
+
+btnCerrar.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+// Cerrar modal al hacer click fuera del contenido
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
 </script>
 </body>
 </html> 
