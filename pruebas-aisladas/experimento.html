@@ -298,6 +298,15 @@
     <button id="confirm-borrar-cancelar" style="background:#e53935;color:#fff;font-size:1.2rem;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;">NO ❌</button>
   </div>
 </div>
+<div id="analizador-tiempo-recetas" style="margin:32px auto 0 auto;max-width:600px;padding:18px 16px 16px 16px;background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:none;">
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:1.15rem;color:#1e3a8a;text-align:center;">⏳ Analizador de Tiempo (solo equipo Normal)</h3>
+  <div id="lista-tiempo-recetas"></div>
+  <div style="margin:10px 0 0 0;text-align:center;">
+    <button id="agregar-receta-tiempo" style="background:#43a047;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;">+ Agregar receta</button>
+    <button id="limpiar-tiempo-recetas" style="background:#e53935;color:#fff;font-size:1.1rem;padding:6px 18px;border:none;border-radius:6px;cursor:pointer;margin-left:8px;">Limpiar</button>
+  </div>
+  <div id="resumen-tiempo-recetas" style="margin-top:18px;"></div>
+</div>
 <script>
 const form = document.getElementById('receta-form');
 const tabla = document.getElementById('tabla-recetas');
@@ -562,6 +571,160 @@ document.getElementById('confirm-borrar-cancelar').onclick = function() {
     borrarIndex = null;
     document.getElementById('modal-confirm-borrar').style.display = 'none';
 };
+
+const TIEMPOS_MATERIAL = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
+let recetasTiempo = [];
+
+function mostrarAnalizadorTiempo() {
+  const div = document.getElementById('analizador-tiempo-recetas');
+  if (!div) return;
+  // Solo mostrar si hay recetas de clase Normal
+  const recetasNormales = recetas.filter(r => r.clase === 'Normal');
+  if (recetasNormales.length === 0) {
+    div.style.display = 'none';
+    return;
+  }
+  div.style.display = 'block';
+  renderListaTiempoRecetas();
+}
+
+function renderListaTiempoRecetas() {
+  const listaDiv = document.getElementById('lista-tiempo-recetas');
+  if (!listaDiv) return;
+  if (recetasTiempo.length === 0) {
+    listaDiv.innerHTML = '<div style="color:#888;text-align:center;">Agrega recetas para analizar su tiempo total.</div>';
+    document.getElementById('resumen-tiempo-recetas').innerHTML = '';
+    return;
+  }
+  let html = '<ul style="list-style:none;padding:0;margin:0;">';
+  recetasTiempo.forEach((idx, i) => {
+    const r = recetas[idx];
+    if (!r) return;
+    const tiempo = calcularTiempoReceta(r);
+    html += `<li style='margin-bottom:8px;padding:6px 0;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;'>`;
+    html += `<span style='font-weight:bold;'>${r.clase} ${r.nivel} ${r.color}</span> <span style='color:#1e3a8a;'>${tiempo} h</span>`;
+    html += `<button onclick='eliminarRecetaTiempo(${i})' style='background:#e53935;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:8px;'>✖</button>`;
+    html += `</li>`;
+  });
+  html += '</ul>';
+  listaDiv.innerHTML = html;
+  renderResumenTiempoRecetas();
+}
+
+function calcularTiempoReceta(receta) {
+  let total = 0;
+  for (const color in TIEMPOS_MATERIAL) {
+    total += (receta.materiales[color] || 0) * TIEMPOS_MATERIAL[color];
+  }
+  return total;
+}
+
+function renderResumenTiempoRecetas() {
+  const resumenDiv = document.getElementById('resumen-tiempo-recetas');
+  if (!resumenDiv) return;
+  // Sumar tiempos y materiales
+  let totalHoras = 0;
+  let totalMateriales = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
+  recetasTiempo.forEach(idx => {
+    const r = recetas[idx];
+    if (!r) return;
+    totalHoras += calcularTiempoReceta(r);
+    for (const color in totalMateriales) {
+      totalMateriales[color] += (r.materiales[color] || 0);
+    }
+  });
+  let html = `<div style='margin-bottom:8px;'><strong>Tiempo total:</strong> <span style='color:#1e3a8a;font-size:1.1em;'>${totalHoras} horas</span></div>`;
+  html += `<div style='margin-bottom:4px;'><strong>Materiales totales:</strong></div>`;
+  html += `<div style='display:flex;gap:12px;flex-wrap:wrap;'>`;
+  for (const color of ['dorado','morado','azul','verde','blanco']) {
+    html += `<span style='background:#eee;padding:4px 10px;border-radius:8px;font-weight:bold;color:#333;'>${color.charAt(0).toUpperCase()+color.slice(1)}: ${totalMateriales[color]}</span>`;
+  }
+  html += `</div>`;
+  resumenDiv.innerHTML = html;
+}
+
+function eliminarRecetaTiempo(i) {
+  recetasTiempo.splice(i,1);
+  renderListaTiempoRecetas();
+}
+
+document.getElementById('agregar-receta-tiempo').onclick = function() {
+  // Mostrar selector de receta Normal
+  const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
+  if (recetasNormales.length === 0) return;
+  let opciones = '';
+  recetasNormales.forEach(r => {
+    opciones += `<option value='${r.idx}'>${r.clase} ${r.nivel} ${r.color} (D:${r.materiales.dorado}, M:${r.materiales.morado}, A:${r.materiales.azul}, V:${r.materiales.verde}, B:${r.materiales.blanco})</option>`;
+  });
+  const sel = document.createElement('select');
+  sel.innerHTML = opciones;
+  sel.style.marginRight = '8px';
+  sel.style.padding = '4px 8px';
+  sel.style.borderRadius = '6px';
+  sel.style.fontSize = '1rem';
+  const okBtn = document.createElement('button');
+  okBtn.textContent = 'Agregar';
+  okBtn.style.background = '#43a047';
+  okBtn.style.color = '#fff';
+  okBtn.style.border = 'none';
+  okBtn.style.borderRadius = '6px';
+  okBtn.style.padding = '4px 14px';
+  okBtn.style.marginLeft = '6px';
+  okBtn.style.cursor = 'pointer';
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.background = 'rgba(0,0,0,0.18)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = '9999';
+  const inner = document.createElement('div');
+  inner.style.background = '#fff';
+  inner.style.padding = '24px 18px 18px 18px';
+  inner.style.borderRadius = '10px';
+  inner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.18)';
+  inner.style.textAlign = 'center';
+  inner.innerHTML = `<div style='font-size:1.1rem;margin-bottom:12px;'>Selecciona una receta Normal:</div>`;
+  inner.appendChild(sel);
+  inner.appendChild(okBtn);
+  const cancelar = document.createElement('button');
+  cancelar.textContent = 'Cancelar';
+  cancelar.style.background = '#e53935';
+  cancelar.style.color = '#fff';
+  cancelar.style.border = 'none';
+  cancelar.style.borderRadius = '6px';
+  cancelar.style.padding = '4px 14px';
+  cancelar.style.marginLeft = '8px';
+  cancelar.style.cursor = 'pointer';
+  inner.appendChild(cancelar);
+  modal.appendChild(inner);
+  document.body.appendChild(modal);
+  okBtn.onclick = function() {
+    const idx = parseInt(sel.value);
+    recetasTiempo.push(idx);
+    renderListaTiempoRecetas();
+    document.body.removeChild(modal);
+  };
+  cancelar.onclick = function() {
+    document.body.removeChild(modal);
+  };
+};
+document.getElementById('limpiar-tiempo-recetas').onclick = function() {
+  recetasTiempo = [];
+  renderListaTiempoRecetas();
+};
+
+// Mostrar/ocultar analizador según recetas
+renderTabla = (function(orig){
+  return function() {
+    orig.apply(this, arguments);
+    mostrarAnalizadorTiempo();
+  };
+})(renderTabla);
 </script>
 </body>
 </html> 
