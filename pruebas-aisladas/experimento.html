@@ -103,6 +103,22 @@
             align-items: center;
             flex-wrap: wrap;
         }
+        .secciones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .secciones-grid fieldset {
+            margin-bottom: 0;
+        }
+        @media (max-width: 700px) {
+            .secciones-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -113,114 +129,116 @@
     </div>
     <h2>Generador de Recetas Universal</h2>
     <form id="receta-form" autocomplete="off">
-        <fieldset>
-            <legend>Equipo final</legend>
-            <div class="inline-selects">
-                <label for="clase">Clase:</label>
-                <select id="clase" required>
-                    <option value="Normal">Normal</option>
-                    <option value="Campeón">Campeón</option>
-                    <option value="Planewalker">Planewalker</option>
-                    <option value="Lord">Lord</option>
-                    <option value="Noble Lord">Noble Lord</option>
-                </select>
-                <label for="nivel">Nivel:</label>
-                <select id="nivel" required>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <label for="color">Color:</label>
-                <select id="color" required>
-                    <option value="blanco">Blanco</option>
-                    <option value="verde">Verde</option>
-                    <option value="azul">Azul</option>
-                    <option value="morado">Morado</option>
-                    <option value="dorado">Dorado</option>
-                </select>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Materiales</legend>
-            <div class="materiales-select inline-selects">
-                <select class="color-material">
-                    <option value="0">Dorado: 0</option>
-                    <option value="1">Dorado: 1</option>
-                    <option value="2">Dorado: 2</option>
-                    <option value="3">Dorado: 3</option>
-                    <option value="4">Dorado: 4</option>
-                </select>
-                <select class="color-material">
-                    <option value="0">Morado: 0</option>
-                    <option value="1">Morado: 1</option>
-                    <option value="2">Morado: 2</option>
-                    <option value="3">Morado: 3</option>
-                    <option value="4">Morado: 4</option>
-                </select>
-                <select class="color-material">
-                    <option value="0">Azul: 0</option>
-                    <option value="1">Azul: 1</option>
-                    <option value="2">Azul: 2</option>
-                    <option value="3">Azul: 3</option>
-                    <option value="4">Azul: 4</option>
-                </select>
-                <select class="color-material">
-                    <option value="0">Verde: 0</option>
-                    <option value="1">Verde: 1</option>
-                    <option value="2">Verde: 2</option>
-                    <option value="3">Verde: 3</option>
-                    <option value="4">Verde: 4</option>
-                </select>
-                <select class="color-material">
-                    <option value="0">Blanco: 0</option>
-                    <option value="1">Blanco: 1</option>
-                    <option value="2">Blanco: 2</option>
-                    <option value="3">Blanco: 3</option>
-                    <option value="4">Blanco: 4</option>
-                </select>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Base</legend>
-            <div class="inline-selects">
-                <label for="base-clase">Clase:</label>
-                <select id="base-clase">
-                    <option value="">-</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Campeón">Campeón</option>
-                    <option value="Planewalker">Planewalker</option>
-                    <option value="Lord">Lord</option>
-                    <option value="Noble Lord">Noble Lord</option>
-                </select>
-                <label for="base-nivel">Nivel:</label>
-                <select id="base-nivel">
-                    <option value="">-</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <label for="base-color">Color:</label>
-                <select id="base-color">
-                    <option value="">-</option>
-                    <option value="blanco">Blanco</option>
-                    <option value="verde">Verde</option>
-                    <option value="azul">Azul</option>
-                    <option value="morado">Morado</option>
-                    <option value="dorado">Dorado</option>
-                </select>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Éxito</legend>
-            <div class="inline-selects">
-                <label for="porcentaje">Porcentaje:</label>
-                <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
-            </div>
-        </fieldset>
+        <div class="secciones-grid">
+            <fieldset>
+                <legend>Equipo final</legend>
+                <div class="inline-selects">
+                    <label for="clase">Clase:</label>
+                    <select id="clase" required>
+                        <option value="Normal">Normal</option>
+                        <option value="Campeón">Campeón</option>
+                        <option value="Planewalker">Planewalker</option>
+                        <option value="Lord">Lord</option>
+                        <option value="Noble Lord">Noble Lord</option>
+                    </select>
+                    <label for="nivel">Nivel:</label>
+                    <select id="nivel" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="color">Color:</label>
+                    <select id="color" required>
+                        <option value="blanco">Blanco</option>
+                        <option value="verde">Verde</option>
+                        <option value="azul">Azul</option>
+                        <option value="morado">Morado</option>
+                        <option value="dorado">Dorado</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Materiales</legend>
+                <div class="materiales-select inline-selects">
+                    <select class="color-material">
+                        <option value="0">Dorado: 0</option>
+                        <option value="1">Dorado: 1</option>
+                        <option value="2">Dorado: 2</option>
+                        <option value="3">Dorado: 3</option>
+                        <option value="4">Dorado: 4</option>
+                    </select>
+                    <select class="color-material">
+                        <option value="0">Morado: 0</option>
+                        <option value="1">Morado: 1</option>
+                        <option value="2">Morado: 2</option>
+                        <option value="3">Morado: 3</option>
+                        <option value="4">Morado: 4</option>
+                    </select>
+                    <select class="color-material">
+                        <option value="0">Azul: 0</option>
+                        <option value="1">Azul: 1</option>
+                        <option value="2">Azul: 2</option>
+                        <option value="3">Azul: 3</option>
+                        <option value="4">Azul: 4</option>
+                    </select>
+                    <select class="color-material">
+                        <option value="0">Verde: 0</option>
+                        <option value="1">Verde: 1</option>
+                        <option value="2">Verde: 2</option>
+                        <option value="3">Verde: 3</option>
+                        <option value="4">Verde: 4</option>
+                    </select>
+                    <select class="color-material">
+                        <option value="0">Blanco: 0</option>
+                        <option value="1">Blanco: 1</option>
+                        <option value="2">Blanco: 2</option>
+                        <option value="3">Blanco: 3</option>
+                        <option value="4">Blanco: 4</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Base</legend>
+                <div class="inline-selects">
+                    <label for="base-clase">Clase:</label>
+                    <select id="base-clase">
+                        <option value="">-</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Campeón">Campeón</option>
+                        <option value="Planewalker">Planewalker</option>
+                        <option value="Lord">Lord</option>
+                        <option value="Noble Lord">Noble Lord</option>
+                    </select>
+                    <label for="base-nivel">Nivel:</label>
+                    <select id="base-nivel">
+                        <option value="">-</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="base-color">Color:</label>
+                    <select id="base-color">
+                        <option value="">-</option>
+                        <option value="blanco">Blanco</option>
+                        <option value="verde">Verde</option>
+                        <option value="azul">Azul</option>
+                        <option value="morado">Morado</option>
+                        <option value="dorado">Dorado</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Éxito</legend>
+                <div class="inline-selects">
+                    <label for="porcentaje">Porcentaje:</label>
+                    <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
+                </div>
+            </fieldset>
+        </div>
         <button type="submit" class="agregar-btn" form="receta-form">Agregar receta</button>
     </form>
 
