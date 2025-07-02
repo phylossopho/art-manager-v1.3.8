@@ -13,20 +13,40 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            max-width: 420px;
+            width: 90vw;
+            max-width: 1200px;
             margin: auto;
-            padding: 32px;
+            padding: 32px 18px 32px 18px;
         }
         h2 {
             color: #333;
             text-align: center;
         }
+        fieldset {
+            border: 1.5px solid #bbb;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            padding: 18px 12px 12px 12px;
+            position: relative;
+        }
+        legend {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #555;
+            position: absolute;
+            top: -1.2em;
+            right: 16px;
+            background: #fff;
+            padding: 0 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
         label {
             display: block;
-            margin-top: 12px;
+            margin-top: 10px;
             margin-bottom: 4px;
         }
-        select, button {
+        select, input[type="number"] {
             padding: 6px 10px;
             margin-bottom: 10px;
             border-radius: 4px;
@@ -38,10 +58,36 @@
             gap: 8px;
             margin-bottom: 10px;
         }
+        .agregar-btn {
+            display: block;
+            width: 100%;
+            margin: 18px 0 24px 0;
+            padding: 10px 0;
+            font-size: 1.1rem;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .agregar-btn:hover {
+            background: #1769aa;
+        }
+        .filtros {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .filtros label {
+            margin: 0 2px 0 0;
+            font-size: 0.98rem;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 24px;
+            margin-top: 10px;
         }
         th, td {
             border: 1px solid #ccc;
@@ -51,130 +97,174 @@
         th {
             background: #eee;
         }
+        .inline-selects {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Generador de Recetas Universal</h2>
     <form id="receta-form" autocomplete="off">
-        <label for="clase">Clase:</label>
-        <select id="clase" required>
+        <fieldset>
+            <legend>Equipo final</legend>
+            <div class="inline-selects">
+                <label for="clase">Clase:</label>
+                <select id="clase" required>
+                    <option value="Normal">Normal</option>
+                    <option value="Campeón">Campeón</option>
+                    <option value="Planewalker">Planewalker</option>
+                    <option value="Lord">Lord</option>
+                    <option value="Noble Lord">Noble Lord</option>
+                </select>
+                <label for="nivel">Nivel:</label>
+                <select id="nivel" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="color">Color:</label>
+                <select id="color" required>
+                    <option value="blanco">Blanco</option>
+                    <option value="verde">Verde</option>
+                    <option value="azul">Azul</option>
+                    <option value="morado">Morado</option>
+                    <option value="dorado">Dorado</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Materiales</legend>
+            <div class="materiales-select inline-selects">
+                <select class="color-material">
+                    <option value="0">Dorado: 0</option>
+                    <option value="1">Dorado: 1</option>
+                    <option value="2">Dorado: 2</option>
+                    <option value="3">Dorado: 3</option>
+                    <option value="4">Dorado: 4</option>
+                </select>
+                <select class="color-material">
+                    <option value="0">Morado: 0</option>
+                    <option value="1">Morado: 1</option>
+                    <option value="2">Morado: 2</option>
+                    <option value="3">Morado: 3</option>
+                    <option value="4">Morado: 4</option>
+                </select>
+                <select class="color-material">
+                    <option value="0">Azul: 0</option>
+                    <option value="1">Azul: 1</option>
+                    <option value="2">Azul: 2</option>
+                    <option value="3">Azul: 3</option>
+                    <option value="4">Azul: 4</option>
+                </select>
+                <select class="color-material">
+                    <option value="0">Verde: 0</option>
+                    <option value="1">Verde: 1</option>
+                    <option value="2">Verde: 2</option>
+                    <option value="3">Verde: 3</option>
+                    <option value="4">Verde: 4</option>
+                </select>
+                <select class="color-material">
+                    <option value="0">Blanco: 0</option>
+                    <option value="1">Blanco: 1</option>
+                    <option value="2">Blanco: 2</option>
+                    <option value="3">Blanco: 3</option>
+                    <option value="4">Blanco: 4</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Base</legend>
+            <div class="inline-selects">
+                <label for="base-clase">Clase:</label>
+                <select id="base-clase">
+                    <option value="">-</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Campeón">Campeón</option>
+                    <option value="Planewalker">Planewalker</option>
+                    <option value="Lord">Lord</option>
+                    <option value="Noble Lord">Noble Lord</option>
+                </select>
+                <label for="base-nivel">Nivel:</label>
+                <select id="base-nivel">
+                    <option value="">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="base-color">Color:</label>
+                <select id="base-color">
+                    <option value="">-</option>
+                    <option value="blanco">Blanco</option>
+                    <option value="verde">Verde</option>
+                    <option value="azul">Azul</option>
+                    <option value="morado">Morado</option>
+                    <option value="dorado">Dorado</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Éxito</legend>
+            <div class="inline-selects">
+                <label for="porcentaje">Porcentaje:</label>
+                <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
+            </div>
+        </fieldset>
+        <button type="submit" class="agregar-btn" form="receta-form">Agregar receta</button>
+    </form>
+
+    <div class="filtros">
+        <label for="filtro-clase">Filtrar clase:</label>
+        <select id="filtro-clase">
+            <option value="">Todas</option>
             <option value="Normal">Normal</option>
             <option value="Campeón">Campeón</option>
             <option value="Planewalker">Planewalker</option>
             <option value="Lord">Lord</option>
             <option value="Noble Lord">Noble Lord</option>
         </select>
-
-        <label for="nivel">Nivel:</label>
-        <select id="nivel" required>
+        <label for="filtro-nivel">Nivel:</label>
+        <select id="filtro-nivel">
+            <option value="">Todos</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
         </select>
-
-        <label for="color">Color:</label>
-        <select id="color" required>
-            <option value="blanco">Blanco</option>
-            <option value="verde">Verde</option>
-            <option value="azul">Azul</option>
-            <option value="morado">Morado</option>
-            <option value="dorado">Dorado</option>
-        </select>
-
-        <label for="porcentaje">Porcentaje:</label>
-        <input id="porcentaje" type="number" min="0" max="100" step="0.01" placeholder="0.00" required style="width:100px;">
-
-        <label>Colores de material (máx. 4):</label>
-        <div class="materiales-select">
-            <select class="color-material">
-                <option value="0">Dorado: 0</option>
-                <option value="1">Dorado: 1</option>
-                <option value="2">Dorado: 2</option>
-                <option value="3">Dorado: 3</option>
-                <option value="4">Dorado: 4</option>
-            </select>
-            <select class="color-material">
-                <option value="0">Morado: 0</option>
-                <option value="1">Morado: 1</option>
-                <option value="2">Morado: 2</option>
-                <option value="3">Morado: 3</option>
-                <option value="4">Morado: 4</option>
-            </select>
-            <select class="color-material">
-                <option value="0">Azul: 0</option>
-                <option value="1">Azul: 1</option>
-                <option value="2">Azul: 2</option>
-                <option value="3">Azul: 3</option>
-                <option value="4">Azul: 4</option>
-            </select>
-            <select class="color-material">
-                <option value="0">Verde: 0</option>
-                <option value="1">Verde: 1</option>
-                <option value="2">Verde: 2</option>
-                <option value="3">Verde: 3</option>
-                <option value="4">Verde: 4</option>
-            </select>
-            <select class="color-material">
-                <option value="0">Blanco: 0</option>
-                <option value="1">Blanco: 1</option>
-                <option value="2">Blanco: 2</option>
-                <option value="3">Blanco: 3</option>
-                <option value="4">Blanco: 4</option>
-            </select>
-        </div>
-    </form>
-
-    <h3>Base (opcional):</h3>
-    <form id="base-form" autocomplete="off">
-        <label for="base-clase">Clase de la base:</label>
-        <select id="base-clase">
-            <option value="">Sin base</option>
-            <option value="Normal">Normal</option>
-            <option value="Campeón">Campeón</option>
-            <option value="Planewalker">Planewalker</option>
-            <option value="Lord">Lord</option>
-            <option value="Noble Lord">Noble Lord</option>
-        </select>
-
-        <label for="base-nivel">Nivel de la base:</label>
-        <select id="base-nivel">
-            <option value="">-</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-
-        <label for="base-color">Color de la base:</label>
-        <select id="base-color">
-            <option value="">-</option>
-            <option value="blanco">Blanco</option>
-            <option value="verde">Verde</option>
-            <option value="azul">Azul</option>
-            <option value="morado">Morado</option>
-            <option value="dorado">Dorado</option>
-        </select>
-    </form>
-    <button type="submit" form="receta-form">Agregar receta</button>
-
+    </div>
     <table id="tabla-recetas" style="display:none;">
         <thead>
             <tr>
-                <th>#</th>
+                <th rowspan="2">#</th>
+                <th colspan="8">Equipo</th>
+                <th colspan="3">Base</th>
+                <th rowspan="2">Éxito</th>
+            </tr>
+            <tr>
                 <th>Clase</th>
                 <th>Nivel</th>
                 <th>Color</th>
-                <th>Porcentaje</th>
-                <th>Materiales</th>
-                <th>Base</th>
+                <th>Dorado</th>
+                <th>Morado</th>
+                <th>Azul</th>
+                <th>Verde</th>
+                <th>Blanco</th>
+                <th>Clase</th>
+                <th>Nivel</th>
+                <th>Color</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+    <button id="guardar-recetas" style="display:none;margin:18px auto 0 auto;display:block;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
 </div>
 <script>
 const form = document.getElementById('receta-form');
@@ -188,7 +278,6 @@ form.onsubmit = function(e) {
     const nivel = document.getElementById('nivel').value;
     const color = document.getElementById('color').value;
     const porcentaje = parseFloat(document.getElementById('porcentaje').value).toFixed(2);
-    
     // Obtener cantidades de materiales
     const materiales = {
         dorado: parseInt(document.querySelectorAll('.color-material')[0].value),
@@ -197,7 +286,6 @@ form.onsubmit = function(e) {
         verde: parseInt(document.querySelectorAll('.color-material')[3].value),
         blanco: parseInt(document.querySelectorAll('.color-material')[4].value)
     };
-    
     // Verificar que al menos un material tenga cantidad > 0
     const totalMateriales = Object.values(materiales).reduce((sum, val) => sum + val, 0);
     if (totalMateriales === 0) {
@@ -208,18 +296,15 @@ form.onsubmit = function(e) {
         alert('No puedes seleccionar más de 4 materiales en total.');
         return;
     }
-    
     // Obtener datos de la base
     const baseClase = document.getElementById('base-clase').value;
     const baseNivel = document.getElementById('base-nivel').value;
     const baseColor = document.getElementById('base-color').value;
-    
     const base = baseClase ? {
         clase: baseClase,
         nivel: baseNivel,
         color: baseColor
     } : null;
-    
     recetas.push({ clase, nivel, color, porcentaje, materiales, base });
     renderTabla();
     form.reset();
@@ -229,52 +314,105 @@ form.onsubmit = function(e) {
     document.getElementById('base-color').value = '';
 };
 
-function requiereBase(receta) {
-    const clase = receta.clase;
-    const nivel = parseInt(receta.nivel);
-    const colores = receta.colores;
-    // Noble Lord solo existe si es Lord de nivel 5
-    if (clase === 'Noble Lord') return true;
-    if (clase === 'Planewalker') return nivel === 5;
-    if (clase === 'Campeón') return nivel === 4;
-    if (clase === 'Lord') return nivel === 5;
-    if (clase === 'Normal' && nivel === 1 && colores.length === 1 && colores[0] === 'blanco') return false;
-    // Por defecto, requiere base
-    return true;
-}
+document.getElementById('filtro-clase').onchange = renderTabla;
+document.getElementById('filtro-nivel').onchange = renderTabla;
+
+document.getElementById('guardar-recetas').onclick = function() {
+    if (recetas.length === 0) return;
+    const dataStr = JSON.stringify(recetas, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recetas.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
 
 function renderTabla() {
-    if (recetas.length === 0) {
+    const filtroClase = document.getElementById('filtro-clase').value;
+    const filtroNivel = document.getElementById('filtro-nivel').value;
+    let recetasFiltradas = recetas;
+    if (filtroClase) {
+        recetasFiltradas = recetasFiltradas.filter(r => r.clase === filtroClase);
+    }
+    if (filtroNivel) {
+        recetasFiltradas = recetasFiltradas.filter(r => r.nivel === filtroNivel);
+    }
+    if (recetasFiltradas.length === 0) {
         tabla.style.display = 'none';
+        document.getElementById('guardar-recetas').style.display = 'none';
         return;
     }
     tabla.style.display = '';
+    document.getElementById('guardar-recetas').style.display = 'block';
     tbody.innerHTML = '';
-    recetas.forEach((receta, idx) => {
-        // Formatear materiales
-        const materialesStr = Object.entries(receta.materiales)
-            .filter(([color, cantidad]) => cantidad > 0)
-            .map(([color, cantidad]) => `${color}: ${cantidad}`)
-            .join(', ');
-        
-        // Formatear base
-        const baseStr = receta.base ? 
-            `${receta.base.clase} ${receta.base.nivel} ${receta.base.color}` : 
-            'Sin base';
-        
+    recetasFiltradas.forEach((receta, idx) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>${receta.clase}</td>
             <td>${receta.nivel}</td>
             <td>${receta.color}</td>
+            <td>${receta.materiales.dorado}</td>
+            <td>${receta.materiales.morado}</td>
+            <td>${receta.materiales.azul}</td>
+            <td>${receta.materiales.verde}</td>
+            <td>${receta.materiales.blanco}</td>
+            <td>${receta.base ? receta.base.clase : ''}</td>
+            <td>${receta.base ? receta.base.nivel : ''}</td>
+            <td>${receta.base ? receta.base.color : ''}</td>
             <td>${receta.porcentaje}%</td>
-            <td>${materialesStr}</td>
-            <td>${baseStr}</td>
         `;
         tbody.appendChild(tr);
     });
 }
+
+// Lógica de restricciones automáticas
+const claseSelect = document.getElementById('clase');
+const nivelSelect = document.getElementById('nivel');
+const baseClaseSelect = document.getElementById('base-clase');
+const baseNivelSelect = document.getElementById('base-nivel');
+
+function aplicarRestricciones() {
+    const clase = claseSelect.value;
+    // Reset: habilitar todo
+    nivelSelect.disabled = false;
+    baseClaseSelect.disabled = false;
+    baseNivelSelect.disabled = false;
+
+    if (clase === 'Campeón') {
+        nivelSelect.value = '4';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '4';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+    } else if (clase === 'Planewalker' || clase === 'Lord') {
+        nivelSelect.value = '5';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '5';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Normal';
+        baseClaseSelect.disabled = true;
+    } else if (clase === 'Noble Lord') {
+        nivelSelect.value = '5';
+        nivelSelect.disabled = true;
+        baseNivelSelect.value = '5';
+        baseNivelSelect.disabled = true;
+        baseClaseSelect.value = 'Lord';
+        baseClaseSelect.disabled = true;
+    } else {
+        // Normal: todo editable
+        nivelSelect.disabled = false;
+        baseClaseSelect.disabled = false;
+        baseNivelSelect.disabled = false;
+    }
+}
+claseSelect.addEventListener('change', aplicarRestricciones);
+document.addEventListener('DOMContentLoaded', aplicarRestricciones);
 </script>
 </body>
 </html> 
