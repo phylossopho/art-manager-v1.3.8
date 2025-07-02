@@ -397,6 +397,25 @@ function renderTabla() {
     if (filtroNivel) {
         recetasFiltradas = recetasFiltradas.filter(r => r.nivel === filtroNivel);
     }
+    // Ordenar por clase, nivel, color (jerarquía), número de materiales (jerarquía)
+    const colorOrden = { dorado: 5, morado: 4, azul: 3, verde: 2, blanco: 1 };
+    recetasFiltradas = recetasFiltradas.slice().sort((a, b) => {
+        // 1. Clase (alfabético)
+        if (a.clase < b.clase) return -1;
+        if (a.clase > b.clase) return 1;
+        // 2. Nivel (numérico ascendente)
+        const nivelA = parseInt(a.nivel);
+        const nivelB = parseInt(b.nivel);
+        if (nivelA !== nivelB) return nivelA - nivelB;
+        // 3. Color (jerarquía)
+        const colorA = colorOrden[a.color] || 0;
+        const colorB = colorOrden[b.color] || 0;
+        if (colorA !== colorB) return colorB - colorA;
+        // 4. Número de materiales por jerarquía (ponderado)
+        const sumaA = Object.entries(a.materiales).reduce((acc, [col, val]) => acc + (colorOrden[col] || 0) * (val || 0), 0);
+        const sumaB = Object.entries(b.materiales).reduce((acc, [col, val]) => acc + (colorOrden[col] || 0) * (val || 0), 0);
+        return sumaB - sumaA;
+    });
     if (recetasFiltradas.length === 0) {
         tabla.style.display = 'none';
         document.getElementById('guardar-recetas').style.display = 'none';
