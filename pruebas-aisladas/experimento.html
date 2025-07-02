@@ -78,40 +78,76 @@
         <label>Colores de material (máx. 4):</label>
         <div class="materiales-select">
             <select class="color-material">
-                <option value="">-</option>
-                <option value="blanco">Blanco</option>
-                <option value="verde">Verde</option>
-                <option value="azul">Azul</option>
-                <option value="morado">Morado</option>
-                <option value="dorado">Dorado</option>
+                <option value="0">Dorado: 0</option>
+                <option value="1">Dorado: 1</option>
+                <option value="2">Dorado: 2</option>
+                <option value="3">Dorado: 3</option>
+                <option value="4">Dorado: 4</option>
             </select>
             <select class="color-material">
-                <option value="">-</option>
-                <option value="blanco">Blanco</option>
-                <option value="verde">Verde</option>
-                <option value="azul">Azul</option>
-                <option value="morado">Morado</option>
-                <option value="dorado">Dorado</option>
+                <option value="0">Morado: 0</option>
+                <option value="1">Morado: 1</option>
+                <option value="2">Morado: 2</option>
+                <option value="3">Morado: 3</option>
+                <option value="4">Morado: 4</option>
             </select>
             <select class="color-material">
-                <option value="">-</option>
-                <option value="blanco">Blanco</option>
-                <option value="verde">Verde</option>
-                <option value="azul">Azul</option>
-                <option value="morado">Morado</option>
-                <option value="dorado">Dorado</option>
+                <option value="0">Azul: 0</option>
+                <option value="1">Azul: 1</option>
+                <option value="2">Azul: 2</option>
+                <option value="3">Azul: 3</option>
+                <option value="4">Azul: 4</option>
             </select>
             <select class="color-material">
-                <option value="">-</option>
-                <option value="blanco">Blanco</option>
-                <option value="verde">Verde</option>
-                <option value="azul">Azul</option>
-                <option value="morado">Morado</option>
-                <option value="dorado">Dorado</option>
+                <option value="0">Verde: 0</option>
+                <option value="1">Verde: 1</option>
+                <option value="2">Verde: 2</option>
+                <option value="3">Verde: 3</option>
+                <option value="4">Verde: 4</option>
+            </select>
+            <select class="color-material">
+                <option value="0">Blanco: 0</option>
+                <option value="1">Blanco: 1</option>
+                <option value="2">Blanco: 2</option>
+                <option value="3">Blanco: 3</option>
+                <option value="4">Blanco: 4</option>
             </select>
         </div>
-        <button type="submit">Agregar receta</button>
     </form>
+
+    <h3>Base (opcional):</h3>
+    <form id="base-form" autocomplete="off">
+        <label for="base-clase">Clase de la base:</label>
+        <select id="base-clase">
+            <option value="">Sin base</option>
+            <option value="Normal">Normal</option>
+            <option value="Campeón">Campeón</option>
+            <option value="Planewalker">Planewalker</option>
+            <option value="Lord">Lord</option>
+            <option value="Noble Lord">Noble Lord</option>
+        </select>
+
+        <label for="base-nivel">Nivel de la base:</label>
+        <select id="base-nivel">
+            <option value="">-</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+        <label for="base-color">Color de la base:</label>
+        <select id="base-color">
+            <option value="">-</option>
+            <option value="blanco">Blanco</option>
+            <option value="verde">Verde</option>
+            <option value="azul">Azul</option>
+            <option value="morado">Morado</option>
+            <option value="dorado">Dorado</option>
+        </select>
+    </form>
+    <button type="submit" form="receta-form">Agregar receta</button>
 
     <table id="tabla-recetas" style="display:none;">
         <thead>
@@ -119,7 +155,8 @@
                 <th>#</th>
                 <th>Clase</th>
                 <th>Nivel</th>
-                <th>Colores de Material</th>
+                <th>Materiales</th>
+                <th>Base</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -135,17 +172,60 @@ form.onsubmit = function(e) {
     e.preventDefault();
     const clase = document.getElementById('clase').value;
     const nivel = document.getElementById('nivel').value;
-    const colores = Array.from(document.querySelectorAll('.color-material'))
-        .map(sel => sel.value)
-        .filter(v => v && v !== "");
-    if (colores.length === 0 || colores.length > 4) {
-        alert('Debes seleccionar entre 1 y 4 colores de material.');
+    
+    // Obtener cantidades de materiales
+    const materiales = {
+        dorado: parseInt(document.querySelectorAll('.color-material')[0].value),
+        morado: parseInt(document.querySelectorAll('.color-material')[1].value),
+        azul: parseInt(document.querySelectorAll('.color-material')[2].value),
+        verde: parseInt(document.querySelectorAll('.color-material')[3].value),
+        blanco: parseInt(document.querySelectorAll('.color-material')[4].value)
+    };
+    
+    // Verificar que al menos un material tenga cantidad > 0
+    const totalMateriales = Object.values(materiales).reduce((sum, val) => sum + val, 0);
+    if (totalMateriales === 0) {
+        alert('Debes seleccionar al menos un material.');
         return;
     }
-    recetas.push({ clase, nivel, colores });
+    if (totalMateriales > 4) {
+        alert('No puedes seleccionar más de 4 materiales en total.');
+        return;
+    }
+    
+    // Obtener datos de la base
+    const baseClase = document.getElementById('base-clase').value;
+    const baseNivel = document.getElementById('base-nivel').value;
+    const baseColor = document.getElementById('base-color').value;
+    
+    const base = baseClase ? {
+        clase: baseClase,
+        nivel: baseNivel,
+        color: baseColor
+    } : null;
+    
+    recetas.push({ clase, nivel, materiales, base });
     renderTabla();
     form.reset();
+    // Limpiar también el formulario de base
+    document.getElementById('base-clase').value = '';
+    document.getElementById('base-nivel').value = '';
+    document.getElementById('base-color').value = '';
 };
+
+function requiereBase(receta) {
+    const clase = receta.clase;
+    const nivel = parseInt(receta.nivel);
+    const colores = receta.colores;
+    // Noble Lord solo existe si es Lord de nivel 5
+    if (clase === 'Noble Lord') return true;
+    if (clase === 'Planewalker') return nivel === 5;
+    if (clase === 'Campeón') return nivel === 4;
+    if (clase === 'Lord') return nivel === 5;
+    if (clase === 'Normal' && nivel === 1 && colores.length === 1 && colores[0] === 'blanco') return false;
+    // Por defecto, requiere base
+    return true;
+}
 
 function renderTabla() {
     if (recetas.length === 0) {
@@ -155,12 +235,24 @@ function renderTabla() {
     tabla.style.display = '';
     tbody.innerHTML = '';
     recetas.forEach((receta, idx) => {
+        // Formatear materiales
+        const materialesStr = Object.entries(receta.materiales)
+            .filter(([color, cantidad]) => cantidad > 0)
+            .map(([color, cantidad]) => `${color}: ${cantidad}`)
+            .join(', ');
+        
+        // Formatear base
+        const baseStr = receta.base ? 
+            `${receta.base.clase} ${receta.base.nivel} ${receta.base.color}` : 
+            'Sin base';
+        
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>${receta.clase}</td>
             <td>${receta.nivel}</td>
-            <td>${receta.colores.join(', ')}</td>
+            <td>${materialesStr}</td>
+            <td>${baseStr}</td>
         `;
         tbody.appendChild(tr);
     });
