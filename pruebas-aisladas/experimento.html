@@ -273,12 +273,20 @@
         <button id="guardar-recetas" style="display:none;padding:10px 24px;font-size:1rem;background:#43a047;color:#fff;border:none;border-radius:6px;cursor:pointer;">Guardar recetas</button>
     </div>
 </div>
+<div id="modal-confirm-borrar" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:28px 24px 18px 24px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.18);max-width:320px;text-align:center;">
+    <div style="font-size:1.15rem;margin-bottom:18px;">¿Seguro que deseas borrar esta receta?</div>
+    <button id="confirm-borrar-aceptar" style="background:#43a047;color:#fff;font-size:1.2rem;padding:8px 18px;margin:0 10px 0 0;border:none;border-radius:6px;cursor:pointer;">Aceptar ✅</button>
+    <button id="confirm-borrar-cancelar" style="background:#e53935;color:#fff;font-size:1.2rem;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;">NO ❌</button>
+  </div>
+</div>
 <script>
 const form = document.getElementById('receta-form');
 const tabla = document.getElementById('tabla-recetas');
 const tbody = tabla.querySelector('tbody');
 let recetas = [];
 let editIndex = null; // Índice de la receta que se está editando
+let borrarIndex = null;
 const agregarBtn = document.querySelector('.agregar-btn');
 
 function resetFormularioUI() {
@@ -393,11 +401,8 @@ function renderTabla() {
         `;
         // Acciones borrar y editar
         tr.querySelector('.borrar-btn').onclick = () => {
-            const realIdx = recetas.indexOf(recetasFiltradas[idx]);
-            if (realIdx !== -1) {
-                recetas.splice(realIdx, 1);
-                renderTabla();
-            }
+            borrarIndex = recetas.indexOf(recetasFiltradas[idx]);
+            document.getElementById('modal-confirm-borrar').style.display = 'flex';
         };
         tr.querySelector('.editar-btn').onclick = () => {
             // Cargar los datos de la receta en el formulario para editar
@@ -524,6 +529,20 @@ document.getElementById('file-import').onchange = function(e) {
         }
     };
     reader.readAsText(file);
+};
+
+document.getElementById('confirm-borrar-aceptar').onclick = function() {
+    if (borrarIndex !== null && borrarIndex >= 0) {
+        recetas.splice(borrarIndex, 1);
+        renderTabla();
+        resetFormularioUI();
+    }
+    borrarIndex = null;
+    document.getElementById('modal-confirm-borrar').style.display = 'none';
+};
+document.getElementById('confirm-borrar-cancelar').onclick = function() {
+    borrarIndex = null;
+    document.getElementById('modal-confirm-borrar').style.display = 'none';
 };
 </script>
 </body>
