@@ -6,7 +6,12 @@ export function simularUso(cantidadesIniciales, colorObjetivo) {
 
     const indiceObjetivo = ordenColores.indexOf(colorObjetivo);
     if (indiceObjetivo === -1) {
-        return { stock: {...cantidadesIniciales}, exito: false };
+        return {
+            stock: { ...cantidadesIniciales },
+            exito: false,
+            advertencia: `Color objetivo inválido: ${colorObjetivo}`,
+            pasos: []
+        };
     }
 
     function obtenerMaterialRequerido(colorActual, cantidadNecesaria) {
@@ -33,8 +38,20 @@ export function simularUso(cantidadesIniciales, colorObjetivo) {
         return false;
     }
 
+    const exito = obtenerMaterialRequerido(colorObjetivo, 1);
+    if (!exito) {
+        return {
+            stock: stockTemporal,
+            exito: false,
+            advertencia: `No hay suficientes materiales para obtener 1 de color ${colorObjetivo}`,
+            pasos: []
+        };
+    }
+
     return {
         stock: stockTemporal,
-        exito: obtenerMaterialRequerido(colorObjetivo, 1)
+        exito: true,
+        advertencia: null,
+        pasos: []
     };
 }
