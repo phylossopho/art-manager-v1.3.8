@@ -653,6 +653,8 @@ function abrirModalSeleccionRecetas() {
   // Tabla
   let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
   recetasNormales.forEach((r, i) => {
+    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
+    const desvanecido = cantidad > 0;
     const rowBg = i % 2 === 0 ? '#fff' : '#f5f6fa';
     tabla += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""};background:${rowBg};'>`;
     tabla += `<td style='font-weight:bold;'>Nivel ${r.nivel}</td>`;
@@ -721,6 +723,8 @@ function actualizarTablaModalRecetas() {
   const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
   let html = '';
   recetasNormales.forEach((r, i) => {
+    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
+    const desvanecido = cantidad > 0;
     const rowBg = i % 2 === 0 ? '#fff' : '#f5f6fa';
     html += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""};background:${rowBg};'>`;
     html += `<td style='font-weight:bold;'>Nivel ${r.nivel}</td>`;
@@ -784,7 +788,7 @@ function actualizarResumenModalTiempo() {
   if (dias > 0) partes.push(`📅 ${dias} día${dias > 1 ? 's' : ''}`);
   if (horasRestantes > 0 || partes.length === 0) partes.push(`🕒 ${horasRestantes} hora${horasRestantes !== 1 ? 's' : ''}`);
   let conversionStr = partes.join(', ');
-  let html = `<div style='margin-bottom:8px;'><strong>Tiempo total:</strong> <span style='color:#1e3a8a;font-size:1.1em;'>🕒 ${horasFormateadas} horas</span></div>`;
+  let html = `<div style='margin-bottom:8px;text-align:center;'><strong>Tiempo total:</strong> <span style='color:#888;font-size:2.1em;'>🕒 ${horasFormateadas} horas</span></div>`;
   html += `<div style='color:#bbb;margin-bottom:8px;font-size:1.08em;'>= ${conversionStr}</div>`;
   html += `<div style='margin-bottom:4px;'><strong>Materiales totales:</strong></div>`;
   html += `<div style='display:flex;gap:12px;flex-wrap:wrap;'>`;
