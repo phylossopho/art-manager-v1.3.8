@@ -588,7 +588,14 @@
       }
 
       // Helper: simular fabricación recursiva de un equipo
-      function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado) {
+      function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado, visitados) {
+        visitados = visitados || [];
+        const recetaId = `${receta.clase}|${receta.nivel}|${receta.color}`;
+        if (visitados.includes(recetaId)) {
+          advertencias.push(`Ciclo detectado: la receta ${receta.clase} nivel ${receta.nivel} color ${receta.color} ya fue procesada en esta cadena. Recursión detenida.`);
+          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+        }
+        visitados = [...visitados, recetaId];
         if (!receta) {
           advertencias.push('Falta receta para algún paso.');
           return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
@@ -599,7 +606,7 @@
           if (!recetaBase) {
             advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
           } else {
-            const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado);
+            const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
             inventarioActual = resBase.inventario;
             rutaParcial = resBase.ruta;
             tiempoAcumulado = resBase.tiempo;
@@ -662,10 +669,10 @@
           let tDorado = tiempoAcumulado;
           rutaMorado[rutaMorado.length-1].bifurcacion = true;
           let recetaMorado = buscarReceta(receta.clase, receta.nivel, 'morado');
-          let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado);
+          let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado, visitados);
           rutaDorado[rutaDorado.length-1].bifurcacion = true;
           let recetaDorado = buscarReceta(receta.clase, receta.nivel, 'dorado');
-          let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado);
+          let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado, visitados);
           rutas.push(resMorado);
           rutas.push(resDorado);
           return;
@@ -674,7 +681,7 @@
       }
 
       // Iniciar simulación desde la receta final (fabricar recursivamente todas las bases)
-      let resultado = fabricarRecursivo(recetaFinal, inventario, [], 0);
+      let resultado = fabricarRecursivo(recetaFinal, inventario, [], 0, []);
       if (rutas.length === 0 && resultado) rutas.push(resultado);
 
       // Mostrar resultados
