@@ -677,7 +677,12 @@
         }
         // Guardar en memoria
         estado.almacenMateriales = data.materiales;
-        showToast('¡Datos importados correctamente! Ya puedes simular.','success');
+        // Contar colores por material
+        let resumen = Object.entries(data.materiales).map(([nombre, colores]) => {
+          let numColores = Object.values(colores).filter(v => Number(v) > 0).length;
+          return `${nombre.split(':')[1]||nombre}: ${numColores} color(es)`;
+        }).join(' | ');
+        showToast('¡Datos importados correctamente! Ya puedes simular.\n' + resumen,'success');
         renderControles();
         renderSimulacion();
       } catch (err) {
