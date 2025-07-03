@@ -218,7 +218,7 @@
   </div>
   <script type="module">
   import { cargarRecetasPersonalizadas, inicializarAlmacenamientoMateriales } from '../scripts/materiales.js';
-  import { datosMateriales, mapaColores } from '../scripts/datos.js';
+  import { datosMateriales, mapaColores, nivelesPorClase, coloresPorClase } from '../scripts/datos.js';
 
   // Estado global simple
   const estado = {
@@ -226,25 +226,38 @@
     almacenMateriales: {},
     recetas: {},
     recetaFinalKey: '',
+    filtros: {
+      clase: '',
+      equipo: '',
+      color: '',
+      nivel: ''
+    }
   };
 
-  // Verificar si ya hay recetas/materiales cargados
-  let recetasCargadas = false;
-  try {
-    const r = cargarRecetasPersonalizadas();
-    if (r && Object.keys(r).length > 0) {
-      estado.recetas = r;
-      recetasCargadas = true;
+  // Cargar recetas y materiales automáticamente si existen
+  function cargarDatosUsuario() {
+    let recetasCargadas = false;
+    try {
+      const r = cargarRecetasPersonalizadas();
+      if (r && Object.keys(r).length > 0) {
+        estado.recetas = r;
+        recetasCargadas = true;
+      }
+    } catch {}
+    if (!recetasCargadas) {
+      inicializarAlmacenamientoMateriales(estado);
+      estado.recetas = cargarRecetasPersonalizadas();
     }
-  } catch {}
-  if (!recetasCargadas) {
-    inicializarAlmacenamientoMateriales(estado);
-    estado.recetas = cargarRecetasPersonalizadas();
   }
+  cargarDatosUsuario();
 
-  function getRecetasFinalesDisponibles() {
+  function getRecetasFiltradas() {
     return Object.keys(estado.recetas).filter(k => {
       const r = estado.recetas[k];
+      if (estado.filtros.clase && r.clase !== estado.filtros.clase) return false;
+      if (estado.filtros.equipo && r.equipo !== estado.filtros.equipo) return false;
+      if (estado.filtros.color && r.color !== estado.filtros.color) return false;
+      if (estado.filtros.nivel && r.nivel !== estado.filtros.nivel) return false;
       return ['Campeón','Planewalker','Lord','Noble Lord'].includes(r.clase);
     });
   }
@@ -258,13 +271,69 @@
   function renderControles() {
     const controles = document.querySelector('.controles');
     controles.innerHTML = '';
+    // Filtros
+    const filtrosDiv = document.createElement('div');
+    filtrosDiv.style.display = 'flex';
+    filtrosDiv.style.gap = '8px';
+    filtrosDiv.style.marginBottom = '8px';
+    // Clase
+    const selectClase = document.createElement('select');
+    selectClase.innerHTML = '<option value="">Clase</option>';
+    Array.from(new Set(Object.values(estado.recetas).map(r=>r.clase))).forEach(cl => {
+      if (!['Campeón','Planewalker','Lord','Noble Lord'].includes(cl)) return;
+      const opt = document.createElement('option');
+      opt.value = cl;
+      opt.textContent = cl;
+      if (cl === estado.filtros.clase) opt.selected = true;
+      selectClase.appendChild(opt);
+    });
+    selectClase.onchange = e => { estado.filtros.clase = e.target.value; renderControles(); renderSimulacion(); };
+    filtrosDiv.appendChild(selectClase);
+    // Equipo
+    const selectEquipo = document.createElement('select');
+    selectEquipo.innerHTML = '<option value="">Equipo</option>';
+    Array.from(new Set(Object.values(estado.recetas).map(r=>r.equipo))).forEach(eq => {
+      const opt = document.createElement('option');
+      opt.value = eq;
+      opt.textContent = eq;
+      if (eq === estado.filtros.equipo) opt.selected = true;
+      selectEquipo.appendChild(opt);
+    });
+    selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
+    filtrosDiv.appendChild(selectEquipo);
+    // Color
+    const selectColor = document.createElement('select');
+    selectColor.innerHTML = '<option value="">Color</option>';
+    Array.from(new Set(Object.values(estado.recetas).map(r=>r.color))).forEach(clr => {
+      const opt = document.createElement('option');
+      opt.value = clr;
+      opt.textContent = clr.charAt(0).toUpperCase()+clr.slice(1);
+      if (clr === estado.filtros.color) opt.selected = true;
+      selectColor.appendChild(opt);
+    });
+    selectColor.onchange = e => { estado.filtros.color = e.target.value; renderControles(); renderSimulacion(); };
+    filtrosDiv.appendChild(selectColor);
+    // Nivel
+    const selectNivel = document.createElement('select');
+    selectNivel.innerHTML = '<option value="">Nivel</option>';
+    Array.from(new Set(Object.values(estado.recetas).map(r=>r.nivel))).sort().forEach(nv => {
+      const opt = document.createElement('option');
+      opt.value = nv;
+      opt.textContent = nv;
+      if (nv === estado.filtros.nivel) opt.selected = true;
+      selectNivel.appendChild(opt);
+    });
+    selectNivel.onchange = e => { estado.filtros.nivel = e.target.value; renderControles(); renderSimulacion(); };
+    filtrosDiv.appendChild(selectNivel);
+    controles.appendChild(filtrosDiv);
+    // Selector de receta final filtrada
     const selectReceta = document.createElement('select');
     selectReceta.style.minWidth = '260px';
-    const opciones = getRecetasFinalesDisponibles();
+    const opciones = getRecetasFiltradas();
     if (opciones.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
-      opt.textContent = 'No hay recetas finales cargadas';
+      opt.textContent = 'No hay recetas finales filtradas';
       selectReceta.appendChild(opt);
       selectReceta.disabled = true;
     } else {
@@ -280,8 +349,21 @@
         selectReceta.appendChild(opt);
       });
     }
-    selectReceta.onchange = e => { estado.recetaFinalKey = e.target.value; renderTodo(); };
+    selectReceta.onchange = e => { estado.recetaFinalKey = e.target.value; renderSimulacion(); };
     controles.appendChild(selectReceta);
+    // Botón simular ruta óptima
+    const btnSimular = document.createElement('button');
+    btnSimular.textContent = 'Simular ruta óptima';
+    btnSimular.style.marginLeft = '16px';
+    btnSimular.style.padding = '7px 18px';
+    btnSimular.style.fontSize = '1em';
+    btnSimular.style.background = '#1976d2';
+    btnSimular.style.color = '#fff';
+    btnSimular.style.border = 'none';
+    btnSimular.style.borderRadius = '6px';
+    btnSimular.style.cursor = 'pointer';
+    btnSimular.onclick = () => renderSimulacion();
+    controles.appendChild(btnSimular);
   }
 
   function renderInventario() {
@@ -559,6 +641,7 @@
   const oldRenderTodo = renderTodo;
   renderTodo = function() {
     oldRenderTodo();
+    renderControles();
     renderSimulacion();
   };
 
