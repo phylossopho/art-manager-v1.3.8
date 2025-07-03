@@ -6,57 +6,57 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #18191a;
-            color: #fff;
+            background: #f5f6fa;
+            color: #222;
             padding: 40px;
         }
         .container {
-            background: #232526;
+            background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             width: 90vw;
             max-width: 1200px;
             margin: auto;
             padding: 32px 18px 32px 18px;
         }
         h2 {
-            color: #fff;
+            color: #222;
             text-align: center;
         }
         fieldset {
-            border: 1.5px solid #444;
+            border: 1.5px solid #bbb;
             border-radius: 8px;
             margin-bottom: 18px;
             padding: 18px 12px 12px 12px;
             position: relative;
-            background: #232526;
+            background: #f5f6fa;
         }
         legend {
             font-size: 1.05rem;
             font-weight: bold;
-            color: #fff;
+            color: #333;
             position: absolute;
             top: -1.2em;
             right: 16px;
-            background: #232526;
+            background: #f5f6fa;
             padding: 0 8px;
             border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         label {
             display: block;
             margin-top: 10px;
             margin-bottom: 4px;
-            color: #fff;
+            color: #222;
         }
         select, input[type="number"] {
             padding: 6px 10px;
             margin-bottom: 10px;
             border-radius: 4px;
-            border: 1px solid #444;
+            border: 1px solid #bbb;
             font-size: 1rem;
-            background: #232526;
-            color: #fff;
+            background: #fff;
+            color: #222;
         }
         .materiales-select {
             display: flex;
@@ -94,17 +94,17 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            background: #232526;
-            color: #fff;
+            background: #fff;
+            color: #222;
         }
         th, td {
-            border: 1px solid #444;
+            border: 1px solid #bbb;
             padding: 6px 8px;
             text-align: center;
         }
         th {
-            background: #333;
-            color: #fff;
+            background: #f5f6fa;
+            color: #222;
         }
         .inline-selects {
             display: flex;
@@ -128,13 +128,13 @@
                 grid-template-rows: auto auto auto auto;
             }
         }
-        /* Modal fondo oscuro */
+        /* Modal fondo claro */
         .modal {
-            background: rgba(0,0,0,0.85) !important;
+            background: rgba(0,0,0,0.18) !important;
         }
         .modal-content {
-            background: #232526 !important;
-            color: #fff !important;
+            background: #fff !important;
+            color: #222 !important;
         }
     </style>
 </head>
@@ -651,19 +651,20 @@ function abrirModalSeleccionRecetas() {
   inner.style.maxHeight = '90vh';
   inner.style.overflowY = 'auto';
   // Tabla
-  let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Receta</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
+  let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
   recetasNormales.forEach(r => {
     // Construir string de materiales (solo los > 0)
     const materialesStr = Object.entries(r.materiales)
       .filter(([color, cantidad]) => cantidad > 0)
       .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
+      .join(' - ');
     const cantidad = recetasTiempoSeleccion[r.idx] || 0;
     const desvanecido = cantidad > 0;
-    // Formato: Nivel 1 | Blanco | 2 blancos | 100.00 %
-    const recetaStr = `Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %`;
     tabla += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
-    tabla += `<td style='font-weight:bold;'>${recetaStr}</td>`;
+    tabla += `<td style='font-weight:bold;'>${r.nivel}</td>`;
+    tabla += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
+    tabla += `<td>${materialesStr}</td>`;
+    tabla += `<td>${parseFloat(r.porcentaje).toFixed(2)} %</td>`;
     if (!desvanecido) {
       tabla += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;'>+</button></td>`;
     } else {
@@ -729,12 +730,14 @@ function actualizarTablaModalRecetas() {
     const materialesStr = Object.entries(r.materiales)
       .filter(([color, cantidad]) => cantidad > 0)
       .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' | ');
+      .join(' - ');
     const cantidad = recetasTiempoSeleccion[r.idx] || 0;
     const desvanecido = cantidad > 0;
-    const recetaStr = `Nivel ${r.nivel} | ${r.color.charAt(0).toUpperCase() + r.color.slice(1)}${materialesStr ? ' | ' + materialesStr : ''} | ${parseFloat(r.porcentaje).toFixed(2)} %`;
     html += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
-    html += `<td style='font-weight:bold;'>${recetaStr}</td>`;
+    html += `<td style='font-weight:bold;'>${r.nivel}</td>`;
+    html += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
+    html += `<td>${materialesStr}</td>`;
+    html += `<td>${parseFloat(r.porcentaje).toFixed(2)} %</td>`;
     if (!desvanecido) {
       html += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;'>+</button></td>`;
     } else {
