@@ -600,24 +600,50 @@
           advertencias.push('Falta receta para algún paso.');
           return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
         }
-        // Si la receta requiere una base, fabricar la base primero
+        // Buscar si ya existe una base fabricada de cualquier equipo y color compatible
         if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color) {
-          const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color);
-          if (!recetaBase) {
-            advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
-          } else {
-            const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
-            if (!resBase || typeof resBase !== 'object') {
-              advertencias.push('Error al fabricar la base: resultado inválido.');
-              return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+          // Buscar en inventario cualquier base compatible
+          let baseEncontrada = null;
+          for (const key of Object.keys(inventarioActual)) {
+            const partes = key.split(':');
+            if (partes.length === 2) {
+              const matEquipo = partes[1];
+              // Si hay al menos 1 base de la clase/nivel/color requerido
+              if (inventarioActual[key][receta.base.color] && inventarioActual[key][receta.base.color] > 0) {
+                baseEncontrada = { equipo: matEquipo, key };
+                break;
+              }
             }
-            inventarioActual = resBase.inventario;
-            rutaParcial = resBase.ruta;
-            tiempoAcumulado = resBase.tiempo;
+          }
+          if (baseEncontrada) {
+            // Usar la base encontrada
+            inventarioActual[baseEncontrada.key][receta.base.color]--;
+            rutaParcial.push({
+              paso: rutaParcial.length+1,
+              descripcion: `Usar base existente: ${baseEncontrada.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`,
+              materiales: [],
+              tiempo: 0,
+              bifurcacion: false
+            });
+          } else {
+            // Fabricar la base normalmente
+            const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color);
+            if (!recetaBase) {
+              advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
+            } else {
+              const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
+              if (!resBase || typeof resBase !== 'object') {
+                advertencias.push('Error al fabricar la base: resultado inválido.');
+                return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+              }
+              inventarioActual = resBase.inventario;
+              rutaParcial = resBase.ruta;
+              tiempoAcumulado = resBase.tiempo;
+            }
           }
         }
         // Procesar materiales de la receta actual
-        let paso = { paso: rutaParcial.length+1, accion: `Fabricar ${receta.clase} nivel ${receta.nivel} color ${receta.color} (${equipo})`, materiales: [], tiempo: 0, bifurcacion: false };
+        let paso = { paso: rutaParcial.length+1, descripcion: `${receta.clase} ${receta.equipo||''} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
         let tiempoPaso = 0;
         let exito = true;
         const mats = materialesEquipo;
@@ -662,30 +688,16 @@
           }
         }
         paso.tiempo = tiempoPaso;
+        // Solo mostrar bifurcación si es nivel 5 y color morado/dorado
+        if (parseInt(receta.nivel) === 5 && (receta.color === 'morado' || receta.color === 'dorado') && receta.porcentaje && parseFloat(receta.porcentaje) < 100) {
+          paso.bifurcacion = true;
+        }
         rutaParcial.push(paso);
         tiempoAcumulado += tiempoPaso;
-        if (receta.porcentaje && parseFloat(receta.porcentaje) < 100 && (receta.color === 'morado' || receta.color === 'dorado')) {
-          let rutaMorado = JSON.parse(JSON.stringify(rutaParcial));
-          let rutaDorado = JSON.parse(JSON.stringify(rutaParcial));
-          let invMorado = JSON.parse(JSON.stringify(inventarioActual));
-          let invDorado = JSON.parse(JSON.stringify(inventarioActual));
-          let tMorado = tiempoAcumulado;
-          let tDorado = tiempoAcumulado;
-          rutaMorado[rutaMorado.length-1].bifurcacion = true;
-          let recetaMorado = buscarReceta(receta.clase, receta.nivel, 'morado');
-          let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado, visitados);
-          if (!resMorado || typeof resMorado !== 'object') {
-            resMorado = { ruta: rutaMorado, inventario: invMorado, tiempo: tMorado };
-          }
-          rutaDorado[rutaDorado.length-1].bifurcacion = true;
-          let recetaDorado = buscarReceta(receta.clase, receta.nivel, 'dorado');
-          let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado, visitados);
-          if (!resDorado || typeof resDorado !== 'object') {
-            resDorado = { ruta: rutaDorado, inventario: invDorado, tiempo: tDorado };
-          }
-          rutas.push(resMorado);
-          rutas.push(resDorado);
-          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado }; // Siempre retorna objeto
+        // Solo bifurcar si es nivel 5 y corresponde
+        if (paso.bifurcacion) {
+          // Solo mostrar una bifurcación real
+          // (opcional: podrías calcular probabilidades aquí)
         }
         return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
       }
