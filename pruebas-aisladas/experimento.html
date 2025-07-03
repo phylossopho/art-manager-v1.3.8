@@ -103,7 +103,7 @@
             text-align: center;
         }
         th {
-            background: #f5f6fa;
+            background: #e0e1e6;
             color: #222;
         }
         .inline-selects {
@@ -652,18 +652,12 @@ function abrirModalSeleccionRecetas() {
   inner.style.overflowY = 'auto';
   // Tabla
   let tabla = `<table id='tabla-modal-recetas-tiempo' style='width:100%;margin-bottom:18px;font-size:1rem;'><thead><tr><th>Nivel</th><th>Color</th><th>Materiales</th><th>Éxito</th><th colspan='3'>Acciones</th></tr></thead><tbody>`;
-  recetasNormales.forEach(r => {
-    // Construir string de materiales (solo los > 0)
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' - ');
-    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
-    const desvanecido = cantidad > 0;
-    tabla += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
-    tabla += `<td style='font-weight:bold;'>${r.nivel}</td>`;
+  recetasNormales.forEach((r, i) => {
+    const rowBg = i % 2 === 0 ? '#fff' : '#f5f6fa';
+    tabla += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""};background:${rowBg};'>`;
+    tabla += `<td style='font-weight:bold;'>Nivel ${r.nivel}</td>`;
     tabla += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
-    tabla += `<td>${materialesStr}</td>`;
+    tabla += `<td>${Object.entries(r.materiales).filter(([color, cantidad]) => cantidad > 0).map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`).join(' - ')}</td>`;
     tabla += `<td>${parseFloat(r.porcentaje).toFixed(2)} %</td>`;
     if (!desvanecido) {
       tabla += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;'>+</button></td>`;
@@ -671,7 +665,7 @@ function abrirModalSeleccionRecetas() {
       tabla += `<td></td>`;
     }
     tabla += `<td><button class='btn-menos' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;'>-</button></td>`;
-    tabla += `<td style='font-weight:bold;font-size:1.1em;'>${cantidad > 0 ? cantidad : ''}</td>`;
+    tabla += `<td style='font-weight:bold;font-size:1.1em;'>${recetasTiempoSeleccion[r.idx] || 0}</td>`;
     tabla += `</tr>`;
   });
   tabla += `</tbody></table>`;
@@ -726,17 +720,12 @@ function actualizarTablaModalRecetas() {
   if (!tbody) return;
   const recetasNormales = recetas.map((r, idx) => ({...r, idx})).filter(r => r.clase === 'Normal');
   let html = '';
-  recetasNormales.forEach(r => {
-    const materialesStr = Object.entries(r.materiales)
-      .filter(([color, cantidad]) => cantidad > 0)
-      .map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`)
-      .join(' - ');
-    const cantidad = recetasTiempoSeleccion[r.idx] || 0;
-    const desvanecido = cantidad > 0;
-    html += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""}'>`;
-    html += `<td style='font-weight:bold;'>${r.nivel}</td>`;
+  recetasNormales.forEach((r, i) => {
+    const rowBg = i % 2 === 0 ? '#fff' : '#f5f6fa';
+    html += `<tr data-idx='${r.idx}' style='${desvanecido ? "color:rgba(80,80,80,0.66);" : ""};background:${rowBg};'>`;
+    html += `<td style='font-weight:bold;'>Nivel ${r.nivel}</td>`;
     html += `<td>${r.color.charAt(0).toUpperCase() + r.color.slice(1)}</td>`;
-    html += `<td>${materialesStr}</td>`;
+    html += `<td>${Object.entries(r.materiales).filter(([color, cantidad]) => cantidad > 0).map(([color, cantidad]) => `${cantidad} ${color}${cantidad > 1 ? 's' : ''}`).join(' - ')}</td>`;
     html += `<td>${parseFloat(r.porcentaje).toFixed(2)} %</td>`;
     if (!desvanecido) {
       html += `<td><button class='btn-mas' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:opacity 0.2s;'>+</button></td>`;
@@ -744,7 +733,7 @@ function actualizarTablaModalRecetas() {
       html += `<td></td>`;
     }
     html += `<td><button class='btn-menos' data-idx='${r.idx}' style='font-size:1.5em;padding:8px 18px;margin:0 10px;background:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;'>-</button></td>`;
-    html += `<td style='font-weight:bold;font-size:1.1em;'>${cantidad > 0 ? cantidad : ''}</td>`;
+    html += `<td style='font-weight:bold;font-size:1.1em;'>${recetasTiempoSeleccion[r.idx] || 0}</td>`;
     html += `</tr>`;
   });
   tbody.innerHTML = html;
