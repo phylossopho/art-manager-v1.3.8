@@ -111,5 +111,133 @@
       </div>
     </div>
   </div>
+  <script type="module">
+  import { cargarRecetasPersonalizadas, consultaRapidaMateriales, inicializarAlmacenamientoMateriales } from '../scripts/materiales.js';
+  import { datosMateriales, mapaColores, nivelesPorClase, coloresPorClase } from '../scripts/datos.js';
+  import { simularUso } from '../scripts/simulacion.js';
+
+  // Estado global simple
+  const estado = {
+    materialesData: datosMateriales,
+    almacenMateriales: {},
+    recetaSeleccionada: null,
+    claseActual: 'Normal',
+    equipoActual: 'Espada',
+    nivelActual: '1',
+    colorActual: 'blanco',
+    baseActual: '',
+    recetas: {},
+  };
+
+  inicializarAlmacenamientoMateriales(estado);
+
+  // Cargar recetas
+  function cargarRecetas() {
+    estado.recetas = cargarRecetasPersonalizadas();
+  }
+  cargarRecetas();
+
+  // Renderizar controles
+  function renderControles() {
+    const controles = document.querySelector('.controles');
+    controles.innerHTML = '';
+    // Equipo
+    const selectEquipo = document.createElement('select');
+    ['Espada','Pecho','Botas','Casco','Guantes','Cinturón'].forEach(eq => {
+      const opt = document.createElement('option');
+      opt.value = eq;
+      opt.textContent = eq;
+      if (eq === estado.equipoActual) opt.selected = true;
+      selectEquipo.appendChild(opt);
+    });
+    selectEquipo.onchange = e => { estado.equipoActual = e.target.value; renderTodo(); };
+    controles.appendChild(selectEquipo);
+    // Clase
+    const selectClase = document.createElement('select');
+    Object.keys(nivelesPorClase).forEach(cl => {
+      const opt = document.createElement('option');
+      opt.value = cl;
+      opt.textContent = cl;
+      if (cl === estado.claseActual) opt.selected = true;
+      selectClase.appendChild(opt);
+    });
+    selectClase.onchange = e => { estado.claseActual = e.target.value; estado.nivelActual = nivelesPorClase[estado.claseActual][0]; estado.colorActual = coloresPorClase[estado.claseActual][0]; renderTodo(); };
+    controles.appendChild(selectClase);
+    // Nivel
+    const selectNivel = document.createElement('select');
+    (nivelesPorClase[estado.claseActual]||[]).forEach(nv => {
+      const opt = document.createElement('option');
+      opt.value = nv;
+      opt.textContent = 'Nivel ' + nv;
+      if (nv === estado.nivelActual) opt.selected = true;
+      selectNivel.appendChild(opt);
+    });
+    selectNivel.onchange = e => { estado.nivelActual = e.target.value; renderTodo(); };
+    controles.appendChild(selectNivel);
+    // Color
+    const selectColor = document.createElement('select');
+    (coloresPorClase[estado.claseActual]||[]).forEach(clr => {
+      const opt = document.createElement('option');
+      opt.value = clr;
+      opt.textContent = clr.charAt(0).toUpperCase()+clr.slice(1);
+      if (clr === estado.colorActual) opt.selected = true;
+      selectColor.appendChild(opt);
+    });
+    selectColor.onchange = e => { estado.colorActual = e.target.value; renderTodo(); };
+    controles.appendChild(selectColor);
+  }
+
+  // Renderizar inventario
+  function renderInventario() {
+    let html = '<table style="width:100%;font-size:0.98em;margin-bottom:8px;"><thead><tr><th>Material</th><th>Dorado</th><th>Morado</th><th>Azul</th><th>Verde</th><th>Blanco</th></tr></thead><tbody>';
+    Object.keys(estado.almacenMateriales).forEach(key => {
+      const mat = key.split(':')[1];
+      html += `<tr><td>${mat}</td>`;
+      ['dorado','morado','azul','verde','blanco'].forEach(c => {
+        html += `<td>${estado.almacenMateriales[key][c]}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+
+  // Calcular ruta óptima (básico: cuántos equipos se pueden hacer y desglose)
+  function calcularRutaOptima() {
+    // Usar consultaRapidaMateriales para el equipo/clase/nivel/color seleccionados
+    estado.claseActual = estado.claseActual || 'Normal';
+    estado.equipoActual = estado.equipoActual || 'Espada';
+    estado.nivelActual = estado.nivelActual || '1';
+    const resultado = consultaRapidaMateriales(estado);
+    return resultado;
+  }
+
+  // Renderizar todo
+  function renderTodo() {
+    renderControles();
+    // Inventario
+    document.querySelector('.panel-inventario').innerHTML = '<div style="font-weight:bold;margin-bottom:6px;">Inventario actual</div>' + renderInventario();
+    // Ruta óptima
+    const ruta = calcularRutaOptima();
+    let rutaHtml = '';
+    if (ruta.error) {
+      rutaHtml = `<span style='color:#c00;'>${ruta.error}</span>`;
+    } else {
+      rutaHtml = `<div><b>Máx. equipos posibles:</b> <span style='color:#1976d2;font-size:1.2em;'>${ruta.maxEquipos}</span></div>`;
+      rutaHtml += '<ul style="margin:8px 0 0 0;padding-left:18px;">';
+      Object.entries(ruta.desglose).forEach(([mat, info]) => {
+        rutaHtml += `<li>${mat}: usados ${info.usados}, restantes ${info.restantes} (${Object.entries(info.porColor).map(([c,v])=>`${v} ${c}`).join(', ')})</li>`;
+      });
+      rutaHtml += '</ul>';
+    }
+    document.querySelector('.ruta-optima').innerHTML = rutaHtml;
+    // Cronograma (placeholder)
+    document.querySelector('.cronograma').innerHTML = '<span style="color:#888;">(Próximamente: cálculo de tiempo total y pasos detallados)</span>';
+    // Sugerencias (placeholder)
+    document.querySelector('.sugerencias').innerHTML = '<span style="color:#888;">(Próximamente: advertencias y tips inteligentes)</span>';
+  }
+
+  document.addEventListener('DOMContentLoaded', renderTodo);
+  </script>
 </body>
 </html> 
