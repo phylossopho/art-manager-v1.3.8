@@ -1373,3 +1373,22 @@ body.hide-bottom-buttons .bottom-buttons {
   opacity: 1;
   bottom: 60px;
 }
+
+/* Selects dinámicos en tabla de pasos */
+.select-dinamico {
+  border: 2px solid #1976d2;
+  background: #e3f0fd;
+  color: #1e3a8a;
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.08);
+  padding: 4px 10px;
+  margin: 0 4px;
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.select-dinamico:focus {
+  border: 2.5px solid #43a047;
+  box-shadow: 0 0 0 2px #b2dfdb;
+}

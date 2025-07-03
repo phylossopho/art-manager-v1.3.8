@@ -150,33 +150,8 @@
       <input type="file" id="file-recetas" accept=".json,application/json" style="display:none;">
       <input type="file" id="file-materiales" accept=".json,application/json" style="display:none;">
     </div>
-    <div class="panel">
-      <div class="panel-title">Ruta óptima sugerida</div>
-      <div class="ruta-optima">
-        <!-- Aquí se mostrará la ruta óptima paso a paso -->
-        (Próximamente)
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Cronograma estimado</div>
-      <div class="cronograma">
-        <!-- Aquí se mostrará el cronograma de producción -->
-        (Próximamente)
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Advertencias y sugerencias</div>
-      <div class="sugerencias">
-        <!-- Aquí se mostrarán advertencias, faltantes y tips -->
-        (Próximamente)
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Desmantelado de equipos</div>
-      <div class="desmantelado">
-        <!-- Aquí se mostrará la lógica de desmantelado y ahorro de tiempo -->
-        (Próximamente)
-      </div>
+    <div style="margin:18px 0 8px 0;">
+      <label style="font-weight:normal;cursor:pointer;"><input type="checkbox" id="chk-desmantelar" style="margin-right:6px;">Considerar desmantelado de equipos dorados de nivel 1</label>
     </div>
     <div class="simulacion-grid">
       <div class="simulacion-col">
@@ -185,10 +160,10 @@
           <thead>
             <tr>
               <th>Paso</th>
-              <th>Base</th>
-              <th>Nivel</th>
+              <th>Accion</th>
               <th>Color</th>
-              <th>Materiales</th>
+              <th>Cantidad</th>
+              <th>Faltante</th>
               <th>Resultado</th>
               <th>Éxito</th>
             </tr>
@@ -197,9 +172,10 @@
             <!-- Aquí se llenarán los pasos de la simulación -->
           </tbody>
         </table>
-        <div class="sugerencias-auto">
-          <!-- Aquí se mostrarán sugerencias automáticas -->
-        </div>
+        <div class="sugerencias-auto"></div>
+        <div class="ruta-optima"></div>
+        <div class="cronograma"></div>
+        <div class="advertencias"></div>
       </div>
       <div class="simulacion-col">
         <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Inventario final tras la simulación</div>
@@ -207,11 +183,7 @@
           <thead>
             <tr>
               <th>Material</th>
-              <th>Dorado</th>
-              <th>Morado</th>
-              <th>Azul</th>
-              <th>Verde</th>
-              <th>Blanco</th>
+              <th>Cantidad</th>
             </tr>
           </thead>
           <tbody class="tbody-inventario-final">
@@ -238,7 +210,9 @@
       equipo: '',
       color: '',
       nivel: ''
-    }
+    },
+    seleccionBaseAlternativa: '', // equipo base alternativo elegido
+    seleccionColorBase: '', // color de base elegido en bifurcación
   };
 
   // Cargar recetas y materiales automáticamente si existen
@@ -277,10 +251,27 @@
   function renderControles() {
     const controles = document.querySelector('.controles');
     controles.innerHTML = '';
-    // Selector de receta final (sin filtros)
+    // Filtro de equipo/arma
+    const equipos = Array.from(new Set(estado.recetas.map(r => r.equipo))).sort();
+    const selectEquipo = document.createElement('select');
+    selectEquipo.style.minWidth = '120px';
+    selectEquipo.innerHTML = '<option value="">Filtrar equipo...</option>';
+    equipos.forEach(eq => {
+      const opt = document.createElement('option');
+      opt.value = eq;
+      opt.textContent = eq;
+      if (eq === estado.filtros.equipo) opt.selected = true;
+      selectEquipo.appendChild(opt);
+    });
+    selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
+    controles.appendChild(selectEquipo);
+    // Selector de receta final (filtrado por equipo)
     const selectReceta = document.createElement('select');
     selectReceta.style.minWidth = '260px';
-    const opciones = estado.recetas;
+    let opciones = estado.recetas;
+    if (estado.filtros.equipo) {
+      opciones = opciones.filter(r => r.equipo === estado.filtros.equipo);
+    }
     if (!opciones || opciones.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
@@ -294,9 +285,9 @@
       selectReceta.appendChild(opt0);
       opciones.forEach((r, idx) => {
         const opt = document.createElement('option');
-        opt.value = idx;
+        opt.value = estado.recetas.indexOf(r);
         opt.textContent = formatearNombreReceta(r);
-        if (idx == estado.recetaFinalIndex) opt.selected = true;
+        if (estado.recetas.indexOf(r) == estado.recetaFinalIndex) opt.selected = true;
         selectReceta.appendChild(opt);
       });
     }
@@ -317,15 +308,14 @@
     controles.appendChild(btnSimular);
   }
 
-  function renderInventario() {
-    let html = '<table style="width:100%;font-size:0.98em;margin-bottom:8px;"><thead><tr><th>Material</th><th>Dorado</th><th>Morado</th><th>Azul</th><th>Verde</th><th>Blanco</th></tr></thead><tbody>';
+  function renderInventarioFinal(inventarioFinal) {
+    // Mostrar los 28 materiales y sus cantidades
+    let html = '<table class="inventario-final-table"><thead><tr><th>Material</th><th>Cantidad</th></tr></thead><tbody>';
+    // Recorrer todos los materiales posibles
     Object.keys(estado.almacenMateriales).forEach(key => {
       const mat = key.split(':')[1];
-      html += `<tr><td>${mat}</td>`;
-      ['dorado','morado','azul','verde','blanco'].forEach(c => {
-        html += `<td>${estado.almacenMateriales[key][c]}</td>`;
-      });
-      html += '</tr>';
+      const cantidad = Object.values(inventarioFinal[key] || {}).reduce((a,b)=>a+(parseInt(b)||0),0);
+      html += `<tr><td>${mat}</td><td>${cantidad}</td></tr>`;
     });
     html += '</tbody></table>';
     return html;
@@ -443,13 +433,14 @@
   }
 
   function simularPasos(recetaFinal, inventarioOriginal) {
-    if (!recetaFinal) return { pasos: [], inventarioFinal: {}, sugerencias: ['Selecciona una receta final válida.'] };
+    if (!recetaFinal) return { pasos: [], inventarioFinal: {}, sugerencias: ['Selecciona una receta final válida.'], cronograma: [] };
     // Copia profunda del inventario
     let inventario = JSON.parse(JSON.stringify(inventarioOriginal));
     let pasos = [];
     let sugerencias = [];
     let pasoNum = 1;
-
+    let cronograma = [];
+    let tiempoTotal = 0;
     // Helper para descontar materiales del inventario
     function descontarMateriales(materiales) {
       let faltantes = {};
@@ -468,83 +459,33 @@
       }
       return faltantes;
     }
-
-    // Helper para fabricar materiales desde blancos
-    function fabricarMaterial(color, cantidad) {
-      // Solo para colores > blanco
-      const orden = ['blanco','verde','azul','morado','dorado'];
-      const idx = orden.indexOf(color);
-      if (idx <= 0) return;
-      const colorInferior = orden[idx-1];
-      const reqInferior = cantidad * 4;
-      // Paso: fabricar reqInferior del color inferior
-      let faltanInferior = reqInferior;
-      if (inventario[colorInferior] >= reqInferior) {
-        inventario[colorInferior] -= reqInferior;
-        faltanInferior = 0;
-      } else {
-        faltanInferior -= inventario[colorInferior];
-        inventario[colorInferior] = 0;
+    // 1. Procesar materiales de la receta final
+    Object.entries(recetaFinal.materiales).forEach(([color, cantidad]) => {
+      if (cantidad > 0) {
+        let usado = Math.min(inventario[color] || 0, cantidad);
+        if (usado > 0) {
+          pasos.push({
+            paso: pasoNum++,
+            accion: `Usar ${usado} ${recetaFinal.equipo} en ${color}`,
+            color,
+            cantidad: usado,
+            faltante: 0
+          });
+          inventario[color] -= usado;
+        }
+        let faltan = cantidad - usado;
+        if (faltan > 0) {
+          pasos.push({
+            paso: pasoNum++,
+            accion: `Falta ${faltan} ${recetaFinal.equipo} en ${color}`,
+            color,
+            cantidad: 0,
+            faltante: faltan
+          });
+        }
       }
-      if (faltanInferior > 0 && colorInferior !== 'blanco') {
-        fabricarMaterial(colorInferior, Math.ceil(faltanInferior/4));
-      }
-      // Ahora sí, sumar los fabricados
-      inventario[color] = (inventario[color]||0) + cantidad;
-      pasos.push({
-        paso: pasoNum++,
-        base: '-',
-        nivel: '-',
-        color: color.charAt(0).toUpperCase()+color.slice(1),
-        materiales: `${reqInferior} ${colorInferior}${reqInferior>1?'s':''}`,
-        resultado: `${cantidad} ${color}${cantidad>1?'s':''}`,
-        exito: '100%'
-      });
-    }
-
-    // 1. Calcular la cadena de recetas necesarias (como antes)
-    let secuencia = [];
-    for (const color of ['blanco','morado','dorado']) {
-      const k = Object.keys(estado.recetas).find(k => {
-        const r = estado.recetas[k];
-        return r.clase === 'Normal' && r.nivel === '1' && r.color === color && r.equipo === recetaFinal.equipo;
-      });
-      if (k) secuencia.push(k);
-    }
-    for (let n = 2; n <= 4; n++) {
-      const k = Object.keys(estado.recetas).find(k => {
-        const r = estado.recetas[k];
-        return r.clase === 'Normal' && r.nivel === String(n) && r.color === 'dorado' && r.equipo === recetaFinal.equipo;
-      });
-      if (k) secuencia.push(k);
-    }
-    // Bases avanzadas (Planewalker, Lord, Noble Lord, Campeón) ya implementadas en la lógica previa
-    secuencia.push(recetaFinal);
-
-    // 2. Para cada receta, descontar materiales del inventario y fabricar lo que falte
-    for (const k of secuencia) {
-      const r = estado.recetas[k];
-      if (!r) continue;
-      // Descontar materiales del inventario
-      const faltantes = descontarMateriales(r.materiales);
-      // Si hay faltantes, fabricar desde blancos
-      for (const color in faltantes) {
-        fabricarMaterial(color, faltantes[color]);
-        inventario[color] -= faltantes[color]; // Se usan inmediatamente
-      }
-      // Registrar el paso de fabricación del equipo
-      pasos.push({
-        paso: pasoNum++,
-        base: r.base || '-',
-        nivel: r.nivel,
-        color: r.color.charAt(0).toUpperCase()+r.color.slice(1),
-        materiales: Object.entries(r.materiales).filter(([_,v])=>v>0).map(([c,v])=>`${v} ${c}${v>1?'s':''}`).join(', '),
-        resultado: `${r.clase} ${r.equipo} nivel ${r.nivel} ${r.color}`,
-        exito: r.tasaExito || r.porcentaje || '100%'
-      });
-    }
-
-    // 3. Sugerencias automáticas
+    });
+    // 2. Sugerencias automáticas
     if (pasos.length && pasos[0].materiales && pasos[0].materiales.includes('0')) {
       sugerencias.push('Puedes saltar los primeros pasos usando materiales de tu inventario.');
     }
@@ -554,10 +495,45 @@
         sugerencias.push(`Te falta ${-inventario[color]} ${color}${-inventario[color]>1?'s':''} para completar la simulación.`);
       }
     }
-    return { pasos, inventarioFinal: inventario, sugerencias };
+    // Para cada paso, estimar tiempo (ejemplo: dorado=512h, morado=128h, azul=32h, verde=8h, blanco=2h)
+    pasos.forEach(p => {
+      let tiempo = 0;
+      if (p.color) {
+        if (p.color === 'dorado') tiempo = 512 * (p.cantidad || p.faltante || 1);
+        else if (p.color === 'morado') tiempo = 128 * (p.cantidad || p.faltante || 1);
+        else if (p.color === 'azul') tiempo = 32 * (p.cantidad || p.faltante || 1);
+        else if (p.color === 'verde') tiempo = 8 * (p.cantidad || p.faltante || 1);
+        else if (p.color === 'blanco') tiempo = 2 * (p.cantidad || p.faltante || 1);
+      }
+      tiempoTotal += tiempo;
+      cronograma.push({ paso: p.paso, accion: p.accion, color: p.color, tiempo });
+    });
+    // Ejemplo para equipo base alternativo:
+    let equiposDisponibles = ['espada','botas','casco','cinturón']; // <- esto debe calcularse según inventario
+    if (equiposDisponibles.length > 1) {
+      pasos.push({
+        paso: pasoNum++,
+        accion: 'Selecciona equipo base alternativo:',
+        selectEquipo: true,
+        opciones: equiposDisponibles,
+        seleccionado: estado.seleccionBaseAlternativa || equiposDisponibles[0]
+      });
+    }
+    // Ejemplo para bifurcación de color:
+    let coloresBase = ['morado','dorado'];
+    pasos.push({
+      paso: pasoNum++,
+      accion: '¿Qué color obtuviste en la base?',
+      selectColor: true,
+      opciones: coloresBase,
+      seleccionado: estado.seleccionColorBase || coloresBase[0]
+    });
+    return { pasos, inventarioFinal: inventario, sugerencias, cronograma, tiempoTotal };
   }
 
   function renderSimulacion() {
+    // Leer el estado del checkbox de desmantelado
+    const considerarDesmantelado = document.getElementById('chk-desmantelar').checked;
     // Inventario inicial: sumar todos los materiales del inventario actual
     const inventarioActual = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
     Object.keys(estado.almacenMateriales).forEach(key => {
@@ -567,26 +543,54 @@
     });
     const recetaIdx = parseInt(estado.recetaFinalIndex);
     const recetaSeleccionada = estado.recetas[recetaIdx];
-    const { pasos, inventarioFinal, sugerencias } = simularPasos(recetaSeleccionada, inventarioActual);
+    const { pasos, inventarioFinal, sugerencias, cronograma, tiempoTotal } = simularPasos(recetaSeleccionada, inventarioActual);
     // Llenar tabla de pasos
     const tbody = document.querySelector('.tbody-pasos');
     tbody.innerHTML = '';
     pasos.forEach(p => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${p.paso}</td><td>${p.base}</td><td>${p.nivel}</td><td>${p.color}</td><td>${p.materiales}</td><td>${p.resultado}</td><td>${p.exito}</td>`;
+      if (p.selectEquipo) {
+        tr.innerHTML = `<td>${p.paso}</td><td colspan="5"><label>Equipo base: <select class='select-dinamico' id='select-base-alternativa'>${p.opciones.map(opt=>`<option value='${opt}' ${opt===p.seleccionado?'selected':''}>${opt}</option>`).join('')}</select></label></td><td></td>`;
+      } else if (p.selectColor) {
+        tr.innerHTML = `<td>${p.paso}</td><td colspan="5"><label>Color de base: <select class='select-dinamico' id='select-color-base'>${p.opciones.map(opt=>`<option value='${opt}' ${opt===p.seleccionado?'selected':''}>${opt.charAt(0).toUpperCase()+opt.slice(1)}</option>`).join('')}</select></label></td><td></td>`;
+      } else {
+        tr.innerHTML = `<td>${p.paso}</td><td colspan="2">${p.accion}</td><td>${p.color ? p.color.charAt(0).toUpperCase()+p.color.slice(1) : ''}</td><td>${p.cantidad || ''}</td><td>${p.faltante ? 'Faltan ' + p.faltante : ''}</td><td></td>`;
+      }
       tbody.appendChild(tr);
     });
+    // Listeners para selects dinámicos
+    const selectBase = document.getElementById('select-base-alternativa');
+    if (selectBase) {
+      selectBase.onchange = e => {
+        estado.seleccionBaseAlternativa = e.target.value;
+        renderSimulacion();
+      };
+    }
+    const selectColor = document.getElementById('select-color-base');
+    if (selectColor) {
+      selectColor.onchange = e => {
+        estado.seleccionColorBase = e.target.value;
+        renderSimulacion();
+      };
+    }
     // Llenar inventario final
     const tbodyInv = document.querySelector('.tbody-inventario-final');
     tbodyInv.innerHTML = '';
-    ['dorado','morado','azul','verde','blanco'].forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${c.charAt(0).toUpperCase()+c.slice(1)}</td><td colspan="5">${inventarioFinal[c]||0}</td>`;
-      tbodyInv.appendChild(tr);
-    });
+    tbodyInv.innerHTML = renderInventarioFinal(inventarioFinal);
     // Sugerencias
     const sugDiv = document.querySelector('.sugerencias-auto');
     sugDiv.innerHTML = sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
+    // Ruta óptima, cronograma y advertencias debajo de los pasos
+    document.querySelector('.ruta-optima').innerHTML = '<b>Ruta sugerida:</b> (Próximamente)';
+    // Cronograma
+    const cronDiv = document.querySelector('.cronograma');
+    let cronHtml = '<b>Cronograma estimado:</b><br><table style="width:100%;font-size:0.98em;margin-bottom:8px;"><thead><tr><th>Paso</th><th>Acción</th><th>Color</th><th>Tiempo (h)</th></tr></thead><tbody>';
+    cronograma.forEach(c => {
+      cronHtml += `<tr><td>${c.paso}</td><td>${c.accion}</td><td>${c.color ? c.color.charAt(0).toUpperCase()+c.color.slice(1) : ''}</td><td>${c.tiempo}</td></tr>`;
+    });
+    cronHtml += `</tbody></table><b>Total estimado:</b> ${tiempoTotal} horas`;
+    cronDiv.innerHTML = cronHtml;
+    document.querySelector('.advertencias').innerHTML = advertencias && advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
   }
 
   // Lógica de importación de datos
