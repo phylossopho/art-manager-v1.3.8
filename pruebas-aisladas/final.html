@@ -164,44 +164,44 @@
       </div>
       <table id="tabla-bases" style="width:auto;font-size:0.98em;"><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th></th></tr></thead><tbody></tbody></table>
     </div>
-    <div class="simulacion-grid">
-      <div class="simulacion-col">
-        <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Pasos de simulación</div>
-        <table class="tabla-pasos">
-          <thead>
-            <tr>
-              <th>Paso</th>
-              <th>Accion</th>
-              <th>Color</th>
-              <th>Cantidad</th>
-              <th>Faltante</th>
-              <th>Resultado</th>
-              <th>Éxito</th>
-            </tr>
-          </thead>
-          <tbody class="tbody-pasos">
-            <!-- Aquí se llenarán los pasos de la simulación -->
-          </tbody>
-        </table>
-        <div class="sugerencias-auto"></div>
-        <div class="ruta-optima"></div>
-        <div class="cronograma"></div>
-        <div class="advertencias"></div>
-      </div>
-      <div class="simulacion-col">
-        <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Inventario final tras la simulación</div>
-        <table class="inventario-final-table">
-          <thead>
-            <tr>
-              <th>Material</th>
-              <th>Cantidad</th>
-            </tr>
-          </thead>
-          <tbody class="tbody-inventario-final">
-            <!-- Aquí se llenará el inventario final -->
-          </tbody>
-        </table>
-      </div>
+    <div id="simulacion-columna-unica">
+      <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Pasos de simulación</div>
+      <table class="tabla-pasos">
+        <thead>
+          <tr>
+            <th>Paso</th>
+            <th>Acción</th>
+            <th>Color</th>
+            <th>Cantidad</th>
+            <th>Faltante</th>
+            <th>Resultado</th>
+            <th>Éxito</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-pasos">
+          <!-- Aquí se llenarán los pasos de la simulación -->
+        </tbody>
+      </table>
+      <div class="sugerencias-auto"></div>
+      <div class="ruta-optima"></div>
+      <div class="cronograma"></div>
+      <div class="advertencias"></div>
+      <div style="font-weight:bold;font-size:1.12em;margin:18px 0 8px 0;">Inventario final tras la simulación</div>
+      <table class="inventario-final-table">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Dorado</th>
+            <th>Morado</th>
+            <th>Azul</th>
+            <th>Verde</th>
+            <th>Blanco</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-inventario-final">
+          <!-- Aquí se llenará el inventario final -->
+        </tbody>
+      </table>
     </div>
   </div>
   <!-- Toast notification -->
@@ -321,15 +321,15 @@
   }
 
   function renderInventarioFinal(inventarioFinal) {
-    // Mostrar los 28 materiales y sus cantidades
-    let html = '<table class="inventario-final-table"><thead><tr><th>Material</th><th>Cantidad</th></tr></thead><tbody>';
-    // Recorrer todos los materiales posibles
+    let html = '';
     Object.keys(estado.almacenMateriales).forEach(key => {
       const mat = key.split(':')[1];
-      const cantidad = Object.values(inventarioFinal[key] || {}).reduce((a,b)=>a+(parseInt(b)||0),0);
-      html += `<tr><td>${mat}</td><td>${cantidad}</td></tr>`;
+      html += `<tr><td>${mat}</td>`;
+      ['dorado','morado','azul','verde','blanco'].forEach(c => {
+        html += `<td>${(inventarioFinal[key] && inventarioFinal[key][c]) ? inventarioFinal[key][c] : 0}</td>`;
+      });
+      html += '</tr>';
     });
-    html += '</tbody></table>';
     return html;
   }
 
@@ -555,7 +555,7 @@
     });
     const recetaIdx = parseInt(estado.recetaFinalIndex);
     const recetaSeleccionada = estado.recetas[recetaIdx];
-    const { pasos, inventarioFinal, sugerencias, cronograma, tiempoTotal } = simularPasos(recetaSeleccionada, inventarioActual);
+    const { pasos, inventarioFinal, sugerencias, cronograma, tiempoTotal, advertencias } = simularPasos(recetaSeleccionada, getInventarioActual());
     // Llenar tabla de pasos
     const tbody = document.querySelector('.tbody-pasos');
     tbody.innerHTML = '';
@@ -585,13 +585,9 @@
         renderSimulacion();
       };
     }
-    // Llenar inventario final
-    const tbodyInv = document.querySelector('.tbody-inventario-final');
-    tbodyInv.innerHTML = '';
-    tbodyInv.innerHTML = renderInventarioFinal(inventarioFinal);
     // Sugerencias
     const sugDiv = document.querySelector('.sugerencias-auto');
-    sugDiv.innerHTML = sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
+    sugDiv.innerHTML = sugerencias && sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
     // Ruta óptima, cronograma y advertencias debajo de los pasos
     document.querySelector('.ruta-optima').innerHTML = '<b>Ruta sugerida:</b> (Próximamente)';
     // Cronograma
@@ -602,7 +598,11 @@
     });
     cronHtml += `</tbody></table><b>Total estimado:</b> ${tiempoTotal} horas`;
     cronDiv.innerHTML = cronHtml;
+    // Advertencias
     document.querySelector('.advertencias').innerHTML = advertencias && advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
+    // Inventario final
+    const tbodyInv = document.querySelector('.tbody-inventario-final');
+    tbodyInv.innerHTML = renderInventarioFinal(inventarioFinal);
   }
 
   // Lógica de importación de datos
@@ -737,6 +737,15 @@
     renderControles();
     renderSimulacion();
   });
+
+  // Helper para obtener el inventario actual en formato {material: {color: cantidad, ...}, ...}
+  function getInventarioActual() {
+    const inventario = {};
+    Object.keys(estado.almacenMateriales).forEach(key => {
+      inventario[key] = { ...estado.almacenMateriales[key] };
+    });
+    return inventario;
+  }
   </script>
 </body>
 </html> 
