@@ -74,6 +74,62 @@
       .container { padding: 12px 2vw; }
       .panel { padding: 10px 4px; }
     }
+    .simulacion-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+      width: 90vw;
+      max-width: 1200px;
+      margin: 0 auto 32px auto;
+      align-items: flex-start;
+    }
+    .simulacion-col {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 18px 14px 18px 14px;
+      min-height: 320px;
+    }
+    .tabla-pasos {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1em;
+      margin-bottom: 12px;
+    }
+    .tabla-pasos th, .tabla-pasos td {
+      border: 1px solid #bbb;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .tabla-pasos th {
+      background: #e0e1e6;
+      color: #222;
+    }
+    .tabla-pasos tr:nth-child(even) {
+      background: #f5f6fa;
+    }
+    .sugerencias-auto {
+      margin-top: 10px;
+      color: #1976d2;
+      font-size: 1.01em;
+    }
+    .inventario-final-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98em;
+    }
+    .inventario-final-table th, .inventario-final-table td {
+      border: 1px solid #bbb;
+      padding: 5px 7px;
+      text-align: center;
+    }
+    .inventario-final-table th {
+      background: #e0e1e6;
+      color: #222;
+    }
+    .inventario-final-table tr:nth-child(even) {
+      background: #f5f6fa;
+    }
   </style>
 </head>
 <body>
@@ -108,6 +164,55 @@
       <div class="sugerencias">
         <!-- Aquí se mostrarán advertencias, faltantes y tips -->
         (Próximamente)
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Desmantelado de equipos</div>
+      <div class="desmantelado">
+        <!-- Aquí se mostrará la lógica de desmantelado y ahorro de tiempo -->
+        (Próximamente)
+      </div>
+    </div>
+    <div class="simulacion-grid">
+      <div class="simulacion-col">
+        <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Pasos de simulación</div>
+        <table class="tabla-pasos">
+          <thead>
+            <tr>
+              <th>Paso</th>
+              <th>Base</th>
+              <th>Nivel</th>
+              <th>Color</th>
+              <th>Materiales</th>
+              <th>Resultado</th>
+              <th>Éxito</th>
+            </tr>
+          </thead>
+          <tbody class="tbody-pasos">
+            <!-- Aquí se llenarán los pasos de la simulación -->
+          </tbody>
+        </table>
+        <div class="sugerencias-auto">
+          <!-- Aquí se mostrarán sugerencias automáticas -->
+        </div>
+      </div>
+      <div class="simulacion-col">
+        <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Inventario final tras la simulación</div>
+        <table class="inventario-final-table">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>Dorado</th>
+              <th>Morado</th>
+              <th>Azul</th>
+              <th>Verde</th>
+              <th>Blanco</th>
+            </tr>
+          </thead>
+          <tbody class="tbody-inventario-final">
+            <!-- Aquí se llenará el inventario final -->
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -292,35 +397,23 @@
     return partes.join(', ') || '0h';
   }
 
-  function renderTodo() {
-    renderControles();
-    document.querySelector('.panel-inventario').innerHTML = '<div style="font-weight:bold;margin-bottom:6px;">Inventario actual</div>' + renderInventario();
-    const { pasos, tiempoTotal, advertencias, baseMsg } = calcularRutaYTiempo(estado.recetaFinalKey);
-    let rutaHtml = '';
-    if (!pasos.length) {
-      rutaHtml = `<span style='color:#c00;'>Selecciona una receta final válida.</span>`;
-    } else {
-      rutaHtml = '<ol style="margin:8px 0 0 0;padding-left:18px;">';
-      pasos.forEach((p, i) => {
-        rutaHtml += `<li><b>${p.nombre}</b> | Materiales: ${Object.entries(p.materiales).filter(([_,v])=>v>0).map(([c,v])=>`${v} ${c}`).join(', ')} | Éxito: ${p.tasaExito}% | Tiempo: <span style='color:#888;'>${formatearTiempo(p.tiempo)}</span></li>`;
-      });
-      rutaHtml += '</ol>';
-    }
-    document.querySelector('.ruta-optima').innerHTML = rutaHtml;
-    document.querySelector('.cronograma').innerHTML = `<b>Tiempo total estimado:</b> <span style='color:#1976d2;font-size:1.2em;'>${formatearTiempo(tiempoTotal)}</span> (${tiempoTotal} horas)`;
-    let sugHtml = '';
-    if (baseMsg) {
-      sugHtml += `<div style='color:#1976d2;font-weight:bold;margin-bottom:6px;'>${baseMsg}</div>`;
-    }
-    if (advertencias.length) {
-      sugHtml += '<ul style="color:#c00;">';
-      advertencias.forEach(a => { sugHtml += `<li>${a}</li>`; });
-      sugHtml += '</ul>';
-    } else if (baseMsg) {
-      sugHtml += '<span style="color:#43a047;">Todo listo para fabricar el equipo final.</span>';
-    }
-    document.querySelector('.sugerencias').innerHTML = sugHtml;
+  function renderDesmantelado() {
+    // Solo implementado para equipo dorado de nivel 1
+    // Tiempo fabricar equipo dorado de nivel 1: 388h
+    // Tiempo fabricar 1 material dorado desde cero: 512h
+    // Ahorro: 124h
+    let html = `<b>Desmantelado de equipo dorado de nivel 1</b><br>`;
+    html += `Si fabricas un equipo dorado de nivel 1 (<b>388h</b>) y lo desmantelas, obtienes 1 material dorado al azar (de los 2 usados en la receta).<br>`;
+    html += `Si el material obtenido es el que necesitas, <b>te ahorras 124 horas</b> respecto a fabricarlo desde cero (<b>512h</b>).`;
+    html += `<br><span style='color:#888;font-size:0.98em;'>(Esta mecánica puede cambiar para otros niveles. Por ahora, solo está confirmada para nivel 1. Para nivel 5, se cree que da 2 materiales, pero no está confirmado.)</span>`;
+    document.querySelector('.desmantelado').innerHTML = html;
   }
+
+  const oldRenderTodo = renderTodo;
+  renderTodo = function() {
+    oldRenderTodo();
+    renderDesmantelado();
+  };
 
   document.addEventListener('DOMContentLoaded', renderTodo);
   </script>
