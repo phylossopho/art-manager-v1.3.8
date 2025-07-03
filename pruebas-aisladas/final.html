@@ -314,7 +314,7 @@
     btnSimular.style.border = 'none';
     btnSimular.style.borderRadius = '6px';
     btnSimular.style.cursor = 'pointer';
-    btnSimular.onclick = () => renderSimulacion();
+    btnSimular.onclick = () => simularRutaOptima();
     controles.appendChild(btnSimular);
   }
 
@@ -542,66 +542,136 @@
     return { pasos, inventarioFinal: inventario, sugerencias, cronograma, tiempoTotal };
   }
 
-  function renderSimulacion() {
-    // Leer el estado del checkbox de desmantelado
-    const considerarDesmantelado = document.getElementById('chk-desmantelar').checked;
-    // Inventario inicial: sumar todos los materiales del inventario actual
-    const inventarioActual = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
-    Object.keys(estado.almacenMateriales).forEach(key => {
-      ['dorado','morado','azul','verde','blanco'].forEach(c => {
-        inventarioActual[c] += parseInt(estado.almacenMateriales[key][c]||'0');
-      });
-    });
-    const recetaIdx = parseInt(estado.recetaFinalIndex);
-    const recetaSeleccionada = estado.recetas[recetaIdx];
-    const { pasos, inventarioFinal, sugerencias, cronograma, tiempoTotal, advertencias } = simularPasos(recetaSeleccionada, getInventarioActual());
-    // Llenar tabla de pasos
+  function simularRutaOptima() {
+    // 1. Obtener selección
+    const idxReceta = parseInt(estado.recetaFinalIndex);
+    if (isNaN(idxReceta) || !estado.recetas[idxReceta]) {
+      showToast('Selecciona una receta final válida.','error');
+      return;
+    }
+    const recetaFinal = estado.recetas[idxReceta];
+    const equipo = recetaFinal.equipo;
+    const clase = recetaFinal.clase;
+    const nivel = recetaFinal.nivel;
+    // 2. Copia profunda del inventario
+    let inventario = JSON.parse(JSON.stringify(estado.almacenMateriales));
+    // 3. Buscar la cadena de recetas necesarias para llegar al objetivo
+    //    (de nivel 1 a nivel final, con bifurcaciones)
+    let pasos = [];
+    let advertencias = [];
+    let tiempoTotal = 0;
+    let rutas = [];
+
+    // Helper: obtener receta por clase, equipo, nivel, color
+    function buscarReceta(clase, equipo, nivel, color) {
+      return estado.recetas.find(r => r.clase === clase && r.equipo === equipo && r.nivel == nivel && r.color === color);
+    }
+
+    // Helper: simular fabricación de un equipo de nivel y color dados
+    function fabricarEquipo(clase, equipo, nivel, color, inventarioActual, rutaParcial, tiempoAcumulado) {
+      const receta = buscarReceta(clase, equipo, nivel, color);
+      if (!receta) {
+        advertencias.push(`Falta receta: ${clase} ${equipo} nivel ${nivel} color ${color}`);
+        return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+      }
+      // 1. Para cada material requerido, intentar usar del inventario (con conversiones)
+      let inventarioNuevo = JSON.parse(JSON.stringify(inventarioActual));
+      let paso = { paso: rutaParcial.length+1, accion: `Fabricar ${clase} ${equipo} nivel ${nivel} color ${color}`, materiales: [], tiempo: 0, bifurcacion: false };
+      let tiempoPaso = 0;
+      let exito = true;
+      for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
+        if (!cantidad || cantidad <= 0) continue;
+        // Buscar el material correcto para este equipo
+        const key = `${clase}:${receta["material1"] || receta["material"] || Object.keys(receta.materiales)[0]}`;
+        // Usar el material del color requerido, o convertir
+        let disponible = inventarioNuevo[key]?.[matColor] ? parseInt(inventarioNuevo[key][matColor]) : 0;
+        let usado = Math.min(disponible, cantidad);
+        inventarioNuevo[key][matColor] = disponible - usado;
+        let faltan = cantidad - usado;
+        // Si faltan, intentar convertir colores inferiores
+        let ordenColores = ["blanco","verde","azul","morado","dorado"];
+        let idxColor = ordenColores.indexOf(matColor);
+        let conversiones = [];
+        let convertido = 0;
+        let colorActual = matColor;
+        while (faltan > 0 && idxColor > 0) {
+          let colorInferior = ordenColores[idxColor-1];
+          let reqInferior = faltan * 4;
+          let dispInferior = inventarioNuevo[key]?.[colorInferior] ? parseInt(inventarioNuevo[key][colorInferior]) : 0;
+          let puedeConvertir = Math.floor(dispInferior / 4);
+          let convierte = Math.min(puedeConvertir, faltan);
+          if (convierte > 0) {
+            inventarioNuevo[key][colorInferior] -= convierte*4;
+            inventarioNuevo[key][matColor] = (inventarioNuevo[key][matColor]||0) + convierte;
+            conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
+            faltan -= convierte;
+            convertido += convierte;
+          }
+          idxColor--;
+        }
+        if (faltan > 0) {
+          exito = false;
+          paso.materiales.push(`${key.split(':')[1]}: Faltan ${faltan} de color ${matColor}`);
+        } else {
+          paso.materiales.push(`${key.split(':')[1]}: ${cantidad} ${matColor}`);
+        }
+        // Sumar tiempo
+        const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
+        tiempoPaso += (tiempos[matColor] || 0) * cantidad;
+      }
+      paso.tiempo = tiempoPaso;
+      rutaParcial.push(paso);
+      tiempoAcumulado += tiempoPaso;
+      // 2. Bifurcación: si el paso puede resultar en dos colores (ej: fabricar base morada o dorada)
+      if (nivel == 1 && clase === 'Normal' && (color === 'morado' || color === 'dorado')) {
+        // Simular "suerte": bifurcación
+        let rutaMorado = JSON.parse(JSON.stringify(rutaParcial));
+        let rutaDorado = JSON.parse(JSON.stringify(rutaParcial));
+        let invMorado = JSON.parse(JSON.stringify(inventarioNuevo));
+        let invDorado = JSON.parse(JSON.stringify(inventarioNuevo));
+        let tMorado = tiempoAcumulado;
+        let tDorado = tiempoAcumulado;
+        // Morado
+        rutaMorado[rutaMorado.length-1].bifurcacion = true;
+        let resMorado = fabricarEquipo(clase, equipo, nivel+1, 'morado', invMorado, rutaMorado, tMorado);
+        // Dorado
+        rutaDorado[rutaDorado.length-1].bifurcacion = true;
+        let resDorado = fabricarEquipo(clase, equipo, nivel+1, 'dorado', invDorado, rutaDorado, tDorado);
+        rutas.push(resMorado);
+        rutas.push(resDorado);
+        return; // Terminar aquí para bifurcación
+      }
+      // 3. Si no es el nivel final, seguir con el siguiente nivel
+      if (nivel < recetaFinal.nivel) {
+        return fabricarEquipo(clase, equipo, nivel+1, color, inventarioNuevo, rutaParcial, tiempoAcumulado);
+      }
+      // 4. Si es el nivel final, terminar
+      return { ruta: rutaParcial, inventario: inventarioNuevo, tiempo: tiempoAcumulado };
+    }
+
+    // Iniciar simulación desde nivel 1 blanco
+    let resultado = fabricarEquipo('Normal', equipo, 1, 'blanco', inventario, [], 0);
+    if (rutas.length === 0 && resultado) rutas.push(resultado);
+
+    // Mostrar resultados
     const tbody = document.querySelector('.tbody-pasos');
     tbody.innerHTML = '';
-    pasos.forEach(p => {
-      const tr = document.createElement('tr');
-      if (p.selectEquipo) {
-        tr.innerHTML = `<td>${p.paso}</td><td colspan="5"><label>Equipo base: <select class='select-dinamico' id='select-base-alternativa'>${p.opciones.map(opt=>`<option value='${opt}' ${opt===p.seleccionado?'selected':''}>${opt}</option>`).join('')}</select></label></td><td></td>`;
-      } else if (p.selectColor) {
-        tr.innerHTML = `<td>${p.paso}</td><td colspan="5"><label>Color de base: <select class='select-dinamico' id='select-color-base'>${p.opciones.map(opt=>`<option value='${opt}' ${opt===p.seleccionado?'selected':''}>${opt.charAt(0).toUpperCase()+opt.slice(1)}</option>`).join('')}</select></label></td><td></td>`;
-      } else {
-        tr.innerHTML = `<td>${p.paso}</td><td colspan="2">${p.accion}</td><td>${p.color ? p.color.charAt(0).toUpperCase()+p.color.slice(1) : ''}</td><td>${p.cantidad || ''}</td><td>${p.faltante ? 'Faltan ' + p.faltante : ''}</td><td></td>`;
-      }
-      tbody.appendChild(tr);
+    rutas.forEach((rutaObj, idx) => {
+      rutaObj.ruta.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.paso}</td><td>${p.accion}</td><td colspan="2">${p.materiales.join(', ')}</td><td></td><td>${p.bifurcacion ? '¿Morado o Dorado?' : ''}</td><td></td>`;
+        tbody.appendChild(tr);
+      });
+      // Fila resumen
+      const trResumen = document.createElement('tr');
+      trResumen.innerHTML = `<td colspan="7" style="background:#e0e1e6;font-weight:bold;">Ruta ${idx+1}: Tiempo total: ${formatearTiempo(rutaObj.tiempo)}</td>`;
+      tbody.appendChild(trResumen);
     });
-    // Listeners para selects dinámicos
-    const selectBase = document.getElementById('select-base-alternativa');
-    if (selectBase) {
-      selectBase.onchange = e => {
-        estado.seleccionBaseAlternativa = e.target.value;
-        renderSimulacion();
-      };
-    }
-    const selectColor = document.getElementById('select-color-base');
-    if (selectColor) {
-      selectColor.onchange = e => {
-        estado.seleccionColorBase = e.target.value;
-        renderSimulacion();
-      };
-    }
-    // Sugerencias
-    const sugDiv = document.querySelector('.sugerencias-auto');
-    sugDiv.innerHTML = sugerencias && sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
-    // Ruta óptima, cronograma y advertencias debajo de los pasos
-    document.querySelector('.ruta-optima').innerHTML = '<b>Ruta sugerida:</b> (Próximamente)';
-    // Cronograma
-    const cronDiv = document.querySelector('.cronograma');
-    let cronHtml = '<b>Cronograma estimado:</b><br><table style="width:100%;font-size:0.98em;margin-bottom:8px;"><thead><tr><th>Paso</th><th>Acción</th><th>Color</th><th>Tiempo (h)</th></tr></thead><tbody>';
-    cronograma.forEach(c => {
-      cronHtml += `<tr><td>${c.paso}</td><td>${c.accion}</td><td>${c.color ? c.color.charAt(0).toUpperCase()+c.color.slice(1) : ''}</td><td>${c.tiempo}</td></tr>`;
-    });
-    cronHtml += `</tbody></table><b>Total estimado:</b> ${tiempoTotal} horas`;
-    cronDiv.innerHTML = cronHtml;
-    // Advertencias
-    document.querySelector('.advertencias').innerHTML = advertencias && advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
     // Inventario final
     const tbodyInv = document.querySelector('.tbody-inventario-final');
     tbodyInv.innerHTML = renderInventarioFinal();
+    // Advertencias
+    document.querySelector('.advertencias').innerHTML = advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
   }
 
   // Lógica de importación de datos
