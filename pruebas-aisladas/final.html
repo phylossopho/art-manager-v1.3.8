@@ -288,7 +288,7 @@
       if (eq === estado.filtros.equipo) opt.selected = true;
       selectEquipo.appendChild(opt);
     });
-    selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
+    selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); };
     controles.appendChild(selectEquipo);
     // Selector de receta final (mostrar tal cual se han cargado)
     const selectReceta = document.createElement('select');
