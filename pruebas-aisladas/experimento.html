@@ -683,7 +683,6 @@ function abrirModalSeleccionRecetas() {
   cerrar.style.cursor = 'pointer';
   cerrar.onclick = function() {
     document.body.removeChild(modal);
-    document.getElementById('tabla-analizador-tiempo').innerHTML = '';
   };
 
   inner.innerHTML = `<div style='font-size:1.15em;font-weight:bold;margin-bottom:12px;'>Selecciona recetas de equipo Normal</div>${tabla}`;
