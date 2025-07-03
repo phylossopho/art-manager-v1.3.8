@@ -611,8 +611,8 @@
               }
             }
           }
-          if (baseEncontrada) {
-            // Usar la base encontrada
+          if (baseEncontrada && inventarioActual[baseEncontrada.key][receta.base.color] > 0) {
+            // Usar la base encontrada SOLO si realmente hay una disponible
             inventarioActual[baseEncontrada.key][receta.base.color]--;
             rutaParcial.push({
               paso: rutaParcial.length+1,
