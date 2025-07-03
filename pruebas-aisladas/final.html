@@ -817,7 +817,6 @@
       if (!estado.basesUsuario.some(b=>b.equipo===base.equipo&&b.clase===base.clase&&b.nivel===base.nivel&&b.color===base.color)) {
         estado.basesUsuario.push(base);
         renderTablaBases();
-        renderSimulacion();
       }
     };
     renderTablaBases();
@@ -831,7 +830,6 @@
       tr.querySelector('button').onclick = e => {
         estado.basesUsuario.splice(idx,1);
         renderTablaBases();
-        renderSimulacion();
       };
       tbody.appendChild(tr);
     });
@@ -839,7 +837,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     initPanelBases();
     renderControles();
-    renderSimulacion();
   });
 
   // Helper para obtener el inventario actual en formato {material: {color: cantidad, ...}, ...}
