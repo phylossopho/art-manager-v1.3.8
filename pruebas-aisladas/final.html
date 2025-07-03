@@ -409,10 +409,157 @@
     document.querySelector('.desmantelado').innerHTML = html;
   }
 
+  function simularPasos(recetaKey, inventarioOriginal) {
+    if (!recetaKey || !estado.recetas[recetaKey]) return { pasos: [], inventarioFinal: {}, sugerencias: ['Selecciona una receta final válida.'] };
+    const recetaFinal = estado.recetas[recetaKey];
+    // Copia profunda del inventario
+    let inventario = JSON.parse(JSON.stringify(inventarioOriginal));
+    let pasos = [];
+    let sugerencias = [];
+    let pasoNum = 1;
+
+    // Helper para descontar materiales del inventario
+    function descontarMateriales(materiales) {
+      let faltantes = {};
+      for (const color in materiales) {
+        let req = materiales[color];
+        if (!req) continue;
+        let disp = inventario[color] || 0;
+        if (disp >= req) {
+          inventario[color] -= req;
+          req = 0;
+        } else {
+          inventario[color] = 0;
+          req -= disp;
+        }
+        if (req > 0) faltantes[color] = req;
+      }
+      return faltantes;
+    }
+
+    // Helper para fabricar materiales desde blancos
+    function fabricarMaterial(color, cantidad) {
+      // Solo para colores > blanco
+      const orden = ['blanco','verde','azul','morado','dorado'];
+      const idx = orden.indexOf(color);
+      if (idx <= 0) return;
+      const colorInferior = orden[idx-1];
+      const reqInferior = cantidad * 4;
+      // Paso: fabricar reqInferior del color inferior
+      let faltanInferior = reqInferior;
+      if (inventario[colorInferior] >= reqInferior) {
+        inventario[colorInferior] -= reqInferior;
+        faltanInferior = 0;
+      } else {
+        faltanInferior -= inventario[colorInferior];
+        inventario[colorInferior] = 0;
+      }
+      if (faltanInferior > 0 && colorInferior !== 'blanco') {
+        fabricarMaterial(colorInferior, Math.ceil(faltanInferior/4));
+      }
+      // Ahora sí, sumar los fabricados
+      inventario[color] = (inventario[color]||0) + cantidad;
+      pasos.push({
+        paso: pasoNum++,
+        base: '-',
+        nivel: '-',
+        color: color.charAt(0).toUpperCase()+color.slice(1),
+        materiales: `${reqInferior} ${colorInferior}${reqInferior>1?'s':''}`,
+        resultado: `${cantidad} ${color}${cantidad>1?'s':''}`,
+        exito: '100%'
+      });
+    }
+
+    // 1. Calcular la cadena de recetas necesarias (como antes)
+    let secuencia = [];
+    for (const color of ['blanco','morado','dorado']) {
+      const k = Object.keys(estado.recetas).find(k => {
+        const r = estado.recetas[k];
+        return r.clase === 'Normal' && r.nivel === '1' && r.color === color && r.equipo === recetaFinal.equipo;
+      });
+      if (k) secuencia.push(k);
+    }
+    for (let n = 2; n <= 4; n++) {
+      const k = Object.keys(estado.recetas).find(k => {
+        const r = estado.recetas[k];
+        return r.clase === 'Normal' && r.nivel === String(n) && r.color === 'dorado' && r.equipo === recetaFinal.equipo;
+      });
+      if (k) secuencia.push(k);
+    }
+    // Bases avanzadas (Planewalker, Lord, Noble Lord, Campeón) ya implementadas en la lógica previa
+    secuencia.push(recetaKey);
+
+    // 2. Para cada receta, descontar materiales del inventario y fabricar lo que falte
+    for (const k of secuencia) {
+      const r = estado.recetas[k];
+      if (!r) continue;
+      // Descontar materiales del inventario
+      const faltantes = descontarMateriales(r.materiales);
+      // Si hay faltantes, fabricar desde blancos
+      for (const color in faltantes) {
+        fabricarMaterial(color, faltantes[color]);
+        inventario[color] -= faltantes[color]; // Se usan inmediatamente
+      }
+      // Registrar el paso de fabricación del equipo
+      pasos.push({
+        paso: pasoNum++,
+        base: r.base || '-',
+        nivel: r.nivel,
+        color: r.color.charAt(0).toUpperCase()+r.color.slice(1),
+        materiales: Object.entries(r.materiales).filter(([_,v])=>v>0).map(([c,v])=>`${v} ${c}${v>1?'s':''}`).join(', '),
+        resultado: `${r.clase} ${r.equipo} nivel ${r.nivel} ${r.color}`,
+        exito: r.tasaExito || r.porcentaje || '100%'
+      });
+    }
+
+    // 3. Sugerencias automáticas
+    if (pasos.length && pasos[0].materiales && pasos[0].materiales.includes('0')) {
+      sugerencias.push('Puedes saltar los primeros pasos usando materiales de tu inventario.');
+    }
+    // Si falta algún material al final
+    for (const color of ['dorado','morado','azul','verde','blanco']) {
+      if ((inventario[color]||0) < 0) {
+        sugerencias.push(`Te falta ${-inventario[color]} ${color}${-inventario[color]>1?'s':''} para completar la simulación.`);
+      }
+    }
+    return { pasos, inventarioFinal: inventario, sugerencias };
+  }
+
+  function renderSimulacion() {
+    // Inventario inicial: sumar todos los materiales del inventario actual
+    const inventarioActual = { dorado:0, morado:0, azul:0, verde:0, blanco:0 };
+    Object.keys(estado.almacenMateriales).forEach(key => {
+      ['dorado','morado','azul','verde','blanco'].forEach(c => {
+        inventarioActual[c] += parseInt(estado.almacenMateriales[key][c]||'0');
+      });
+    });
+    const { pasos, inventarioFinal, sugerencias } = simularPasos(estado.recetaFinalKey, inventarioActual);
+    // Llenar tabla de pasos
+    const tbody = document.querySelector('.tbody-pasos');
+    tbody.innerHTML = '';
+    pasos.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${p.paso}</td><td>${p.base}</td><td>${p.nivel}</td><td>${p.color}</td><td>${p.materiales}</td><td>${p.resultado}</td><td>${p.exito}</td>`;
+      tbody.appendChild(tr);
+    });
+    // Llenar inventario final
+    const tbodyInv = document.querySelector('.tbody-inventario-final');
+    tbodyInv.innerHTML = '';
+    ['dorado','morado','azul','verde','blanco'].forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${c.charAt(0).toUpperCase()+c.slice(1)}</td><td colspan="5">${inventarioFinal[c]||0}</td>`;
+      tbodyInv.appendChild(tr);
+    });
+    // Sugerencias
+    const sugDiv = document.querySelector('.sugerencias-auto');
+    sugDiv.innerHTML = sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
+  }
+
+  // Integrar con el render principal
   const oldRenderTodo = renderTodo;
   renderTodo = function() {
     oldRenderTodo();
-    renderDesmantelado();
+    renderSimulacion();
   };
 
   document.addEventListener('DOMContentLoaded', renderTodo);
