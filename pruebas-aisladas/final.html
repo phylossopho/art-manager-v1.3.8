@@ -231,8 +231,8 @@
   const estado = {
     materialesData: datosMateriales,
     almacenMateriales: {},
-    recetas: {},
-    recetaFinalKey: '',
+    recetas: [],
+    recetaFinalIndex: '',
     filtros: {
       clase: '',
       equipo: '',
@@ -269,10 +269,9 @@
     });
   }
 
-  function formatearNombreReceta(key) {
-    const r = estado.recetas[key];
-    if (!r) return key;
-    return `${r.clase} ${r.color.charAt(0).toUpperCase()+r.color.slice(1)} (${r.equipo}, Nivel ${r.nivel}, Base: ${r.base})`;
+  function formatearNombreReceta(r) {
+    if (!r) return '';
+    return `${r.clase} ${r.color.charAt(0).toUpperCase()+r.color.slice(1)} (${r.equipo}, Nivel ${r.nivel}, Base: ${r.base ? (r.base.clase + ' ' + r.base.nivel + ' ' + (r.base.color||'')) : '-'})`;
   }
 
   function renderControles() {
@@ -281,8 +280,8 @@
     // Selector de receta final (sin filtros)
     const selectReceta = document.createElement('select');
     selectReceta.style.minWidth = '260px';
-    const opciones = Object.keys(estado.recetas);
-    if (opciones.length === 0) {
+    const opciones = estado.recetas;
+    if (!opciones || opciones.length === 0) {
       const opt = document.createElement('option');
       opt.value = '';
       opt.textContent = 'No hay recetas finales disponibles';
@@ -293,15 +292,15 @@
       opt0.value = '';
       opt0.textContent = 'Selecciona receta final...';
       selectReceta.appendChild(opt0);
-      opciones.forEach(k => {
+      opciones.forEach((r, idx) => {
         const opt = document.createElement('option');
-        opt.value = k;
-        opt.textContent = formatearNombreReceta(k);
-        if (k === estado.recetaFinalKey) opt.selected = true;
+        opt.value = idx;
+        opt.textContent = formatearNombreReceta(r);
+        if (idx == estado.recetaFinalIndex) opt.selected = true;
         selectReceta.appendChild(opt);
       });
     }
-    selectReceta.onchange = e => { estado.recetaFinalKey = e.target.value; renderSimulacion(); };
+    selectReceta.onchange = e => { estado.recetaFinalIndex = e.target.value; renderSimulacion(); };
     controles.appendChild(selectReceta);
     // Botón simular ruta óptima
     const btnSimular = document.createElement('button');
@@ -406,7 +405,7 @@
       });
       tiempoTotal += tiempo;
       pasos.push({
-        nombre: formatearNombreReceta(k),
+        nombre: formatearNombreReceta(r),
         materiales: r.materiales,
         tiempo,
         tasaExito: r.tasaExito || r.porcentaje || 100
@@ -443,9 +442,8 @@
     document.querySelector('.desmantelado').innerHTML = html;
   }
 
-  function simularPasos(recetaKey, inventarioOriginal) {
-    if (!recetaKey || !estado.recetas[recetaKey]) return { pasos: [], inventarioFinal: {}, sugerencias: ['Selecciona una receta final válida.'] };
-    const recetaFinal = estado.recetas[recetaKey];
+  function simularPasos(recetaFinal, inventarioOriginal) {
+    if (!recetaFinal) return { pasos: [], inventarioFinal: {}, sugerencias: ['Selecciona una receta final válida.'] };
     // Copia profunda del inventario
     let inventario = JSON.parse(JSON.stringify(inventarioOriginal));
     let pasos = [];
@@ -521,7 +519,7 @@
       if (k) secuencia.push(k);
     }
     // Bases avanzadas (Planewalker, Lord, Noble Lord, Campeón) ya implementadas en la lógica previa
-    secuencia.push(recetaKey);
+    secuencia.push(recetaFinal);
 
     // 2. Para cada receta, descontar materiales del inventario y fabricar lo que falte
     for (const k of secuencia) {
@@ -567,7 +565,9 @@
         inventarioActual[c] += parseInt(estado.almacenMateriales[key][c]||'0');
       });
     });
-    const { pasos, inventarioFinal, sugerencias } = simularPasos(estado.recetaFinalKey, inventarioActual);
+    const recetaIdx = parseInt(estado.recetaFinalIndex);
+    const recetaSeleccionada = estado.recetas[recetaIdx];
+    const { pasos, inventarioFinal, sugerencias } = simularPasos(recetaSeleccionada, inventarioActual);
     // Llenar tabla de pasos
     const tbody = document.querySelector('.tbody-pasos');
     tbody.innerHTML = '';
@@ -636,16 +636,8 @@
           showToast('El archivo de recetas debe ser un array de recetas.','error');
           return;
         }
-        // Guardar en memoria
-        let recetasImportadas = {};
-        data.forEach(r => {
-          if (r && r.equipo && r.clase && r.nivel && r.color && r.base && r.materiales) {
-            const clave = `${r.equipo}|${r.clase}|${r.nivel}|${r.color}|${r.base}`;
-            recetasImportadas[clave] = r;
-          }
-        });
-        window._recetasMemoria = recetasImportadas;
-        estado.recetas = recetasImportadas;
+        // Guardar en memoria como array
+        estado.recetas = data;
         // Ahora pedir materiales
         fileMateriales.value = '';
         fileMateriales.click();
