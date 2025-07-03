@@ -552,154 +552,159 @@
 
   // === SIMULACIÓN DE RUTA ÓPTIMA UNIVERSAL POR EQUIPO ===
   function simularRutaOptima() {
-    // 1. Obtener selección
-    const idxReceta = parseInt(estado.recetaFinalIndex);
-    if (isNaN(idxReceta) || !estado.recetas[idxReceta]) {
-      showToast('Selecciona una receta final válida.','error');
-      return;
-    }
-    const recetaFinal = estado.recetas[idxReceta];
-    // Obtener equipo seleccionado
-    const equipo = estado.filtros.equipo;
-    if (!equipo) {
-      showToast('Selecciona un equipo antes de simular.','error');
-      return;
-    }
-    // Obtener lista de materiales para el equipo seleccionado
-    // Buscar en datosMateriales (puede estar en estado.materialesData)
-    const materialesEquipo = (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo.charAt(0).toUpperCase() + equipo.slice(1)])
-      || (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo])
-      || [];
-    if (!materialesEquipo.length) {
-      showToast('No se encontraron materiales para el equipo seleccionado.','error');
-      return;
-    }
-    // 2. Copia profunda del inventario
-    let inventario = JSON.parse(JSON.stringify(estado.almacenMateriales));
-    let advertencias = [];
-    let rutas = [];
-
-    // Helper: buscar receta exacta por clase, nivel, color
-    function buscarReceta(clase, nivel, color) {
-      return estado.recetas.find(r => r.clase === clase && String(r.nivel) === String(nivel) && r.color === color);
-    }
-
-    // Helper: simular fabricación recursiva de un equipo
-    function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado) {
-      if (!receta) {
-        advertencias.push('Falta receta para algún paso.');
-        return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-      }
-      // Si la receta requiere una base, fabricar la base primero
-      if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color) {
-        const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color);
-        if (!recetaBase) {
-          advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
-        } else {
-          const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado);
-          inventarioActual = resBase.inventario;
-          rutaParcial = resBase.ruta;
-          tiempoAcumulado = resBase.tiempo;
-        }
-      }
-      // Procesar materiales de la receta actual
-      let paso = { paso: rutaParcial.length+1, accion: `Fabricar ${receta.clase} nivel ${receta.nivel} color ${receta.color} (${equipo})`, materiales: [], tiempo: 0, bifurcacion: false };
-      let tiempoPaso = 0;
-      let exito = true;
-      // Para cada material de la receta universal, aplicar sobre los materiales del equipo
-      const mats = materialesEquipo;
-      let matIdx = 0;
-      for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
-        if (!cantidad || cantidad <= 0) continue;
-        // Para cada cantidad, usar el material correspondiente del equipo
-        for (let i = 0; i < cantidad; i++) {
-          const matName = mats[matIdx % mats.length];
-          const key = `Normal:${matName}`;
-          let disponible = inventarioActual[key]?.[matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
-          let usado = Math.min(disponible, 1);
-          inventarioActual[key][matColor] = disponible - usado;
-          let faltan = 1 - usado;
-          // Si faltan, intentar convertir colores inferiores
-          let ordenColores = ["blanco","verde","azul","morado","dorado"];
-          let idxColor = ordenColores.indexOf(matColor);
-          let conversiones = [];
-          let convertido = 0;
-          while (faltan > 0 && idxColor > 0) {
-            let colorInferior = ordenColores[idxColor-1];
-            let reqInferior = faltan * 4;
-            let dispInferior = inventarioActual[key]?.[colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
-            let puedeConvertir = Math.floor(dispInferior / 4);
-            let convierte = Math.min(puedeConvertir, faltan);
-            if (convierte > 0) {
-              inventarioActual[key][colorInferior] -= convierte*4;
-              inventarioActual[key][matColor] = (inventarioActual[key][matColor]||0) + convierte;
-              conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
-              faltan -= convierte;
-              convertido += convierte;
-            }
-            idxColor--;
-          }
-          if (faltan > 0) {
-            exito = false;
-            paso.materiales.push(`${matName}: Falta 1 de color ${matColor}`);
-          } else {
-            paso.materiales.push(`${matName}: 1 ${matColor}`);
-          }
-          // Sumar tiempo
-          const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
-          tiempoPaso += (tiempos[matColor] || 0);
-          matIdx++;
-        }
-      }
-      paso.tiempo = tiempoPaso;
-      rutaParcial.push(paso);
-      tiempoAcumulado += tiempoPaso;
-      // Bifurcación: si la receta tiene porcentaje < 100 y color morado/dorado, simular ambas rutas
-      if (receta.porcentaje && parseFloat(receta.porcentaje) < 100 && (receta.color === 'morado' || receta.color === 'dorado')) {
-        let rutaMorado = JSON.parse(JSON.stringify(rutaParcial));
-        let rutaDorado = JSON.parse(JSON.stringify(rutaParcial));
-        let invMorado = JSON.parse(JSON.stringify(inventarioActual));
-        let invDorado = JSON.parse(JSON.stringify(inventarioActual));
-        let tMorado = tiempoAcumulado;
-        let tDorado = tiempoAcumulado;
-        // Morado
-        rutaMorado[rutaMorado.length-1].bifurcacion = true;
-        let recetaMorado = buscarReceta(receta.clase, receta.nivel, 'morado');
-        let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado);
-        // Dorado
-        rutaDorado[rutaDorado.length-1].bifurcacion = true;
-        let recetaDorado = buscarReceta(receta.clase, receta.nivel, 'dorado');
-        let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado);
-        rutas.push(resMorado);
-        rutas.push(resDorado);
+    try {
+      // 1. Obtener selección
+      const idxReceta = parseInt(estado.recetaFinalIndex);
+      if (isNaN(idxReceta) || !estado.recetas[idxReceta]) {
+        showToast('Selecciona una receta final válida.','error');
+        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> Selecciona una receta final válida.';
         return;
       }
-      return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-    }
+      const recetaFinal = estado.recetas[idxReceta];
+      // Obtener equipo seleccionado
+      const equipo = estado.filtros.equipo;
+      if (!equipo) {
+        showToast('Selecciona un equipo antes de simular.','error');
+        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> Selecciona un equipo antes de simular.';
+        return;
+      }
+      // Obtener lista de materiales para el equipo seleccionado
+      const materialesEquipo = (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo.charAt(0).toUpperCase() + equipo.slice(1)])
+        || (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo])
+        || [];
+      if (!materialesEquipo.length) {
+        showToast('No se encontraron materiales para el equipo seleccionado.','error');
+        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> No se encontraron materiales para el equipo seleccionado.';
+        return;
+      }
+      // 2. Copia profunda del inventario
+      let inventario = JSON.parse(JSON.stringify(estado.almacenMateriales));
+      let advertencias = [];
+      let rutas = [];
 
-    // Iniciar simulación desde la receta final (fabricar recursivamente todas las bases)
-    let resultado = fabricarRecursivo(recetaFinal, inventario, [], 0);
-    if (rutas.length === 0 && resultado) rutas.push(resultado);
+      // Helper: buscar receta exacta por clase, nivel, color
+      function buscarReceta(clase, nivel, color) {
+        return estado.recetas.find(r => r.clase === clase && String(r.nivel) === String(nivel) && r.color === color);
+      }
 
-    // Mostrar resultados
-    const tbody = document.querySelector('.tbody-pasos');
-    tbody.innerHTML = '';
-    rutas.forEach((rutaObj, idx) => {
-      rutaObj.ruta.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${p.paso}</td><td>${p.accion}</td><td colspan="2">${p.materiales.join(', ')}</td><td></td><td>${p.bifurcacion ? '¿Morado o Dorado?' : ''}</td><td></td>`;
-        tbody.appendChild(tr);
+      // Helper: simular fabricación recursiva de un equipo
+      function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado) {
+        if (!receta) {
+          advertencias.push('Falta receta para algún paso.');
+          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+        }
+        // Si la receta requiere una base, fabricar la base primero
+        if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color) {
+          const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color);
+          if (!recetaBase) {
+            advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
+          } else {
+            const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado);
+            inventarioActual = resBase.inventario;
+            rutaParcial = resBase.ruta;
+            tiempoAcumulado = resBase.tiempo;
+          }
+        }
+        // Procesar materiales de la receta actual
+        let paso = { paso: rutaParcial.length+1, accion: `Fabricar ${receta.clase} nivel ${receta.nivel} color ${receta.color} (${equipo})`, materiales: [], tiempo: 0, bifurcacion: false };
+        let tiempoPaso = 0;
+        let exito = true;
+        const mats = materialesEquipo;
+        let matIdx = 0;
+        for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
+          if (!cantidad || cantidad <= 0) continue;
+          for (let i = 0; i < cantidad; i++) {
+            const matName = mats[matIdx % mats.length];
+            const key = `Normal:${matName}`;
+            let disponible = inventarioActual[key]?.[matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
+            let usado = Math.min(disponible, 1);
+            inventarioActual[key][matColor] = disponible - usado;
+            let faltan = 1 - usado;
+            let ordenColores = ["blanco","verde","azul","morado","dorado"];
+            let idxColor = ordenColores.indexOf(matColor);
+            let conversiones = [];
+            let convertido = 0;
+            while (faltan > 0 && idxColor > 0) {
+              let colorInferior = ordenColores[idxColor-1];
+              let reqInferior = faltan * 4;
+              let dispInferior = inventarioActual[key]?.[colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
+              let puedeConvertir = Math.floor(dispInferior / 4);
+              let convierte = Math.min(puedeConvertir, faltan);
+              if (convierte > 0) {
+                inventarioActual[key][colorInferior] -= convierte*4;
+                inventarioActual[key][matColor] = (inventarioActual[key][matColor]||0) + convierte;
+                conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
+                faltan -= convierte;
+                convertido += convierte;
+              }
+              idxColor--;
+            }
+            if (faltan > 0) {
+              exito = false;
+              paso.materiales.push(`${matName}: Falta 1 de color ${matColor}`);
+            } else {
+              paso.materiales.push(`${matName}: 1 ${matColor}`);
+            }
+            const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
+            tiempoPaso += (tiempos[matColor] || 0);
+            matIdx++;
+          }
+        }
+        paso.tiempo = tiempoPaso;
+        rutaParcial.push(paso);
+        tiempoAcumulado += tiempoPaso;
+        if (receta.porcentaje && parseFloat(receta.porcentaje) < 100 && (receta.color === 'morado' || receta.color === 'dorado')) {
+          let rutaMorado = JSON.parse(JSON.stringify(rutaParcial));
+          let rutaDorado = JSON.parse(JSON.stringify(rutaParcial));
+          let invMorado = JSON.parse(JSON.stringify(inventarioActual));
+          let invDorado = JSON.parse(JSON.stringify(inventarioActual));
+          let tMorado = tiempoAcumulado;
+          let tDorado = tiempoAcumulado;
+          rutaMorado[rutaMorado.length-1].bifurcacion = true;
+          let recetaMorado = buscarReceta(receta.clase, receta.nivel, 'morado');
+          let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado);
+          rutaDorado[rutaDorado.length-1].bifurcacion = true;
+          let recetaDorado = buscarReceta(receta.clase, receta.nivel, 'dorado');
+          let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado);
+          rutas.push(resMorado);
+          rutas.push(resDorado);
+          return;
+        }
+        return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+      }
+
+      // Iniciar simulación desde la receta final (fabricar recursivamente todas las bases)
+      let resultado = fabricarRecursivo(recetaFinal, inventario, [], 0);
+      if (rutas.length === 0 && resultado) rutas.push(resultado);
+
+      // Mostrar resultados
+      const tbody = document.querySelector('.tbody-pasos');
+      tbody.innerHTML = '';
+      if (!rutas.length || !rutas[0].ruta.length) {
+        showToast('No se pudo simular la ruta. Verifica que existan materiales y recetas suficientes.','error');
+        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> No se pudo simular la ruta. Verifica que existan materiales y recetas suficientes.';
+        return;
+      }
+      rutas.forEach((rutaObj, idx) => {
+        rutaObj.ruta.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${p.paso}</td><td>${p.accion}</td><td colspan="2">${p.materiales.join(', ')}</td><td></td><td>${p.bifurcacion ? '¿Morado o Dorado?' : ''}</td><td></td>`;
+          tbody.appendChild(tr);
+        });
+        // Fila resumen
+        const trResumen = document.createElement('tr');
+        trResumen.innerHTML = `<td colspan="7" style="background:#e0e1e6;font-weight:bold;">Ruta ${idx+1}: Tiempo total: ${formatearTiempo(rutaObj.tiempo)}</td>`;
+        tbody.appendChild(trResumen);
       });
-      // Fila resumen
-      const trResumen = document.createElement('tr');
-      trResumen.innerHTML = `<td colspan="7" style="background:#e0e1e6;font-weight:bold;">Ruta ${idx+1}: Tiempo total: ${formatearTiempo(rutaObj.tiempo)}</td>`;
-      tbody.appendChild(trResumen);
-    });
-    // Inventario final
-    const tbodyInv = document.querySelector('.tbody-inventario-final');
-    tbodyInv.innerHTML = renderInventarioFinal();
-    // Advertencias
-    document.querySelector('.advertencias').innerHTML = advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
+      // Inventario final
+      const tbodyInv = document.querySelector('.tbody-inventario-final');
+      tbodyInv.innerHTML = renderInventarioFinal();
+      // Advertencias
+      document.querySelector('.advertencias').innerHTML = advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
+    } catch (err) {
+      showToast('Error en la simulación: ' + (err.message || err),'error');
+      document.querySelector('.advertencias').innerHTML = '<b>Error:</b> ' + (err.message || err);
+    }
   }
 
   // Lógica de importación de datos
