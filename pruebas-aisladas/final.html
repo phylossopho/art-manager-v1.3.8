@@ -112,82 +112,70 @@
     </div>
   </div>
   <script type="module">
-  import { cargarRecetasPersonalizadas, consultaRapidaMateriales, inicializarAlmacenamientoMateriales } from '../scripts/materiales.js';
-  import { datosMateriales, mapaColores, nivelesPorClase, coloresPorClase } from '../scripts/datos.js';
-  import { simularUso } from '../scripts/simulacion.js';
+  import { cargarRecetasPersonalizadas, inicializarAlmacenamientoMateriales } from '../scripts/materiales.js';
+  import { datosMateriales, mapaColores } from '../scripts/datos.js';
 
   // Estado global simple
   const estado = {
     materialesData: datosMateriales,
     almacenMateriales: {},
-    recetaSeleccionada: null,
-    claseActual: 'Normal',
-    equipoActual: 'Espada',
-    nivelActual: '1',
-    colorActual: 'blanco',
-    baseActual: '',
     recetas: {},
+    recetaFinalKey: '',
   };
 
   inicializarAlmacenamientoMateriales(estado);
 
-  // Cargar recetas
   function cargarRecetas() {
     estado.recetas = cargarRecetasPersonalizadas();
   }
   cargarRecetas();
 
-  // Renderizar controles
+  function getRecetasFinalesDisponibles() {
+    // Devuelve un array de claves de recetas finales (ej: 'Espada|Campeón|4|morado|azul')
+    return Object.keys(estado.recetas).filter(k => {
+      const r = estado.recetas[k];
+      // Considerar solo recetas de equipos "finales" (ejemplo: clase Campeón, Lord, etc.)
+      return ['Campeón','Planewalker','Lord','Noble Lord'].includes(r.clase);
+    });
+  }
+
+  function formatearNombreReceta(key) {
+    const r = estado.recetas[key];
+    if (!r) return key;
+    // Ejemplo: Campeón Morado (Espada, Nivel 4, Base: Azul)
+    return `${r.clase} ${r.color.charAt(0).toUpperCase()+r.color.slice(1)} (${r.equipo}, Nivel ${r.nivel}, Base: ${r.base})`;
+  }
+
   function renderControles() {
     const controles = document.querySelector('.controles');
     controles.innerHTML = '';
-    // Equipo
-    const selectEquipo = document.createElement('select');
-    ['Espada','Pecho','Botas','Casco','Guantes','Cinturón'].forEach(eq => {
+    // Selector de receta final
+    const selectReceta = document.createElement('select');
+    selectReceta.style.minWidth = '260px';
+    const opciones = getRecetasFinalesDisponibles();
+    if (opciones.length === 0) {
       const opt = document.createElement('option');
-      opt.value = eq;
-      opt.textContent = eq;
-      if (eq === estado.equipoActual) opt.selected = true;
-      selectEquipo.appendChild(opt);
-    });
-    selectEquipo.onchange = e => { estado.equipoActual = e.target.value; renderTodo(); };
-    controles.appendChild(selectEquipo);
-    // Clase
-    const selectClase = document.createElement('select');
-    Object.keys(nivelesPorClase).forEach(cl => {
-      const opt = document.createElement('option');
-      opt.value = cl;
-      opt.textContent = cl;
-      if (cl === estado.claseActual) opt.selected = true;
-      selectClase.appendChild(opt);
-    });
-    selectClase.onchange = e => { estado.claseActual = e.target.value; estado.nivelActual = nivelesPorClase[estado.claseActual][0]; estado.colorActual = coloresPorClase[estado.claseActual][0]; renderTodo(); };
-    controles.appendChild(selectClase);
-    // Nivel
-    const selectNivel = document.createElement('select');
-    (nivelesPorClase[estado.claseActual]||[]).forEach(nv => {
-      const opt = document.createElement('option');
-      opt.value = nv;
-      opt.textContent = 'Nivel ' + nv;
-      if (nv === estado.nivelActual) opt.selected = true;
-      selectNivel.appendChild(opt);
-    });
-    selectNivel.onchange = e => { estado.nivelActual = e.target.value; renderTodo(); };
-    controles.appendChild(selectNivel);
-    // Color
-    const selectColor = document.createElement('select');
-    (coloresPorClase[estado.claseActual]||[]).forEach(clr => {
-      const opt = document.createElement('option');
-      opt.value = clr;
-      opt.textContent = clr.charAt(0).toUpperCase()+clr.slice(1);
-      if (clr === estado.colorActual) opt.selected = true;
-      selectColor.appendChild(opt);
-    });
-    selectColor.onchange = e => { estado.colorActual = e.target.value; renderTodo(); };
-    controles.appendChild(selectColor);
+      opt.value = '';
+      opt.textContent = 'No hay recetas finales cargadas';
+      selectReceta.appendChild(opt);
+      selectReceta.disabled = true;
+    } else {
+      const opt0 = document.createElement('option');
+      opt0.value = '';
+      opt0.textContent = 'Selecciona receta final...';
+      selectReceta.appendChild(opt0);
+      opciones.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = formatearNombreReceta(k);
+        if (k === estado.recetaFinalKey) opt.selected = true;
+        selectReceta.appendChild(opt);
+      });
+    }
+    selectReceta.onchange = e => { estado.recetaFinalKey = e.target.value; renderTodo(); };
+    controles.appendChild(selectReceta);
   }
 
-  // Renderizar inventario
   function renderInventario() {
     let html = '<table style="width:100%;font-size:0.98em;margin-bottom:8px;"><thead><tr><th>Material</th><th>Dorado</th><th>Morado</th><th>Azul</th><th>Verde</th><th>Blanco</th></tr></thead><tbody>';
     Object.keys(estado.almacenMateriales).forEach(key => {
@@ -202,39 +190,107 @@
     return html;
   }
 
-  // Calcular ruta óptima (básico: cuántos equipos se pueden hacer y desglose)
-  function calcularRutaOptima() {
-    // Usar consultaRapidaMateriales para el equipo/clase/nivel/color seleccionados
-    estado.claseActual = estado.claseActual || 'Normal';
-    estado.equipoActual = estado.equipoActual || 'Espada';
-    estado.nivelActual = estado.nivelActual || '1';
-    const resultado = consultaRapidaMateriales(estado);
-    return resultado;
+  // --- Lógica de ruta óptima y tiempo ---
+  function calcularRutaYTiempo(recetaKey) {
+    if (!recetaKey || !estado.recetas[recetaKey]) return { pasos: [], tiempoTotal: 0, advertencias: ['Selecciona una receta final válida.'] };
+    const recetaFinal = estado.recetas[recetaKey];
+    // Aquí se debe construir la cadena de producción: nivel 1 blanco → morado → dorado → nivel 2... hasta la receta final
+    // Para simplificar, asumimos que las recetas intermedias existen y están bien definidas
+    // Se recorre desde nivel 1 blanco hasta la receta final, acumulando pasos y tiempos
+    let pasos = [];
+    let advertencias = [];
+    let tiempoTotal = 0;
+    // Buscar la cadena de recetas necesarias
+    // Ejemplo: Normal 1 Blanco → Normal 1 Morado → ... → Campeón Morado
+    // Se asume que la receta final tiene la propiedad 'nivel', 'clase', 'color', 'equipo', 'base'
+    // Se construye la secuencia de recetas necesarias
+    let secuencia = [];
+    // 1. Recetas normales de nivel 1 (blanco, luego morado, luego dorado)
+    for (const color of ['blanco','morado','dorado']) {
+      const k = Object.keys(estado.recetas).find(k => {
+        const r = estado.recetas[k];
+        return r.clase === 'Normal' && r.nivel === '1' && r.color === color && r.equipo === recetaFinal.equipo;
+      });
+      if (k) secuencia.push(k);
+      else advertencias.push(`Falta receta: Normal 1 ${color}`);
+    }
+    // 2. Niveles 2, 3, 4 (dorado)
+    for (let n = 2; n <= 4; n++) {
+      const k = Object.keys(estado.recetas).find(k => {
+        const r = estado.recetas[k];
+        return r.clase === 'Normal' && r.nivel === String(n) && r.color === 'dorado' && r.equipo === recetaFinal.equipo;
+      });
+      if (k) secuencia.push(k);
+      else advertencias.push(`Falta receta: Normal ${n} dorado`);
+    }
+    // 3. Receta final (ej: Campeón Morado)
+    secuencia.push(recetaKey);
+    // Procesar cada paso
+    for (const k of secuencia) {
+      const r = estado.recetas[k];
+      if (!r) continue;
+      // Calcular tiempo estimado (suma de tiempos de materiales, ejemplo: dorado=512h, morado=128h, azul=32h, verde=8h, blanco=2h)
+      const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
+      let tiempo = 0;
+      Object.entries(r.materiales).forEach(([col, cant]) => {
+        tiempo += (tiempos[col] || 0) * (cant || 0);
+      });
+      tiempoTotal += tiempo;
+      pasos.push({
+        nombre: formatearNombreReceta(k),
+        materiales: r.materiales,
+        tiempo,
+        tasaExito: r.tasaExito || r.porcentaje || 100
+      });
+    }
+    return { pasos, tiempoTotal, advertencias };
   }
 
-  // Renderizar todo
+  function formatearTiempo(horas) {
+    if (!horas || isNaN(horas)) return '0h';
+    const meses = Math.floor(horas / (30*24));
+    let resto = horas % (30*24);
+    const semanas = Math.floor(resto / (7*24));
+    resto = resto % (7*24);
+    const dias = Math.floor(resto / 24);
+    const h = resto % 24;
+    let partes = [];
+    if (meses) partes.push(`${meses} mes${meses>1?'es':''}`);
+    if (semanas) partes.push(`${semanas} semana${semanas>1?'s':''}`);
+    if (dias) partes.push(`${dias} día${dias>1?'s':''}`);
+    if (h) partes.push(`${h} h`);
+    return partes.join(', ') || '0h';
+  }
+
   function renderTodo() {
     renderControles();
     // Inventario
     document.querySelector('.panel-inventario').innerHTML = '<div style="font-weight:bold;margin-bottom:6px;">Inventario actual</div>' + renderInventario();
-    // Ruta óptima
-    const ruta = calcularRutaOptima();
+    // Ruta óptima y cronograma
+    const { pasos, tiempoTotal, advertencias } = calcularRutaYTiempo(estado.recetaFinalKey);
     let rutaHtml = '';
-    if (ruta.error) {
-      rutaHtml = `<span style='color:#c00;'>${ruta.error}</span>`;
+    if (!pasos.length) {
+      rutaHtml = `<span style='color:#c00;'>Selecciona una receta final válida.</span>`;
     } else {
-      rutaHtml = `<div><b>Máx. equipos posibles:</b> <span style='color:#1976d2;font-size:1.2em;'>${ruta.maxEquipos}</span></div>`;
-      rutaHtml += '<ul style="margin:8px 0 0 0;padding-left:18px;">';
-      Object.entries(ruta.desglose).forEach(([mat, info]) => {
-        rutaHtml += `<li>${mat}: usados ${info.usados}, restantes ${info.restantes} (${Object.entries(info.porColor).map(([c,v])=>`${v} ${c}`).join(', ')})</li>`;
+      rutaHtml = '<ol style="margin:8px 0 0 0;padding-left:18px;">';
+      pasos.forEach((p, i) => {
+        rutaHtml += `<li><b>${p.nombre}</b> | Materiales: ${Object.entries(p.materiales).filter(([_,v])=>v>0).map(([c,v])=>`${v} ${c}`).join(', ')} | Éxito: ${p.tasaExito}% | Tiempo: <span style='color:#888;'>${formatearTiempo(p.tiempo)}</span></li>`;
       });
-      rutaHtml += '</ul>';
+      rutaHtml += '</ol>';
     }
     document.querySelector('.ruta-optima').innerHTML = rutaHtml;
-    // Cronograma (placeholder)
-    document.querySelector('.cronograma').innerHTML = '<span style="color:#888;">(Próximamente: cálculo de tiempo total y pasos detallados)</span>';
-    // Sugerencias (placeholder)
-    document.querySelector('.sugerencias').innerHTML = '<span style="color:#888;">(Próximamente: advertencias y tips inteligentes)</span>';
+    // Cronograma
+    document.querySelector('.cronograma').innerHTML = `<b>Tiempo total estimado:</b> <span style='color:#1976d2;font-size:1.2em;'>${formatearTiempo(tiempoTotal)}</span> (${tiempoTotal} horas)`;
+    // Sugerencias
+    let sugHtml = '';
+    if (advertencias.length) {
+      sugHtml += '<ul style="color:#c00;">';
+      advertencias.forEach(a => { sugHtml += `<li>${a}</li>`; });
+      sugHtml += '</ul>';
+    } else {
+      sugHtml = '<span style="color:#43a047;">Todo listo para fabricar el equipo final.</span>';
+    }
+    document.querySelector('.sugerencias').innerHTML = sugHtml;
   }
 
   document.addEventListener('DOMContentLoaded', renderTodo);
