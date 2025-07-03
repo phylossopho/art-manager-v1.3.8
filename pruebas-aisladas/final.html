@@ -263,26 +263,25 @@
   function renderControles() {
     const controles = document.querySelector('.controles');
     controles.innerHTML = '';
-    // Filtro de equipo/arma
-    const recetasArray = Array.isArray(estado.recetas) ? estado.recetas : [];
-    const equipos = Array.from(new Set(recetasArray.map(r => r.equipo))).sort();
+    // Escoger equipo (solo los 6 válidos)
+    const equiposValidos = ['espada','pecho','botas','casco','guantes','cinturón'];
     const selectEquipo = document.createElement('select');
     selectEquipo.style.minWidth = '120px';
-    selectEquipo.innerHTML = '<option value="">Filtrar equipo...</option>';
-    equipos.forEach(eq => {
+    selectEquipo.innerHTML = '<option value="">Escoger equipo...</option>';
+    equiposValidos.forEach(eq => {
       const opt = document.createElement('option');
       opt.value = eq;
-      opt.textContent = eq;
+      opt.textContent = eq.charAt(0).toUpperCase() + eq.slice(1);
       if (eq === estado.filtros.equipo) opt.selected = true;
       selectEquipo.appendChild(opt);
     });
     selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
     controles.appendChild(selectEquipo);
     // Selector de receta final (solo si hay recetas)
-    if (recetasArray.length > 0) {
+    if (getRecetasFiltradas().length > 0) {
       const selectReceta = document.createElement('select');
       selectReceta.style.minWidth = '220px';
-      let opciones = recetasArray;
+      let opciones = getRecetasFiltradas();
       if (estado.filtros.equipo) {
         opciones = opciones.filter(r => r.equipo === estado.filtros.equipo);
       }
@@ -329,13 +328,14 @@
     controles.appendChild(btnSimular);
   }
 
-  function renderInventarioFinal(inventarioFinal) {
+  function renderInventarioFinal() {
+    // Mostrar el inventario actual cargado, no el de la simulación
     let html = '';
     Object.keys(estado.almacenMateriales).forEach(key => {
       const mat = key.split(':')[1];
       html += `<tr><td>${mat}</td>`;
       ['dorado','morado','azul','verde','blanco'].forEach(c => {
-        html += `<td>${(inventarioFinal[key] && inventarioFinal[key][c]) ? inventarioFinal[key][c] : 0}</td>`;
+        html += `<td>${estado.almacenMateriales[key][c] ? estado.almacenMateriales[key][c] : 0}</td>`;
       });
       html += '</tr>';
     });
@@ -611,7 +611,7 @@
     document.querySelector('.advertencias').innerHTML = advertencias && advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
     // Inventario final
     const tbodyInv = document.querySelector('.tbody-inventario-final');
-    tbodyInv.innerHTML = renderInventarioFinal(inventarioFinal);
+    tbodyInv.innerHTML = renderInventarioFinal();
   }
 
   // Lógica de importación de datos
@@ -666,6 +666,8 @@
         // Ahora pedir materiales
         fileMateriales.value = '';
         fileMateriales.click();
+        // Inicializar panel de bases
+        initPanelBases();
       } catch (err) {
         showToast('Error al importar recetas: ' + err.message, 'error');
       }
@@ -695,6 +697,8 @@
         showToast('¡Datos importados correctamente! Ya puedes simular.\n' + resumen,'success');
         renderControles();
         renderSimulacion();
+        // Inicializar panel de bases
+        initPanelBases();
       } catch (err) {
         showToast('Error al importar materiales: ' + err.message, 'error');
       }
@@ -704,16 +708,16 @@
 
   // Inicializar selects de bases
   function initPanelBases() {
-    const recetasArray = Array.isArray(estado.recetas) ? estado.recetas : [];
-    const equipos = Array.from(new Set(recetasArray.map(r=>r.equipo))).sort();
-    const clases = Array.from(new Set(recetasArray.map(r=>r.clase))).sort();
-    const niveles = Array.from(new Set(recetasArray.map(r=>r.nivel))).sort((a,b)=>a-b);
-    const colores = Array.from(new Set(recetasArray.map(r=>r.color))).sort();
+    // Usar solo los valores válidos para los selects
+    const equipos = ['espada','pecho','botas','casco','guantes','cinturón'];
+    const clases = ['Normal','Campeón','Planewalker','Lord','Noble Lord'];
+    const niveles = ['1','2','3','4','5'];
+    const colores = ['dorado','morado','azul','verde','blanco'];
     const selEquipo = document.getElementById('base-equipo');
     const selClase = document.getElementById('base-clase');
     const selNivel = document.getElementById('base-nivel');
     const selColor = document.getElementById('base-color');
-    selEquipo.innerHTML = equipos.map(e=>`<option value='${e}'>${e}</option>`).join('');
+    selEquipo.innerHTML = equipos.map(e=>`<option value='${e}'>${e.charAt(0).toUpperCase()+e.slice(1)}</option>`).join('');
     selClase.innerHTML = clases.map(c=>`<option value='${c}'>${c}</option>`).join('');
     selNivel.innerHTML = niveles.map(n=>`<option value='${n}'>${n}</option>`).join('');
     selColor.innerHTML = colores.map(c=>`<option value='${c}'>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('');
