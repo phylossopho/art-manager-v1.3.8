@@ -590,9 +590,9 @@
       // Helper: simular fabricación recursiva de un equipo
       function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado, visitados) {
         visitados = visitados || [];
-        const recetaId = `${receta.clase}|${receta.nivel}|${receta.color}`;
+        const recetaId = `${receta?.clase||''}|${receta?.nivel||''}|${receta?.color||''}`;
         if (visitados.includes(recetaId)) {
-          advertencias.push(`Ciclo detectado: la receta ${receta.clase} nivel ${receta.nivel} color ${receta.color} ya fue procesada en esta cadena. Recursión detenida.`);
+          advertencias.push(`Ciclo detectado: la receta ${receta?.clase||''} nivel ${receta?.nivel||''} color ${receta?.color||''} ya fue procesada en esta cadena. Recursión detenida.`);
           return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
         }
         visitados = [...visitados, recetaId];
@@ -607,6 +607,10 @@
             advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
           } else {
             const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
+            if (!resBase || typeof resBase !== 'object') {
+              advertencias.push('Error al fabricar la base: resultado inválido.');
+              return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+            }
             inventarioActual = resBase.inventario;
             rutaParcial = resBase.ruta;
             tiempoAcumulado = resBase.tiempo;
@@ -670,12 +674,18 @@
           rutaMorado[rutaMorado.length-1].bifurcacion = true;
           let recetaMorado = buscarReceta(receta.clase, receta.nivel, 'morado');
           let resMorado = fabricarRecursivo(recetaMorado, invMorado, rutaMorado, tMorado, visitados);
+          if (!resMorado || typeof resMorado !== 'object') {
+            resMorado = { ruta: rutaMorado, inventario: invMorado, tiempo: tMorado };
+          }
           rutaDorado[rutaDorado.length-1].bifurcacion = true;
           let recetaDorado = buscarReceta(receta.clase, receta.nivel, 'dorado');
           let resDorado = fabricarRecursivo(recetaDorado, invDorado, rutaDorado, tDorado, visitados);
+          if (!resDorado || typeof resDorado !== 'object') {
+            resDorado = { ruta: rutaDorado, inventario: invDorado, tiempo: tDorado };
+          }
           rutas.push(resMorado);
           rutas.push(resDorado);
-          return;
+          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado }; // Siempre retorna objeto
         }
         return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
       }
