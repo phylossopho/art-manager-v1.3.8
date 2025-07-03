@@ -264,7 +264,8 @@
     const controles = document.querySelector('.controles');
     controles.innerHTML = '';
     // Filtro de equipo/arma
-    const equipos = Array.from(new Set(estado.recetas.map(r => r.equipo))).sort();
+    const recetasArray = Array.isArray(estado.recetas) ? estado.recetas : [];
+    const equipos = Array.from(new Set(recetasArray.map(r => r.equipo))).sort();
     const selectEquipo = document.createElement('select');
     selectEquipo.style.minWidth = '120px';
     selectEquipo.innerHTML = '<option value="">Filtrar equipo...</option>';
@@ -278,9 +279,7 @@
     selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
     controles.appendChild(selectEquipo);
     // Selector de receta final (filtrado por equipo)
-    const selectReceta = document.createElement('select');
-    selectReceta.style.minWidth = '260px';
-    let opciones = estado.recetas;
+    let opciones = recetasArray;
     if (estado.filtros.equipo) {
       opciones = opciones.filter(r => r.equipo === estado.filtros.equipo);
     }
@@ -690,10 +689,11 @@
 
   // Inicializar selects de bases
   function initPanelBases() {
-    const equipos = Array.from(new Set(estado.recetas.map(r=>r.equipo))).sort();
-    const clases = Array.from(new Set(estado.recetas.map(r=>r.clase))).sort();
-    const niveles = Array.from(new Set(estado.recetas.map(r=>r.nivel))).sort((a,b)=>a-b);
-    const colores = Array.from(new Set(estado.recetas.map(r=>r.color))).sort();
+    const recetasArray = Array.isArray(estado.recetas) ? estado.recetas : [];
+    const equipos = Array.from(new Set(recetasArray.map(r=>r.equipo))).sort();
+    const clases = Array.from(new Set(recetasArray.map(r=>r.clase))).sort();
+    const niveles = Array.from(new Set(recetasArray.map(r=>r.nivel))).sort((a,b)=>a-b);
+    const colores = Array.from(new Set(recetasArray.map(r=>r.color))).sort();
     const selEquipo = document.getElementById('base-equipo');
     const selClase = document.getElementById('base-clase');
     const selNivel = document.getElementById('base-nivel');
