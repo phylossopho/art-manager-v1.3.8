@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f6fa;
+      background: #e0e1e6;
       color: #222;
       margin: 0;
       padding: 0;
@@ -637,15 +637,10 @@
     sugDiv.innerHTML = sugerencias.length ? sugerencias.map(s=>`<div>${s}</div>`).join('') : '<span style="color:#43a047;">Ruta óptima generada con tu inventario actual.</span>';
   }
 
-  // Integrar con el render principal
-  const oldRenderTodo = renderTodo;
-  renderTodo = function() {
-    oldRenderTodo();
+  document.addEventListener('DOMContentLoaded', () => {
     renderControles();
     renderSimulacion();
-  };
-
-  document.addEventListener('DOMContentLoaded', renderTodo);
+  });
   </script>
 </body>
 </html> 
