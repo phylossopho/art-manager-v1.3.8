@@ -256,8 +256,16 @@
   }
 
   function formatearNombreReceta(r) {
-    if (!r) return '';
-    return `${r.clase} ${r.color.charAt(0).toUpperCase()+r.color.slice(1)} (${r.equipo}, Nivel ${r.nivel}, Base: ${r.base ? (r.base.clase + ' ' + r.base.nivel + ' ' + (r.base.color||'')) : '-'})`;
+    if (!r || typeof r !== 'object') return '';
+    const clase = r.clase || '';
+    const color = r.color ? (r.color.charAt(0).toUpperCase() + r.color.slice(1)) : '';
+    const equipo = r.equipo || '';
+    const nivel = r.nivel || '';
+    let base = '-';
+    if (r.base && typeof r.base === 'object') {
+      base = (r.base.clase || '') + ' ' + (r.base.nivel || '') + ' ' + (r.base.color || '');
+    }
+    return `${clase} ${color} (${equipo}, Nivel ${nivel}, Base: ${base})`;
   }
 
   function renderControles() {
