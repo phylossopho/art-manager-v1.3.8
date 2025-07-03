@@ -597,16 +597,20 @@
           return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
         }
         // Buscar si ya existe una base fabricada de cualquier equipo y color compatible
-        if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color) {
-          // Buscar en inventario cualquier base compatible
+        if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color && receta.base.equipo) {
+          // Buscar en inventario solo bases de equipos completos (no materiales)
           let baseEncontrada = null;
           for (const key of Object.keys(inventarioActual)) {
             const partes = key.split(':');
             if (partes.length === 2) {
-              const matEquipo = partes[1];
-              // Si hay al menos 1 base de la clase/nivel/color requerido
-              if (inventarioActual[key][receta.base.color] && inventarioActual[key][receta.base.color] > 0) {
-                baseEncontrada = { equipo: matEquipo, key };
+              const equipoKey = partes[1].toLowerCase();
+              // Comparar equipo, clase, nivel y color
+              if (
+                equipoKey === receta.base.equipo.toLowerCase() &&
+                inventarioActual[key][receta.base.color] &&
+                inventarioActual[key][receta.base.color] > 0
+              ) {
+                baseEncontrada = { equipo: equipoKey, key };
                 break;
               }
             }
@@ -616,16 +620,16 @@
             inventarioActual[baseEncontrada.key][receta.base.color]--;
             rutaParcial.push({
               paso: rutaParcial.length+1,
-              descripcion: `Usar base existente: ${baseEncontrada.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`,
+              descripcion: `Usar base existente: ${receta.base.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`,
               materiales: [],
               tiempo: 0,
               bifurcacion: false
             });
           } else {
             // Fabricar la base normalmente
-            const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color);
+            const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color, receta.base.equipo);
             if (!recetaBase) {
-              advertencias.push(`Falta receta base: ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
+              advertencias.push(`Falta receta base: ${receta.base.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
             } else {
               const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
               if (!resBase || typeof resBase !== 'object') {
@@ -639,7 +643,7 @@
           }
         }
         // Procesar materiales de la receta actual
-        let paso = { paso: rutaParcial.length+1, descripcion: `${receta.clase} ${receta.equipo||''} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
+        let paso = { paso: rutaParcial.length+1, descripcion: `Fabricar ${receta.equipo||''} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
         let tiempoPaso = 0;
         let exito = true;
         const mats = materialesEquipo;
