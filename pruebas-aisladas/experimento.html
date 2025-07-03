@@ -695,6 +695,7 @@ function abrirModalSeleccionRecetas() {
   cerrar.style.cursor = 'pointer';
   cerrar.onclick = function() {
     document.body.removeChild(modal);
+    document.getElementById('tabla-analizador-tiempo').innerHTML = '';
   };
 
   inner.innerHTML = `<div style='font-size:1.15em;font-weight:bold;margin-bottom:12px;'>Selecciona recetas de equipo Normal</div>${tabla}`;
@@ -825,12 +826,14 @@ btnAbrir.addEventListener('click', () => {
 
 btnCerrar.addEventListener('click', () => {
     modal.style.display = 'none';
+    document.getElementById('tabla-analizador-tiempo').innerHTML = '';
 });
 
 // Cerrar modal al hacer click fuera del contenido
 window.addEventListener('click', (e) => {
     if (e.target === modal) {
         modal.style.display = 'none';
+        document.getElementById('tabla-analizador-tiempo').innerHTML = '';
     }
 });
 </script>
