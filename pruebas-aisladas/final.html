@@ -170,12 +170,8 @@
         <thead>
           <tr>
             <th>Paso</th>
-            <th>Acción</th>
-            <th>Color</th>
-            <th>Cantidad</th>
-            <th>Faltante</th>
-            <th>Resultado</th>
-            <th>Éxito</th>
+            <th>Descripción</th>
+            <th>Materiales usados</th>
           </tr>
         </thead>
         <tbody class="tbody-pasos">
@@ -714,16 +710,11 @@
         document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> No se pudo simular la ruta. Verifica que existan materiales y recetas suficientes.';
         return;
       }
-      rutas.forEach((rutaObj, idx) => {
-        rutaObj.ruta.forEach(p => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${p.paso}</td><td>${p.accion}</td><td colspan="2">${p.materiales.join(', ')}</td><td></td><td>${p.bifurcacion ? '¿Morado o Dorado?' : ''}</td><td></td>`;
-          tbody.appendChild(tr);
-        });
-        // Fila resumen
-        const trResumen = document.createElement('tr');
-        trResumen.innerHTML = `<td colspan="7" style="background:#e0e1e6;font-weight:bold;">Ruta ${idx+1}: Tiempo total: ${formatearTiempo(rutaObj.tiempo)}</td>`;
-        tbody.appendChild(trResumen);
+      // Renderizar solo las columnas requeridas: Paso | Descripción | Materiales usados
+      rutas[0].ruta.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.paso}</td><td>${p.descripcion || ''}</td><td>${(p.materiales && p.materiales.length) ? p.materiales.join(', ') : ''}</td>`;
+        tbody.appendChild(tr);
       });
       // Inventario final
       const tbodyInv = document.querySelector('.tbody-inventario-final');
