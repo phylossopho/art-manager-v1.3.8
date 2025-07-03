@@ -325,6 +325,8 @@
     <button id="confirm-borrar-cancelar" style="background:#e53935;color:#fff;font-size:1.2rem;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;">NO ❌</button>
   </div>
 </div>
+<!-- Botón ultra oculto para ir a final.html -->
+<button id="goto-final" title="Ir a la interfaz final" style="position:fixed;bottom:8px;right:12px;z-index:2000;width:12px;height:12px;background:#f5f6fa;border:none;cursor:pointer;opacity:0.01;transition:opacity 0.2s, background 0.2s;border-radius:50%;outline:none;"></button>
 <script>
 const form = document.getElementById('receta-form');
 const tabla = document.getElementById('tabla-recetas');
@@ -806,6 +808,20 @@ const btnAbrir = document.getElementById('abrir-analizador-tiempo');
 btnAbrir.addEventListener('click', () => {
     abrirModalSeleccionRecetas();
 });
+
+// Botón ultra oculto para ir a final.html
+const btnFinal = document.getElementById('goto-final');
+btnFinal.onclick = () => { window.open('final.html', '_blank'); };
+btnFinal.onmouseover = () => { btnFinal.style.opacity = '0.7'; };
+btnFinal.onmouseout = () => { btnFinal.style.opacity = '0.01'; };
+// Cambia el color del botón según el background del body
+const observer = new MutationObserver(() => {
+  const bg = getComputedStyle(document.body).backgroundColor;
+  btnFinal.style.background = bg;
+});
+observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+// Inicializar color
+btnFinal.style.background = getComputedStyle(document.body).backgroundColor;
 </script>
 </body>
 </html> 

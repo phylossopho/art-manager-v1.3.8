@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ruta Óptima de Producción - Deck Heroes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      width: 95vw;
+      max-width: 900px;
+      margin: 32px auto 0 auto;
+      padding: 32px 18px 32px 18px;
+    }
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+    }
+    .desc {
+      text-align: center;
+      color: #555;
+      margin-bottom: 28px;
+      font-size: 1.08em;
+    }
+    .panel {
+      background: #f5f6fa;
+      border-radius: 8px;
+      padding: 18px 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .panel-title {
+      font-weight: bold;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+    .ruta-optima, .cronograma {
+      min-height: 60px;
+      color: #333;
+      font-size: 1.08em;
+    }
+    .controles {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .controles > * {
+      font-size: 1em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      background: #f5f6fa;
+      color: #222;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .controles > *:hover {
+      background: #e0e1e6;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 12px 2vw; }
+      .panel { padding: 10px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ruta Óptima de Producción</h1>
+    <div class="desc">
+      Aquí podrás ver la mejor secuencia de pasos para fabricar tu equipo, optimizando materiales y tiempo.<br>
+      Próximamente: simulador interactivo, cronograma y sugerencias inteligentes.
+    </div>
+    <div class="controles">
+      <!-- Aquí irán los controles para seleccionar objetivo, cargar inventario, etc. -->
+      <button disabled>Seleccionar objetivo</button>
+      <button disabled>Cargar inventario</button>
+      <button disabled>Simular ruta óptima</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Ruta óptima sugerida</div>
+      <div class="ruta-optima">
+        <!-- Aquí se mostrará la ruta óptima paso a paso -->
+        (Próximamente)
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Cronograma estimado</div>
+      <div class="cronograma">
+        <!-- Aquí se mostrará el cronograma de producción -->
+        (Próximamente)
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Advertencias y sugerencias</div>
+      <div class="sugerencias">
+        <!-- Aquí se mostrarán advertencias, faltantes y tips -->
+        (Próximamente)
+      </div>
+    </div>
+  </div>
+</body>
+</html> 
