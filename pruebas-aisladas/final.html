@@ -153,6 +153,17 @@
     <div style="margin:18px 0 8px 0;">
       <label style="font-weight:normal;cursor:pointer;"><input type="checkbox" id="chk-desmantelar" style="margin-right:6px;">Considerar desmantelado de equipos dorados de nivel 1</label>
     </div>
+    <div id="panel-bases" style="background:#f5f6fa;padding:10px 8px 8px 8px;margin-bottom:18px;border-radius:8px;">
+      <b>Bases disponibles:</b>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+        <select id="base-equipo"></select>
+        <select id="base-clase"></select>
+        <select id="base-nivel"></select>
+        <select id="base-color"></select>
+        <button id="btn-agregar-base" type="button">Agregar base</button>
+      </div>
+      <table id="tabla-bases" style="width:auto;font-size:0.98em;"><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th></th></tr></thead><tbody></tbody></table>
+    </div>
     <div class="simulacion-grid">
       <div class="simulacion-col">
         <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Pasos de simulación</div>
@@ -213,6 +224,7 @@
     },
     seleccionBaseAlternativa: '', // equipo base alternativo elegido
     seleccionColorBase: '', // color de base elegido en bifurcación
+    basesUsuario: [], // array de bases agregadas por el usuario
   };
 
   // Cargar recetas y materiales automáticamente si existen
@@ -676,7 +688,52 @@
     reader.readAsText(file);
   };
 
+  // Inicializar selects de bases
+  function initPanelBases() {
+    const equipos = Array.from(new Set(estado.recetas.map(r=>r.equipo))).sort();
+    const clases = Array.from(new Set(estado.recetas.map(r=>r.clase))).sort();
+    const niveles = Array.from(new Set(estado.recetas.map(r=>r.nivel))).sort((a,b)=>a-b);
+    const colores = Array.from(new Set(estado.recetas.map(r=>r.color))).sort();
+    const selEquipo = document.getElementById('base-equipo');
+    const selClase = document.getElementById('base-clase');
+    const selNivel = document.getElementById('base-nivel');
+    const selColor = document.getElementById('base-color');
+    selEquipo.innerHTML = equipos.map(e=>`<option value='${e}'>${e}</option>`).join('');
+    selClase.innerHTML = clases.map(c=>`<option value='${c}'>${c}</option>`).join('');
+    selNivel.innerHTML = niveles.map(n=>`<option value='${n}'>${n}</option>`).join('');
+    selColor.innerHTML = colores.map(c=>`<option value='${c}'>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('');
+    document.getElementById('btn-agregar-base').onclick = () => {
+      const base = {
+        equipo: selEquipo.value,
+        clase: selClase.value,
+        nivel: selNivel.value,
+        color: selColor.value
+      };
+      // Evitar duplicados
+      if (!estado.basesUsuario.some(b=>b.equipo===base.equipo&&b.clase===base.clase&&b.nivel===base.nivel&&b.color===base.color)) {
+        estado.basesUsuario.push(base);
+        renderTablaBases();
+        renderSimulacion();
+      }
+    };
+    renderTablaBases();
+  }
+  function renderTablaBases() {
+    const tbody = document.querySelector('#tabla-bases tbody');
+    tbody.innerHTML = '';
+    estado.basesUsuario.forEach((b,idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${b.equipo}</td><td>${b.clase}</td><td>${b.nivel}</td><td>${b.color.charAt(0).toUpperCase()+b.color.slice(1)}</td><td><button data-idx='${idx}' type='button'>Quitar</button></td>`;
+      tr.querySelector('button').onclick = e => {
+        estado.basesUsuario.splice(idx,1);
+        renderTablaBases();
+        renderSimulacion();
+      };
+      tbody.appendChild(tr);
+    });
+  }
   document.addEventListener('DOMContentLoaded', () => {
+    initPanelBases();
     renderControles();
     renderSimulacion();
   });
