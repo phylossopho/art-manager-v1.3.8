@@ -583,6 +583,10 @@
 
     <!-- Modal gestor de recetas (solo contenedor limpio, sin estilos ni botones antiguos) -->
     <div id="gestor-recetas-modal" class="modal" style="display:none;"><div id="contenido-gestor-recetas"></div></div>
+
+    <!-- Botones ultra ocultos para acceso a experimentos y final -->
+    <button id="goto-experimentos" title="Ir a experimentos" style="position:fixed;bottom:10px;left:10px;z-index:2000;width:12px;height:12px;background:#f5f6fa;border:none;cursor:pointer;opacity:0.01;transition:opacity 0.2s, background 0.2s;border-radius:50%;outline:none;"></button>
+    <button id="goto-final" title="Ir a la interfaz final" style="position:fixed;bottom:10px;right:10px;z-index:2000;width:12px;height:12px;background:#f5f6fa;border:none;cursor:pointer;opacity:0.01;transition:opacity 0.2s, background 0.2s;border-radius:50%;outline:none;"></button>
 </div>
 
 <!-- === SCRIPTS === -->
@@ -666,6 +670,25 @@
             }
         });
     });
+
+    // Lógica para los botones ultra ocultos
+    const btnExp = document.getElementById('goto-experimentos');
+    const btnFinal = document.getElementById('goto-final');
+    btnExp.onclick = () => { window.open('pruebas-aisladas/experimento.html', '_blank'); };
+    btnFinal.onclick = () => { window.open('pruebas-aisladas/final.html', '_blank'); };
+    btnExp.onmouseover = () => { btnExp.style.opacity = '0.7'; };
+    btnExp.onmouseout = () => { btnExp.style.opacity = '0.01'; };
+    btnFinal.onmouseover = () => { btnFinal.style.opacity = '0.7'; };
+    btnFinal.onmouseout = () => { btnFinal.style.opacity = '0.01'; };
+    // Sincronizar color con el fondo del body
+    function syncBtnBg() {
+      const bg = getComputedStyle(document.body).backgroundColor;
+      btnExp.style.background = bg;
+      btnFinal.style.background = bg;
+    }
+    const observer = new MutationObserver(syncBtnBg);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+    syncBtnBg();
 </script>
 
 <!-- Contenedor de toasts -->
@@ -678,8 +701,6 @@
     </div>
     <div class="toast-body"></div>
 </div>
-
-<button onclick="window.open('pruebas-aisladas/experimento.html','_blank')" style="position:fixed;top:10px;left:10px;z-index:2000;width:3px;height:3px;background:#ff0000;border:none;cursor:pointer;border-radius:0;"></button>
 
 </body>
 </html>
