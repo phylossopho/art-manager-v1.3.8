@@ -652,6 +652,7 @@
   // Función toast
   function showToast(mensaje, tipo = 'info') {
     const toast = document.getElementById('toast');
+    console.log('Toast:', mensaje, tipo); // Debug
     toast.textContent = mensaje;
     toast.style.display = 'block';
     toast.className = 'show';
@@ -663,7 +664,15 @@
     }, 2600);
   }
 
+  // Toast de prueba al cargar la página
+  document.addEventListener('DOMContentLoaded', () => {
+    showToast('Toast de prueba: la función está activa', 'info');
+    renderControles();
+    renderSimulacion();
+  });
+
   btnCargar.onclick = async () => {
+    console.log('Click en btn-cargar-datos');
     showToast('Primero selecciona el archivo de RECETAS (.json), luego el de MATERIALES (.json)','info');
     fileRecetas.value = '';
     fileMateriales.value = '';
@@ -671,8 +680,9 @@
   };
 
   fileRecetas.onchange = function(e) {
+    console.log('fileRecetas.onchange');
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) { console.log('No file en recetas'); return; }
     const reader = new FileReader();
     reader.onload = function(evt) {
       try {
@@ -702,8 +712,9 @@
   };
 
   fileMateriales.onchange = function(e) {
+    console.log('fileMateriales.onchange');
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) { console.log('No file en materiales'); return; }
     const reader = new FileReader();
     reader.onload = function(evt) {
       try {
