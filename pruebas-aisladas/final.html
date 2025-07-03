@@ -278,32 +278,42 @@
     });
     selectEquipo.onchange = e => { estado.filtros.equipo = e.target.value; renderControles(); renderSimulacion(); };
     controles.appendChild(selectEquipo);
-    // Selector de receta final (filtrado por equipo)
-    let opciones = recetasArray;
-    if (estado.filtros.equipo) {
-      opciones = opciones.filter(r => r.equipo === estado.filtros.equipo);
-    }
-    if (!opciones || opciones.length === 0) {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = 'No hay recetas finales disponibles';
-      selectReceta.appendChild(opt);
-      selectReceta.disabled = true;
-    } else {
-      const opt0 = document.createElement('option');
-      opt0.value = '';
-      opt0.textContent = 'Selecciona receta final...';
-      selectReceta.appendChild(opt0);
-      opciones.forEach((r, idx) => {
+    // Selector de receta final (solo si hay recetas)
+    if (recetasArray.length > 0) {
+      const selectReceta = document.createElement('select');
+      selectReceta.style.minWidth = '220px';
+      let opciones = recetasArray;
+      if (estado.filtros.equipo) {
+        opciones = opciones.filter(r => r.equipo === estado.filtros.equipo);
+      }
+      if (!opciones || opciones.length === 0) {
         const opt = document.createElement('option');
-        opt.value = estado.recetas.indexOf(r);
-        opt.textContent = formatearNombreReceta(r);
-        if (estado.recetas.indexOf(r) == estado.recetaFinalIndex) opt.selected = true;
+        opt.value = '';
+        opt.textContent = 'No hay recetas finales disponibles';
         selectReceta.appendChild(opt);
-      });
+        selectReceta.disabled = true;
+      } else {
+        const opt0 = document.createElement('option');
+        opt0.value = '';
+        opt0.textContent = 'Selecciona receta final...';
+        selectReceta.appendChild(opt0);
+        opciones.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = estado.recetas.indexOf(r);
+          opt.textContent = formatearNombreReceta(r);
+          if (estado.recetas.indexOf(r) == estado.recetaFinalIndex) opt.selected = true;
+          selectReceta.appendChild(opt);
+        });
+      }
+      selectReceta.onchange = e => { estado.recetaFinalIndex = e.target.value; renderSimulacion(); };
+      controles.appendChild(selectReceta);
+    } else {
+      const span = document.createElement('span');
+      span.textContent = 'Primero importa las recetas para simular.';
+      span.style.marginLeft = '12px';
+      span.style.color = '#c62828';
+      controles.appendChild(span);
     }
-    selectReceta.onchange = e => { estado.recetaFinalIndex = e.target.value; renderSimulacion(); };
-    controles.appendChild(selectReceta);
     // Botón simular ruta óptima
     const btnSimular = document.createElement('button');
     btnSimular.textContent = 'Simular ruta óptima';
