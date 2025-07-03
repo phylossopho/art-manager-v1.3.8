@@ -1,7 +1,6 @@
 // scripts/arte.js - INICIO
 import { mapaColores } from './datos.js';
 import * as modales from './modales.js';
-import { datosMateriales, nivelesPorClase, imagenesEquipos } from './datos.js';
 
 let equiposSimulados = [];
 window.equiposSimulados = equiposSimulados;
@@ -204,32 +203,6 @@ export function generarTablaArte() {
     });
 
     arteTable.appendChild(table);
-}
-
-// Genera una tabla de todos los equipos normales de nivel 1 a 5
-export function renderTablaEquiposNormales(containerId) {
-    const cont = document.getElementById(containerId);
-    if (!cont) return;
-    cont.innerHTML = '';
-    const equipos = Object.keys(datosMateriales['Normal']);
-    const niveles = nivelesPorClase['Normal'];
-    // Encabezados
-    let html = `<table style='width:100%;border-collapse:collapse;'>`;
-    html += `<thead><tr><th>Equipo</th><th>Nivel</th><th>Material 1</th><th>Material 2</th><th>Material 3</th><th>Material 4</th></tr></thead><tbody>`;
-    equipos.forEach(equipo => {
-        niveles.forEach(nivel => {
-            const mats = datosMateriales['Normal'][equipo];
-            html += `<tr>`;
-            html += `<td style='font-weight:bold;'><img src='images/${imagenesEquipos[equipo]}' alt='${equipo}' style='width:28px;vertical-align:middle;margin-right:6px;'>${equipo}</td>`;
-            html += `<td>${nivel}</td>`;
-            for (let i = 0; i < 4; i++) {
-                html += `<td>${mats[i]}</td>`;
-            }
-            html += `</tr>`;
-        });
-    });
-    html += `</tbody></table>`;
-    cont.innerHTML = html;
 }
 
 // scripts/arte.js - FIN

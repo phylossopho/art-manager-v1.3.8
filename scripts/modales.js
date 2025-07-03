@@ -36,7 +36,7 @@ export function mostrarMensaje(titulo, mensaje, tipo = "info", codigo = null) {
     setTimeout(() => {
         toast.style.display = 'block';
     }, 10);
-
+    
     // Animación de aparición (500ms)
     setTimeout(() => {
         toast.classList.add('show');
