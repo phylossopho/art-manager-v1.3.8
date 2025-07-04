@@ -210,6 +210,8 @@
     seleccionBaseAlternativa: '', // equipo base alternativo elegido
     seleccionColorBase: '', // color de base elegido en bifurcación
   };
+  
+  console.log('Debug - estado.materialesData cargado:', estado.materialesData);
 
   // Cargar recetas y materiales automáticamente si existen
   function cargarDatosUsuario() {
@@ -780,6 +782,8 @@
     // Obtener materiales del equipo
     const materialesEquipo = estado.materialesData[receta.clase]?.[receta.equipo] || estado.materialesData['Normal']?.[receta.equipo] || [];
     console.log('Debug - materialesEquipo:', materialesEquipo, 'para receta:', receta);
+    console.log('Debug - estado.materialesData keys:', Object.keys(estado.materialesData || {}));
+    console.log('Debug - receta.clase:', receta.clase, 'receta.equipo:', receta.equipo);
     let matIdx = 0;
     
     for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
