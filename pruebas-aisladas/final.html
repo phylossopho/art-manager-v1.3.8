@@ -780,17 +780,45 @@
     let exito = true;
     
     // Obtener materiales del equipo
-    const materialesEquipo = estado.materialesData[receta.clase]?.[receta.equipo] || estado.materialesData['Normal']?.[receta.equipo] || [];
+    // Mapear clases a las claves correctas de datosMateriales
+    let claseAlmacen = receta.clase;
+    if (receta.clase === "Campeón" || receta.clase === "Planewalker") {
+      claseAlmacen = "Campeón y Planewalker";
+    } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
+      claseAlmacen = "Lord y Noble Lord";
+    }
+    
+    // Si no hay equipo definido, usar un equipo por defecto basado en la clase
+    let equipoUsar = receta.equipo;
+    if (!equipoUsar) {
+      if (receta.clase === "Normal") {
+        equipoUsar = "Espada"; // Equipo por defecto para Normal
+      } else if (receta.clase === "Campeón" || receta.clase === "Planewalker") {
+        equipoUsar = "Espada"; // Equipo por defecto para Campeón/Planewalker
+      } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
+        // Para Lord/Noble Lord no necesitamos equipo específico, usan 'common'
+        equipoUsar = "common";
+      }
+    }
+    
+    let materialesEquipo = [];
+    if (claseAlmacen === "Lord y Noble Lord") {
+      materialesEquipo = estado.materialesData[claseAlmacen]?.common || [];
+    } else {
+      materialesEquipo = estado.materialesData[claseAlmacen]?.[equipoUsar] || estado.materialesData['Normal']?.[equipoUsar] || [];
+    }
+    
     console.log('Debug - materialesEquipo:', materialesEquipo, 'para receta:', receta);
     console.log('Debug - estado.materialesData keys:', Object.keys(estado.materialesData || {}));
-    console.log('Debug - receta.clase:', receta.clase, 'receta.equipo:', receta.equipo);
+    console.log('Debug - receta.clase:', receta.clase, 'receta.equipo:', receta.equipo, 'claseAlmacen:', claseAlmacen, 'equipoUsar:', equipoUsar);
+    console.log('Debug - receta completa:', JSON.stringify(receta, null, 2));
     let matIdx = 0;
     
     for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
       if (!cantidad || cantidad <= 0) continue;
       for (let i = 0; i < cantidad; i++) {
         const matName = materialesEquipo[matIdx % materialesEquipo.length] || 'Material desconocido';
-        const key = `Normal:${matName}`;
+        const key = `${claseAlmacen}:${matName}`;
         console.log('Debug - matName:', matName, 'key:', key, 'matIdx:', matIdx);
         // Asegurar que el inventario tenga la estructura correcta
         if (!inventarioActual[key]) {
