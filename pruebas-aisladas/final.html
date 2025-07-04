@@ -153,17 +153,6 @@
     <div style="margin:18px 0 8px 0;">
       <label style="font-weight:normal;cursor:pointer;"><input type="checkbox" id="chk-desmantelar" style="margin-right:6px;">Considerar desmantelado de equipos dorados de nivel 1</label>
     </div>
-    <div id="panel-bases" style="background:#f5f6fa;padding:10px 8px 8px 8px;margin-bottom:18px;border-radius:8px;">
-      <b>Bases disponibles:</b>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
-        <select id="base-equipo"></select>
-        <select id="base-clase"></select>
-        <select id="base-nivel"></select>
-        <select id="base-color"></select>
-        <button id="btn-agregar-base" type="button">Agregar base</button>
-      </div>
-      <table id="tabla-bases" style="width:auto;font-size:0.98em;"><thead><tr><th>Equipo</th><th>Clase</th><th>Nivel</th><th>Color</th><th></th></tr></thead><tbody></tbody></table>
-    </div>
     <div id="simulacion-columna-unica">
       <div style="font-weight:bold;font-size:1.12em;margin-bottom:8px;">Pasos de simulación</div>
       <table class="tabla-pasos">
@@ -220,7 +209,6 @@
     },
     seleccionBaseAlternativa: '', // equipo base alternativo elegido
     seleccionColorBase: '', // color de base elegido en bifurcación
-    basesUsuario: [], // array de bases agregadas por el usuario
   };
 
   // Cargar recetas y materiales automáticamente si existen
@@ -549,152 +537,104 @@
   // === SIMULACIÓN DE RUTA ÓPTIMA UNIVERSAL POR EQUIPO ===
   function simularRutaOptima() {
     try {
-      // 1. Obtener selección
-      const idxReceta = parseInt(estado.recetaFinalIndex);
-      if (isNaN(idxReceta) || !estado.recetas[idxReceta]) {
+      if (!estado.recetaFinalIndex || estado.recetaFinalIndex === '') {
         showToast('Selecciona una receta final válida.','error');
-        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> Selecciona una receta final válida.';
         return;
       }
-      const recetaFinal = estado.recetas[idxReceta];
-      // Obtener equipo seleccionado
-      const equipo = estado.filtros.equipo;
-      if (!equipo) {
-        showToast('Selecciona un equipo antes de simular.','error');
-        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> Selecciona un equipo antes de simular.';
+      const recetaFinal = estado.recetas[parseInt(estado.recetaFinalIndex)];
+      if (!recetaFinal) {
+        showToast('Receta final no encontrada.','error');
         return;
       }
-      // Obtener lista de materiales para el equipo seleccionado
-      const materialesEquipo = (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo.charAt(0).toUpperCase() + equipo.slice(1)])
-        || (estado.materialesData && estado.materialesData['Normal'] && estado.materialesData['Normal'][equipo])
-        || [];
-      if (!materialesEquipo.length) {
-        showToast('No se encontraron materiales para el equipo seleccionado.','error');
-        document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> No se encontraron materiales para el equipo seleccionado.';
-        return;
-      }
-      // 2. Copia profunda del inventario
+      
+      // Limpiar arrays
+      rutas = [];
+      advertencias = [];
+      
+      // Obtener materiales del equipo seleccionado
+      const equipo = recetaFinal.equipo;
+      const materialesEquipo = estado.materialesData[recetaFinal.clase]?.[equipo] || estado.materialesData['Normal']?.[equipo] || [];
+      
+      // Copia profunda del inventario
       let inventario = JSON.parse(JSON.stringify(estado.almacenMateriales));
-      let advertencias = [];
-      let rutas = [];
-
-      // Helper: buscar receta exacta por clase, nivel, color
-      function buscarReceta(clase, nivel, color) {
-        return estado.recetas.find(r => r.clase === clase && String(r.nivel) === String(nivel) && r.color === color);
-      }
-
-      // Helper: simular fabricación recursiva de un equipo
-      function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado, visitados) {
-        visitados = visitados || [];
-        const recetaId = `${receta?.clase||''}|${receta?.nivel||''}|${receta?.color||''}`;
-        if (visitados.includes(recetaId)) {
-          advertencias.push(`Ciclo detectado: la receta ${receta?.clase||''} nivel ${receta?.nivel||''} color ${receta?.color||''} ya fue procesada en esta cadena. Recursión detenida.`);
-          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-        }
-        visitados = [...visitados, recetaId];
-        if (!receta) {
-          advertencias.push('Falta receta para algún paso.');
-          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-        }
-        // Si la receta requiere una base, fabricar la base primero
-        if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color && receta.base.equipo) {
-          const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color, receta.base.equipo);
-          if (!recetaBase) {
-            advertencias.push(`Falta receta base: ${receta.base.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
-          } else {
-            const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
-            if (!resBase || typeof resBase !== 'object') {
-              advertencias.push('Error al fabricar la base: resultado inválido.');
-              return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-            }
-            inventarioActual = resBase.inventario;
-            rutaParcial = resBase.ruta;
-            tiempoAcumulado = resBase.tiempo;
+      
+      // Simular la fabricación completa paso a paso
+      let pasosCompletos = [];
+      let tiempoTotal = 0;
+      
+      // Si es una clase avanzada, fabricar primero las bases necesarias
+      if (recetaFinal.clase === 'Campeón') {
+        // Campeón requiere equipo normal nivel 4 como base
+        const recetaBase = buscarReceta('Normal', '4', 'dorado', equipo);
+        if (recetaBase) {
+          const resultadoBase = fabricarRecursivo(recetaBase, inventario, [], 0, []);
+          if (resultadoBase && resultadoBase.ruta) {
+            pasosCompletos = pasosCompletos.concat(resultadoBase.ruta);
+            inventario = resultadoBase.inventario;
+            tiempoTotal += resultadoBase.tiempo;
           }
         }
-        // Procesar materiales de la receta actual
-        let paso = { paso: rutaParcial.length+1, descripcion: `Fabricar ${receta.equipo||''} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
-        let tiempoPaso = 0;
-        let exito = true;
-        const mats = materialesEquipo;
-        let matIdx = 0;
-        for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
-          if (!cantidad || cantidad <= 0) continue;
-          for (let i = 0; i < cantidad; i++) {
-            const matName = mats[matIdx % mats.length];
-            const key = `Normal:${matName}`;
-            let disponible = inventarioActual[key]?.[matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
-            let usado = Math.min(disponible, 1);
-            inventarioActual[key][matColor] = disponible - usado;
-            let faltan = 1 - usado;
-            let ordenColores = ["blanco","verde","azul","morado","dorado"];
-            let idxColor = ordenColores.indexOf(matColor);
-            let conversiones = [];
-            let convertido = 0;
-            while (faltan > 0 && idxColor > 0) {
-              let colorInferior = ordenColores[idxColor-1];
-              let reqInferior = faltan * 4;
-              let dispInferior = inventarioActual[key]?.[colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
-              let puedeConvertir = Math.floor(dispInferior / 4);
-              let convierte = Math.min(puedeConvertir, faltan);
-              if (convierte > 0) {
-                inventarioActual[key][colorInferior] -= convierte*4;
-                inventarioActual[key][matColor] = (inventarioActual[key][matColor]||0) + convierte;
-                conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
-                faltan -= convierte;
-                convertido += convierte;
-              }
-              idxColor--;
-            }
-            if (faltan > 0) {
-              exito = false;
-              paso.materiales.push(`${matName}: Falta 1 de color ${matColor}`);
-            } else {
-              paso.materiales.push(`${matName}: 1 ${matColor}`);
-            }
-            const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
-            tiempoPaso += (tiempos[matColor] || 0);
-            matIdx++;
+      } else if (recetaFinal.clase === 'Planewalker') {
+        // Planewalker requiere equipo normal nivel 5 como base
+        const recetaBase = buscarReceta('Normal', '5', 'dorado', equipo);
+        if (recetaBase) {
+          const resultadoBase = fabricarRecursivo(recetaBase, inventario, [], 0, []);
+          if (resultadoBase && resultadoBase.ruta) {
+            pasosCompletos = pasosCompletos.concat(resultadoBase.ruta);
+            inventario = resultadoBase.inventario;
+            tiempoTotal += resultadoBase.tiempo;
           }
         }
-        paso.tiempo = tiempoPaso;
-        // Solo mostrar bifurcación si es nivel 5 y color morado/dorado
-        if (parseInt(receta.nivel) === 5 && (receta.color === 'morado' || receta.color === 'dorado') && receta.porcentaje && parseFloat(receta.porcentaje) < 100) {
-          paso.bifurcacion = true;
+      } else if (recetaFinal.clase === 'Lord' || recetaFinal.clase === 'Noble Lord') {
+        // Lord/Noble Lord requieren equipo normal nivel 5 como base
+        const recetaBase = buscarReceta('Normal', '5', 'dorado', equipo);
+        if (recetaBase) {
+          const resultadoBase = fabricarRecursivo(recetaBase, inventario, [], 0, []);
+          if (resultadoBase && resultadoBase.ruta) {
+            pasosCompletos = pasosCompletos.concat(resultadoBase.ruta);
+            inventario = resultadoBase.inventario;
+            tiempoTotal += resultadoBase.tiempo;
+          }
         }
-        rutaParcial.push(paso);
-        tiempoAcumulado += tiempoPaso;
-        // Solo bifurcar si es nivel 5 y corresponde
-        if (paso.bifurcacion) {
-          // Solo mostrar una bifurcación real
-          // (opcional: podrías calcular probabilidades aquí)
-        }
-        return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
       }
-
-      // Iniciar simulación desde la receta final (fabricar recursivamente todas las bases)
-      let resultado = fabricarRecursivo(recetaFinal, inventario, [], 0, []);
-      if (rutas.length === 0 && resultado) rutas.push(resultado);
-
+      
+      // Ahora fabricar el equipo final
+      const resultadoFinal = fabricarRecursivo(recetaFinal, inventario, [], tiempoTotal, []);
+      if (resultadoFinal && resultadoFinal.ruta) {
+        pasosCompletos = pasosCompletos.concat(resultadoFinal.ruta);
+        tiempoTotal = resultadoFinal.tiempo;
+      }
+      
       // Mostrar resultados
       const tbody = document.querySelector('.tbody-pasos');
       tbody.innerHTML = '';
-      if (!rutas.length || !rutas[0].ruta.length) {
+      
+      if (pasosCompletos.length === 0) {
         showToast('No se pudo simular la ruta. Verifica que existan materiales y recetas suficientes.','error');
         document.querySelector('.advertencias').innerHTML = '<b>Advertencia:</b> No se pudo simular la ruta. Verifica que existan materiales y recetas suficientes.';
         return;
       }
-      // Renderizar solo las columnas requeridas: Paso | Descripción | Materiales usados
-      rutas[0].ruta.forEach((p, idx) => {
+      
+      // Renderizar todos los pasos
+      pasosCompletos.forEach((p, idx) => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${p.paso}</td><td>${p.descripcion || ''}</td><td>${(p.materiales && p.materiales.length) ? p.materiales.join(', ') : ''}</td>`;
+        tr.innerHTML = `<td>${idx + 1}</td><td>${p.descripcion || ''}</td><td>${(p.materiales && p.materiales.length) ? p.materiales.join(', ') : ''}</td>`;
         tbody.appendChild(tr);
       });
+      
       // Inventario final
       const tbodyInv = document.querySelector('.tbody-inventario-final');
       tbodyInv.innerHTML = renderInventarioFinal();
+      
       // Advertencias
       document.querySelector('.advertencias').innerHTML = advertencias.length ? '<b>Advertencias:</b><br>' + advertencias.join('<br>') : '';
+      
+      // Mostrar tiempo total
+      if (tiempoTotal > 0) {
+        const tiempoFormateado = formatearTiempo(tiempoTotal);
+        showToast(`Simulación completada. Tiempo total: ${tiempoFormateado}`, 'success');
+      }
+      
     } catch (err) {
       showToast('Error en la simulación: ' + (err.message || err),'error');
       document.querySelector('.advertencias').innerHTML = '<b>Error:</b> ' + (err.message || err);
@@ -752,8 +692,6 @@
         // Ahora pedir materiales
         fileMateriales.value = '';
         fileMateriales.click();
-        // Inicializar panel de bases
-        initPanelBases();
       } catch (err) {
         showToast('Error al importar recetas: ' + err.message, 'error');
       }
@@ -782,8 +720,6 @@
         }).join(' | ');
         showToast('¡Datos importados correctamente! Ya puedes simular.\n' + resumen,'success');
         renderControles();
-        // Inicializar panel de bases
-        initPanelBases();
       } catch (err) {
         showToast('Error al importar materiales: ' + err.message, 'error');
       }
@@ -791,62 +727,129 @@
     reader.readAsText(file);
   };
 
-  // Inicializar selects de bases
-  function initPanelBases() {
-    // Usar solo los valores válidos para los selects
-    const equipos = ['espada','pecho','botas','casco','guantes','cinturón'];
-    const clases = ['Normal','Campeón','Planewalker','Lord','Noble Lord'];
-    const niveles = ['1','2','3','4','5'];
-    const colores = ['dorado','morado','azul','verde','blanco'];
-    const selEquipo = document.getElementById('base-equipo');
-    const selClase = document.getElementById('base-clase');
-    const selNivel = document.getElementById('base-nivel');
-    const selColor = document.getElementById('base-color');
-    selEquipo.innerHTML = equipos.map(e=>`<option value='${e}'>${e.charAt(0).toUpperCase()+e.slice(1)}</option>`).join('');
-    selClase.innerHTML = clases.map(c=>`<option value='${c}'>${c}</option>`).join('');
-    selNivel.innerHTML = niveles.map(n=>`<option value='${n}'>${n}</option>`).join('');
-    selColor.innerHTML = colores.map(c=>`<option value='${c}'>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('');
-    document.getElementById('btn-agregar-base').onclick = () => {
-      const base = {
-        equipo: selEquipo.value,
-        clase: selClase.value,
-        nivel: selNivel.value,
-        color: selColor.value
-      };
-      // Evitar duplicados
-      if (!estado.basesUsuario.some(b=>b.equipo===base.equipo&&b.clase===base.clase&&b.nivel===base.nivel&&b.color===base.color)) {
-        estado.basesUsuario.push(base);
-        renderTablaBases();
-      }
-    };
-    renderTablaBases();
-  }
-  function renderTablaBases() {
-    const tbody = document.querySelector('#tabla-bases tbody');
-    tbody.innerHTML = '';
-    estado.basesUsuario.forEach((b,idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${b.equipo}</td><td>${b.clase}</td><td>${b.nivel}</td><td>${b.color.charAt(0).toUpperCase()+b.color.slice(1)}</td><td><button data-idx='${idx}' type='button'>Quitar</button></td>`;
-      tr.querySelector('button').onclick = e => {
-        estado.basesUsuario.splice(idx,1);
-        renderTablaBases();
-      };
-      tbody.appendChild(tr);
-    });
-  }
   document.addEventListener('DOMContentLoaded', () => {
-    initPanelBases();
     renderControles();
   });
 
-  // Helper para obtener el inventario actual en formato {material: {color: cantidad, ...}, ...}
-  function getInventarioActual() {
-    const inventario = {};
-    Object.keys(estado.almacenMateriales).forEach(key => {
-      inventario[key] = { ...estado.almacenMateriales[key] };
-    });
-    return inventario;
+  // Helper: buscar receta exacta por clase, nivel, color, equipo
+  function buscarReceta(clase, nivel, color, equipo) {
+    return estado.recetas.find(r => 
+      r.clase === clase && 
+      String(r.nivel) === String(nivel) && 
+      r.color === color && 
+      r.equipo === equipo
+    );
   }
+
+  // Helper: simular fabricación recursiva de un equipo
+  function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado, visitados) {
+    visitados = visitados || [];
+    const recetaId = `${receta?.clase||''}|${receta?.nivel||''}|${receta?.color||''}`;
+    if (visitados.includes(recetaId)) {
+      advertencias.push(`Ciclo detectado: la receta ${receta?.clase||''} nivel ${receta?.nivel||''} color ${receta?.color||''} ya fue procesada en esta cadena. Recursión detenida.`);
+      return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+    }
+    visitados = [...visitados, recetaId];
+    if (!receta) {
+      advertencias.push('Falta receta para algún paso.');
+      return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+    }
+    
+    // Si la receta requiere una base, fabricar la base primero
+    if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color && receta.base.equipo) {
+      const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color, receta.base.equipo);
+      if (!recetaBase) {
+        advertencias.push(`Falta receta base: ${receta.base.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
+      } else {
+        const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
+        if (!resBase || typeof resBase !== 'object') {
+          advertencias.push('Error al fabricar la base: resultado inválido.');
+          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+        }
+        inventarioActual = resBase.inventario;
+        rutaParcial = resBase.ruta;
+        tiempoAcumulado = resBase.tiempo;
+      }
+    }
+    
+    // Procesar materiales de la receta actual
+    let paso = { paso: rutaParcial.length+1, descripcion: `Fabricar ${receta.equipo||''} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
+    let tiempoPaso = 0;
+    let exito = true;
+    
+    // Obtener materiales del equipo
+    const materialesEquipo = estado.materialesData[receta.clase]?.[receta.equipo] || estado.materialesData['Normal']?.[receta.equipo] || [];
+    let matIdx = 0;
+    
+    for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
+      if (!cantidad || cantidad <= 0) continue;
+      for (let i = 0; i < cantidad; i++) {
+        const matName = materialesEquipo[matIdx % materialesEquipo.length];
+        const key = `Normal:${matName}`;
+        let disponible = inventarioActual[key]?.[matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
+        let usado = Math.min(disponible, 1);
+        inventarioActual[key][matColor] = disponible - usado;
+        let faltan = 1 - usado;
+        let ordenColores = ["blanco","verde","azul","morado","dorado"];
+        let idxColor = ordenColores.indexOf(matColor);
+        let conversiones = [];
+        let convertido = 0;
+        while (faltan > 0 && idxColor > 0) {
+          let colorInferior = ordenColores[idxColor-1];
+          let reqInferior = faltan * 4;
+          let dispInferior = inventarioActual[key]?.[colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
+          let puedeConvertir = Math.floor(dispInferior / 4);
+          let convierte = Math.min(puedeConvertir, faltan);
+          if (convierte > 0) {
+            inventarioActual[key][colorInferior] -= convierte*4;
+            inventarioActual[key][matColor] = (inventarioActual[key][matColor]||0) + convierte;
+            conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
+            faltan -= convierte;
+            convertido += convierte;
+          }
+          idxColor--;
+        }
+        if (faltan > 0) {
+          exito = false;
+          paso.materiales.push(`${matName}: Falta 1 de color ${matColor}`);
+        } else {
+          paso.materiales.push(`${matName}: 1 ${matColor}`);
+        }
+        const tiempos = { dorado: 512, morado: 128, azul: 32, verde: 8, blanco: 2 };
+        tiempoPaso += (tiempos[matColor] || 0);
+        matIdx++;
+      }
+    }
+    paso.tiempo = tiempoPaso;
+    // Solo mostrar bifurcación si es nivel 5 y color morado/dorado
+    if (parseInt(receta.nivel) === 5 && (receta.color === 'morado' || receta.color === 'dorado') && receta.porcentaje && parseFloat(receta.porcentaje) < 100) {
+      paso.bifurcacion = true;
+    }
+    rutaParcial.push(paso);
+    tiempoAcumulado += tiempoPaso;
+    return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+  }
+
+  // Helper: formatear tiempo en formato legible
+  function formatearTiempo(minutos) {
+    if (minutos < 60) return `${minutos} min`;
+    const horas = Math.floor(minutos / 60);
+    const mins = minutos % 60;
+    if (horas < 24) return `${horas}h ${mins}min`;
+    const dias = Math.floor(horas / 24);
+    const hrs = horas % 24;
+    if (dias < 7) return `${dias}d ${hrs}h ${mins}min`;
+    const semanas = Math.floor(dias / 7);
+    const d = dias % 7;
+    if (semanas < 4) return `${semanas} semanas, ${d}d ${hrs}h`;
+    const meses = Math.floor(semanas / 4);
+    const sem = semanas % 4;
+    return `${meses} meses, ${sem} semanas, ${d}d`;
+  }
+
+  // Variables globales para la simulación
+  let rutas = [];
+  let advertencias = [];
   </script>
 </body>
 </html> 
