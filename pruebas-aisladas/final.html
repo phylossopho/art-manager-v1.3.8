@@ -779,13 +779,15 @@
     
     // Obtener materiales del equipo
     const materialesEquipo = estado.materialesData[receta.clase]?.[receta.equipo] || estado.materialesData['Normal']?.[receta.equipo] || [];
+    console.log('Debug - materialesEquipo:', materialesEquipo, 'para receta:', receta);
     let matIdx = 0;
     
     for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
       if (!cantidad || cantidad <= 0) continue;
       for (let i = 0; i < cantidad; i++) {
-        const matName = materialesEquipo[matIdx % materialesEquipo.length];
+        const matName = materialesEquipo[matIdx % materialesEquipo.length] || 'Material desconocido';
         const key = `Normal:${matName}`;
+        console.log('Debug - matName:', matName, 'key:', key, 'matIdx:', matIdx);
         // Asegurar que el inventario tenga la estructura correcta
         if (!inventarioActual[key]) {
           inventarioActual[key] = { dorado: 0, morado: 0, azul: 0, verde: 0, blanco: 0 };
