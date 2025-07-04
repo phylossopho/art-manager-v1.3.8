@@ -743,12 +743,12 @@
     );
   }
 
-  // Helper: simular fabricación recursiva de un equipo
+  // Helper: simular fabricación recursiva de un equipo (progresión completa de niveles y colores)
   function fabricarRecursivo(receta, inventarioActual, rutaParcial, tiempoAcumulado, visitados) {
     visitados = visitados || [];
-    const recetaId = `${receta?.clase||''}|${receta?.nivel||''}|${receta?.color||''}`;
+    const recetaId = `${receta?.clase||''}|${receta?.nivel||''}|${receta?.color||''}|${receta?.equipo||''}`;
     if (visitados.includes(recetaId)) {
-      advertencias.push(`Ciclo detectado: la receta ${receta?.clase||''} nivel ${receta?.nivel||''} color ${receta?.color||''} ya fue procesada en esta cadena. Recursión detenida.`);
+      advertencias.push(`Ciclo detectado: la receta ${receta?.clase||''} nivel ${receta?.nivel||''} color ${receta?.color||''} equipo ${receta?.equipo||''} ya fue procesada en esta cadena. Recursión detenida.`);
       return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
     }
     visitados = [...visitados, recetaId];
@@ -756,96 +756,97 @@
       advertencias.push('Falta receta para algún paso.');
       return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
     }
-    
-    // Si la receta requiere una base, fabricar la base primero
-    if (receta.base && receta.base.clase && receta.base.nivel && receta.base.color && receta.base.equipo) {
-      const recetaBase = buscarReceta(receta.base.clase, receta.base.nivel, receta.base.color, receta.base.equipo);
-      if (!recetaBase) {
-        advertencias.push(`Falta receta base: ${receta.base.equipo} ${receta.base.clase} nivel ${receta.base.nivel} color ${receta.base.color}`);
+
+    // Determinar el orden de colores
+    const ordenColores = ["blanco","verde","azul","morado","dorado"];
+    const idxColor = ordenColores.indexOf(receta.color);
+    const nivel = parseInt(receta.nivel);
+    let pasosPrevios = [];
+    let tiempoPrevio = tiempoAcumulado;
+    let inventarioPrevio = inventarioActual;
+
+    // 1. Si el nivel > 1, fabricar el mismo equipo en nivel-1 dorado
+    if (nivel > 1) {
+      const recetaPrevioNivel = buscarReceta(receta.clase, nivel-1, 'dorado', receta.equipo);
+      if (recetaPrevioNivel) {
+        const resPrevio = fabricarRecursivo(recetaPrevioNivel, inventarioPrevio, rutaParcial, tiempoPrevio, visitados);
+        pasosPrevios = resPrevio.ruta;
+        inventarioPrevio = resPrevio.inventario;
+        tiempoPrevio = resPrevio.tiempo;
       } else {
-        const resBase = fabricarRecursivo(recetaBase, inventarioActual, rutaParcial, tiempoAcumulado, visitados);
-        if (!resBase || typeof resBase !== 'object') {
-          advertencias.push('Error al fabricar la base: resultado inválido.');
-          return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
-        }
-        inventarioActual = resBase.inventario;
-        rutaParcial = resBase.ruta;
-        tiempoAcumulado = resBase.tiempo;
+        advertencias.push(`Falta receta para nivel previo: ${receta.clase} nivel ${nivel-1} dorado equipo ${receta.equipo}`);
       }
     }
-    
-    // Procesar materiales de la receta actual
-    let paso = { paso: rutaParcial.length+1, descripcion: `Fabricar ${receta.equipo||''} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false };
-    let tiempoPaso = 0;
-    let exito = true;
-    
+    // 2. Si el color > blanco, fabricar el mismo equipo en mismo nivel, color inferior
+    else if (idxColor > 0) {
+      const colorInferior = ordenColores[idxColor-1];
+      const recetaPrevioColor = buscarReceta(receta.clase, nivel, colorInferior, receta.equipo);
+      if (recetaPrevioColor) {
+        const resPrevio = fabricarRecursivo(recetaPrevioColor, inventarioPrevio, rutaParcial, tiempoPrevio, visitados);
+        pasosPrevios = resPrevio.ruta;
+        inventarioPrevio = resPrevio.inventario;
+        tiempoPrevio = resPrevio.tiempo;
+      } else {
+        advertencias.push(`Falta receta para color previo: ${receta.clase} nivel ${nivel} color ${colorInferior} equipo ${receta.equipo}`);
+      }
+    }
+    // 3. Si es el equipo base (nivel 1, blanco), solo usar materiales
     // Obtener materiales del equipo
-    // Mapear clases a las claves correctas de datosMateriales
     let claseAlmacen = receta.clase;
     if (receta.clase === "Campeón" || receta.clase === "Planewalker") {
       claseAlmacen = "Campeón y Planewalker";
     } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
       claseAlmacen = "Lord y Noble Lord";
     }
-    
-    // Si no hay equipo definido, usar un equipo por defecto basado en la clase
     let equipoUsar = receta.equipo;
     if (!equipoUsar) {
       if (receta.clase === "Normal") {
-        equipoUsar = "Espada"; // Equipo por defecto para Normal
+        equipoUsar = "Espada";
       } else if (receta.clase === "Campeón" || receta.clase === "Planewalker") {
-        equipoUsar = "Espada"; // Equipo por defecto para Campeón/Planewalker
+        equipoUsar = "Espada";
       } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
-        // Para Lord/Noble Lord no necesitamos equipo específico, usan 'common'
         equipoUsar = "common";
       }
     }
-    
     let materialesEquipo = [];
     if (claseAlmacen === "Lord y Noble Lord") {
       materialesEquipo = estado.materialesData[claseAlmacen]?.common || [];
     } else {
       materialesEquipo = estado.materialesData[claseAlmacen]?.[equipoUsar] || estado.materialesData['Normal']?.[equipoUsar] || [];
     }
-    
-    console.log('Debug - materialesEquipo:', materialesEquipo, 'para receta:', receta);
-    console.log('Debug - estado.materialesData keys:', Object.keys(estado.materialesData || {}));
-    console.log('Debug - receta.clase:', receta.clase, 'receta.equipo:', receta.equipo, 'claseAlmacen:', claseAlmacen, 'equipoUsar:', equipoUsar);
-    console.log('Debug - receta completa:', JSON.stringify(receta, null, 2));
     let matIdx = 0;
-    
+    let paso = { paso: (pasosPrevios.length||0)+1, descripcion: `Fabricar ${receta.equipo||equipoUsar} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false, exito: receta.porcentaje ? receta.porcentaje + '%' : '100%' };
+    let tiempoPaso = 0;
+    let exito = true;
     for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
       if (!cantidad || cantidad <= 0) continue;
       for (let i = 0; i < cantidad; i++) {
         const matName = materialesEquipo[matIdx % materialesEquipo.length] || 'Material desconocido';
         const key = `${claseAlmacen}:${matName}`;
-        console.log('Debug - matName:', matName, 'key:', key, 'matIdx:', matIdx);
-        // Asegurar que el inventario tenga la estructura correcta
-        if (!inventarioActual[key]) {
-          inventarioActual[key] = { dorado: 0, morado: 0, azul: 0, verde: 0, blanco: 0 };
+        if (!inventarioPrevio[key]) {
+          inventarioPrevio[key] = { dorado: 0, morado: 0, azul: 0, verde: 0, blanco: 0 };
         }
-        let disponible = inventarioActual[key][matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
+        let disponible = inventarioPrevio[key][matColor] ? parseInt(inventarioPrevio[key][matColor]) : 0;
         let usado = Math.min(disponible, 1);
-        inventarioActual[key][matColor] = disponible - usado;
+        inventarioPrevio[key][matColor] = disponible - usado;
         let faltan = 1 - usado;
-        let ordenColores = ["blanco","verde","azul","morado","dorado"];
-        let idxColor = ordenColores.indexOf(matColor);
         let conversiones = [];
         let convertido = 0;
-        while (faltan > 0 && idxColor > 0) {
-          let colorInferior = ordenColores[idxColor-1];
+        let idxColorMat = ordenColores.indexOf(matColor);
+        while (faltan > 0 && idxColorMat > 0) {
+          let colorInferior = ordenColores[idxColorMat-1];
           let reqInferior = faltan * 4;
-          let dispInferior = inventarioActual[key][colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
+          let dispInferior = inventarioPrevio[key][colorInferior] ? parseInt(inventarioPrevio[key][colorInferior]) : 0;
           let puedeConvertir = Math.floor(dispInferior / 4);
           let convierte = Math.min(puedeConvertir, faltan);
           if (convierte > 0) {
-            inventarioActual[key][colorInferior] -= convierte*4;
-            inventarioActual[key][matColor] = (inventarioActual[key][matColor]||0) + convierte;
+            inventarioPrevio[key][colorInferior] -= convierte*4;
+            inventarioPrevio[key][matColor] = (inventarioPrevio[key][matColor]||0) + convierte;
             conversiones.push(`Convertidos ${convierte*4} ${colorInferior} → ${convierte} ${matColor}`);
             faltan -= convierte;
             convertido += convierte;
           }
-          idxColor--;
+          idxColorMat--;
         }
         if (faltan > 0) {
           exito = false;
@@ -859,16 +860,13 @@
       }
     }
     paso.tiempo = tiempoPaso;
-    // Solo mostrar bifurcación si es nivel 5 y color morado/dorado
     if (parseInt(receta.nivel) === 5 && (receta.color === 'morado' || receta.color === 'dorado') && receta.porcentaje && parseFloat(receta.porcentaje) < 100) {
       paso.bifurcacion = true;
     }
-    rutaParcial.push(paso);
-    tiempoAcumulado += tiempoPaso;
-    return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
+    let rutaFinal = [...(pasosPrevios||[]), paso];
+    tiempoPrevio += tiempoPaso;
+    return { ruta: rutaFinal, inventario: inventarioPrevio, tiempo: tiempoPrevio };
   }
-
-
 
   // Variables globales para la simulación
   let rutas = [];
