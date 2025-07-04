@@ -767,27 +767,39 @@
 
     // 1. Si el nivel > 1, fabricar el mismo equipo en nivel-1 dorado
     if (nivel > 1) {
-      const recetaPrevioNivel = buscarReceta(receta.clase, nivel-1, 'dorado', receta.equipo);
+      const recetaPrevioNivel = buscarReceta(receta.clase, nivel-1, 'dorado', equipoUsar);
       if (recetaPrevioNivel) {
         const resPrevio = fabricarRecursivo(recetaPrevioNivel, inventarioPrevio, rutaParcial, tiempoPrevio, visitados);
         pasosPrevios = resPrevio.ruta;
         inventarioPrevio = resPrevio.inventario;
         tiempoPrevio = resPrevio.tiempo;
       } else {
-        advertencias.push(`Falta receta para nivel previo: ${receta.clase} nivel ${nivel-1} dorado equipo ${receta.equipo}`);
+        advertencias.push(`Falta receta para nivel previo: ${receta.clase} nivel ${nivel-1} dorado equipo ${equipoUsar}`);
       }
     }
     // 2. Si el color > blanco, fabricar el mismo equipo en mismo nivel, color inferior
     else if (idxColor > 0) {
       const colorInferior = ordenColores[idxColor-1];
-      const recetaPrevioColor = buscarReceta(receta.clase, nivel, colorInferior, receta.equipo);
+      const recetaPrevioColor = buscarReceta(receta.clase, nivel, colorInferior, equipoUsar);
       if (recetaPrevioColor) {
         const resPrevio = fabricarRecursivo(recetaPrevioColor, inventarioPrevio, rutaParcial, tiempoPrevio, visitados);
         pasosPrevios = resPrevio.ruta;
         inventarioPrevio = resPrevio.inventario;
         tiempoPrevio = resPrevio.tiempo;
       } else {
-        advertencias.push(`Falta receta para color previo: ${receta.clase} nivel ${nivel} color ${colorInferior} equipo ${receta.equipo}`);
+        advertencias.push(`Falta receta para color previo: ${receta.clase} nivel ${nivel} color ${colorInferior} equipo ${equipoUsar}`);
+      }
+    }
+    // 3. Si es nivel 1 pero no es blanco, fabricar el equipo blanco nivel 1 primero
+    else if (nivel === 1 && idxColor > 0) {
+      const recetaBlanco = buscarReceta(receta.clase, 1, 'blanco', equipoUsar);
+      if (recetaBlanco) {
+        const resPrevio = fabricarRecursivo(recetaBlanco, inventarioPrevio, rutaParcial, tiempoPrevio, visitados);
+        pasosPrevios = resPrevio.ruta;
+        inventarioPrevio = resPrevio.inventario;
+        tiempoPrevio = resPrevio.tiempo;
+      } else {
+        advertencias.push(`Falta receta para equipo base: ${receta.clase} nivel 1 blanco equipo ${equipoUsar}`);
       }
     }
     // 3. Si es el equipo base (nivel 1, blanco), solo usar materiales
@@ -798,15 +810,22 @@
     } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
       claseAlmacen = "Lord y Noble Lord";
     }
+    
+    // Determinar el equipo real de la receta
     let equipoUsar = receta.equipo;
     if (!equipoUsar) {
-      if (receta.clase === "Normal") {
-        equipoUsar = "Espada";
-      } else if (receta.clase === "Campeón" || receta.clase === "Planewalker") {
-        equipoUsar = "Espada";
-      } else if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
-        equipoUsar = "common";
+      // Intentar inferir el equipo de la receta base si existe
+      if (receta.base && receta.base.equipo) {
+        equipoUsar = receta.base.equipo;
+      } else {
+        // Si no hay equipo definido, usar el equipo seleccionado en los filtros
+        equipoUsar = estado.filtros.equipo || "Espada";
       }
+    }
+    
+    // Para Lord/Noble Lord usar 'common' independientemente del equipo
+    if (receta.clase === "Lord" || receta.clase === "Noble Lord") {
+      equipoUsar = "common";
     }
     let materialesEquipo = [];
     if (claseAlmacen === "Lord y Noble Lord") {
@@ -815,7 +834,7 @@
       materialesEquipo = estado.materialesData[claseAlmacen]?.[equipoUsar] || estado.materialesData['Normal']?.[equipoUsar] || [];
     }
     let matIdx = 0;
-    let paso = { paso: (pasosPrevios.length||0)+1, descripcion: `Fabricar ${receta.equipo||equipoUsar} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false, exito: receta.porcentaje ? receta.porcentaje + '%' : '100%' };
+    let paso = { paso: (pasosPrevios.length||0)+1, descripcion: `Fabricar ${equipoUsar} ${receta.clase} ${receta.color} de nivel ${receta.nivel}`, materiales: [], tiempo: 0, bifurcacion: false, exito: receta.porcentaje ? receta.porcentaje + '%' : '100%' };
     let tiempoPaso = 0;
     let exito = true;
     for (const [matColor, cantidad] of Object.entries(receta.materiales)) {
