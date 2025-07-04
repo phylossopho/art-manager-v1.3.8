@@ -830,22 +830,7 @@
     return { ruta: rutaParcial, inventario: inventarioActual, tiempo: tiempoAcumulado };
   }
 
-  // Helper: formatear tiempo en formato legible
-  function formatearTiempo(minutos) {
-    if (minutos < 60) return `${minutos} min`;
-    const horas = Math.floor(minutos / 60);
-    const mins = minutos % 60;
-    if (horas < 24) return `${horas}h ${mins}min`;
-    const dias = Math.floor(horas / 24);
-    const hrs = horas % 24;
-    if (dias < 7) return `${dias}d ${hrs}h ${mins}min`;
-    const semanas = Math.floor(dias / 7);
-    const d = dias % 7;
-    if (semanas < 4) return `${semanas} semanas, ${d}d ${hrs}h`;
-    const meses = Math.floor(semanas / 4);
-    const sem = semanas % 4;
-    return `${meses} meses, ${sem} semanas, ${d}d`;
-  }
+
 
   // Variables globales para la simulación
   let rutas = [];
