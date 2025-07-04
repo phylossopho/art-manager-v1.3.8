@@ -786,7 +786,11 @@
       for (let i = 0; i < cantidad; i++) {
         const matName = materialesEquipo[matIdx % materialesEquipo.length];
         const key = `Normal:${matName}`;
-        let disponible = inventarioActual[key]?.[matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
+        // Asegurar que el inventario tenga la estructura correcta
+        if (!inventarioActual[key]) {
+          inventarioActual[key] = { dorado: 0, morado: 0, azul: 0, verde: 0, blanco: 0 };
+        }
+        let disponible = inventarioActual[key][matColor] ? parseInt(inventarioActual[key][matColor]) : 0;
         let usado = Math.min(disponible, 1);
         inventarioActual[key][matColor] = disponible - usado;
         let faltan = 1 - usado;
@@ -797,7 +801,7 @@
         while (faltan > 0 && idxColor > 0) {
           let colorInferior = ordenColores[idxColor-1];
           let reqInferior = faltan * 4;
-          let dispInferior = inventarioActual[key]?.[colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
+          let dispInferior = inventarioActual[key][colorInferior] ? parseInt(inventarioActual[key][colorInferior]) : 0;
           let puedeConvertir = Math.floor(dispInferior / 4);
           let convierte = Math.min(puedeConvertir, faltan);
           if (convierte > 0) {
